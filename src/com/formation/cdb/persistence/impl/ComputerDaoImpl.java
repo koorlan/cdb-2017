@@ -1,8 +1,10 @@
 package com.formation.cdb.persistence.impl;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +22,37 @@ public class ComputerDaoImpl implements ComputerDao {
 		this.computerRowMapper = new ComputerRowMapper();
 	}
 	
+	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) values (?,?,?,?);" ;
+	
 	@Override
-	public void create(Computer e) {
-		// TODO Auto-generated method stub
+	public void create(Computer c) {
+		PreparedStatement st;
+		
+		try {
+			st = conn.prepareStatement(INSERT);
+			st.setString(1, c.getName());
+			
+			if(c.getIntroduced() != null)
+				st.setTimestamp(2, new Timestamp(c.getIntroduced().getTime()));
+			else
+				st.setTimestamp(2, null);
+			
+			if(c.getDiscontinued() != null)
+				st.setTimestamp(3, new Timestamp(c.getDiscontinued().getTime()));
+			else
+				st.setTimestamp(3, null);
+			
+			if(c.getCompany() != null)
+				st.setLong(4, c.getCompany().getId());
+			else
+				st.setTimestamp(4, null);
+			
+			st.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		
 	}
 
@@ -38,7 +68,7 @@ public class ComputerDaoImpl implements ComputerDao {
 		
 	}
 
-	private static final String GET_ID = "SELECT * FROM computer WHERE id=";
+	private static final String GET_ID = "SELECT * FROM computer WHERE id=?";
 	
 	@Override
 	public Computer get(long id) {
@@ -46,7 +76,9 @@ public class ComputerDaoImpl implements ComputerDao {
 		
 
 		try {
-			ResultSet rs = conn.createStatement().executeQuery(GET_ID+Long.toString(id));
+			PreparedStatement st = conn.prepareStatement(GET_ID);
+			st.setInt(1, (int) id);
+			ResultSet rs = st.executeQuery();
 			computer = computerRowMapper.mapRow(rs);
 			return computer;
 		} catch (SQLException e) {

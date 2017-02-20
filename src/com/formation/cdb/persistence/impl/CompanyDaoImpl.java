@@ -1,6 +1,7 @@
 package com.formation.cdb.persistence.impl;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
@@ -36,14 +37,16 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 		
 	}
 
-	private static final String GET_ID = "SELECT * FROM company WHERE id=";
+	private static final String GET_ID = "SELECT * FROM company WHERE id=?";
 	
 	@Override
 	public Company get(long id) {
 		Company company;
 		
 		try {
-			ResultSet rs = conn.createStatement().executeQuery(GET_ID+Long.toString(id));
+			PreparedStatement st = conn.prepareStatement(GET_ID);
+			st.setInt(1, (int)id);
+			ResultSet rs = st.executeQuery();
 			company = companyRowMapper.mapRow(rs);
 			return company;
 		} catch (SQLException e) {

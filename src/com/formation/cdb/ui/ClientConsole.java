@@ -1,11 +1,13 @@
 package com.formation.cdb.ui;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.service.ComputerDatabaseService;
+import com.formation.cdb.util.DateUtil;
 
 public class ClientConsole {
 	
@@ -55,8 +57,9 @@ public class ClientConsole {
 		System.out.println("(c) Create a Computer");
 		System.out.println("(d) Delete a Computer");
 		System.out.println("(u) Update a Computer");
+		System.out.println("(x) Close application, adjö!");
 		
-		s = scanner.next();
+		s = scanner.nextLine();
 		
 		switch(s){
 			case "a":
@@ -79,6 +82,9 @@ public class ClientConsole {
 				break;
 			case "u":
 				updateComputer();
+				break;
+			case "x":
+				closeClientConsole();
 				break;
 			default:
 				System.out.print("Not a valid input please retry.");
@@ -114,6 +120,7 @@ public class ClientConsole {
 		service = ComputerDatabaseService.getInstance();
 		System.out.println("Please enter computer id:");
 		id = scanner.nextLong();
+		scanner.nextLine();//Consume Enter
 		c = service.getComputerById(id);
 		System.out.println(c);
 		
@@ -127,20 +134,60 @@ public class ClientConsole {
 		service = ComputerDatabaseService.getInstance();
 		System.out.println("Please enter company id:");
 		id = scanner.nextLong();
+		scanner.nextLine();//Consume Enter
 		c = service.getCompanyById(id);
 		System.out.println(c);
 	};
 	
 	public void createComputer(){
 		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
+		String name;
+		Date introduced = null;
+		Date discontinued = null;
+		long companyId = 0 ;
+		String dateIntroducedString;
+		String dateDiscontinuedString;
+		String companyIdString;
+		
+		service = ComputerDatabaseService.getInstance();
+		
+		System.out.println("Please enter computer name [Required]:");
+		name = scanner.nextLine();
+		if(name.isEmpty())
+			return;
+		//TODO
+		//if(name.trim().isEmpty())
+		//	throw
+		System.out.println("Please enter the date it was introduced (DD-MM-YYYY) [Optional]:");
+		dateIntroducedString = scanner.nextLine();
+		dateIntroducedString = dateIntroducedString.trim();
+		if(!dateIntroducedString.isEmpty())		
+			introduced = DateUtil.StringToDate(dateIntroducedString);
+		
+		System.out.println("Please enter the date it was discontinued (DD-MM-YYYY) [Optional]:");
+		dateDiscontinuedString = scanner.nextLine();
+		dateDiscontinuedString = dateDiscontinuedString.trim();
+		if(!dateDiscontinuedString.isEmpty())
+			discontinued = DateUtil.StringToDate(dateDiscontinuedString);
+		
+		System.out.println("Please enter the company id of the computer manufacturer [Optional]:");
+		companyIdString = scanner.nextLine();
+		companyIdString = companyIdString.trim();
+		if(!companyIdString.isEmpty())
+			companyId = Long.parseLong(companyIdString);
+		
+		service.createComputer(name, introduced, discontinued, companyId);
 	};
 	
 	public void deleteComputer(){
-		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
+
 	};
 	
 	public void updateComputer(){
 		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
 	};
 	
+	public void closeClientConsole(){
+		exit = true;
+	}
 }

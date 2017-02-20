@@ -55,9 +55,17 @@ public class ComputerDatabaseService {
 		
 	}
 	
-	public void createComputer(String name,Date Introduced, Date discontinued){
+	public void createComputer(String name,Date introduced, Date discontinued,long companyId){
+		ComputerDao computerDao;
+		Computer computer;
+		CompanyDao companyDao;
+		Company company;
 		
-		//Get the last id avaiable
+		companyDao = DaoFactory.getCompanyDao();
+		company = companyDao.get(companyId);
+		computer = new Computer(0,name,introduced,discontinued,company);
 		
+		computerDao = DaoFactory.getComputerDao();
+		computerDao.create(computer);
 	}
 }
