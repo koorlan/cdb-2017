@@ -45,6 +45,7 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 		try {
 			ResultSet rs = conn.createStatement().executeQuery(GET_ID+Long.toString(id));
 			company = companyRowMapper.mapRow(rs);
+			return company;
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

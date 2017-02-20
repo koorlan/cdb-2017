@@ -45,5 +45,23 @@ public class Computer {
 		return company;
 	}
 	
+	/**
+	 * Override
+	 */
+	
+	@Override
+	public String toString() {
+		String newLine = System.getProperty("line.separator");
+		StringBuilder sb = new StringBuilder();
+		sb.append(name +" (id: "+id+")");
+		sb.append(newLine);
+		sb.append("| Company -> " + company);
+		sb.append(newLine);
+		sb.append("| Introduced -> " + introduced);
+		sb.append(newLine);
+		sb.append("| Discontinued -> " + discontinued);
+		return sb.toString();
+	}
+	
 	
 }

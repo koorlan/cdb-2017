@@ -23,7 +23,7 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 		
 		try {
 			while(rs.next()){
-				long id = rs.getLong("Id");
+				long id = rs.getLong("id");
 				String name = rs.getString("name");
 				Date introduced = rs.getTimestamp("introduced");
 				Date discontinued = rs.getTimestamp("discontinued");
@@ -31,8 +31,8 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 				long companyId = rs.getLong("company_id");
 				//Try to retrieve a company from the database with this id
 				ComputerDatabaseService cdbService = ComputerDatabaseService.getInstance();
-				Company company = cdbService.getCompanyById(companyId);
 				
+				Company company = cdbService.getCompanyById(companyId);
 				Computer c = new Computer(id,name,introduced,discontinued,company);
 				
 				computers.add(c);

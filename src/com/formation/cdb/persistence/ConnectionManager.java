@@ -8,7 +8,7 @@ public class ConnectionManager {
 	private static ConnectionManager INSTANCE;
 	
 	//TODO Load this parameter from a configuration file
-	private String url ="jdbc:mysql://localhost:3306/computer-database-db";
+	private String url ="jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
 	private String login = "admincdb";
 	private String password = "qwerty1234";
 	
