@@ -1,9 +1,11 @@
 package com.formation.cdb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
+import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.persistence.DaoFactory;
 
@@ -26,8 +28,7 @@ public class ComputerDatabaseService {
 
 	public List<Computer> getAllComputers(){
 		ComputerDao dao = DaoFactory.getComputerDao();
-		dao.getAll();
-		return null;
+		return dao.getAll();
 	}
 	
 	public List<Company> getAllCompanies(){
@@ -39,7 +40,8 @@ public class ComputerDatabaseService {
 	}
 	
 	public Company getCompanyById(long id){
-		return null;
+		CompanyDao dao = DaoFactory.getCompanyDao();
+		return dao.get(id);
 	}
 	
 	public void deleteComputer(long id){

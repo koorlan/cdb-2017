@@ -7,15 +7,18 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.formation.cdb.mapper.impl.ComputerRowMapper;
 import com.formation.cdb.model.Computer;
 import com.formation.cdb.persistence.ComputerDao;
 
 public class ComputerDaoImpl implements ComputerDao {
 
 	private Connection conn;
+	private ComputerRowMapper computerRowMapper;
 	
 	public ComputerDaoImpl(Connection conn){
 		this.conn = conn;
+		this.computerRowMapper = new ComputerRowMapper();
 	}
 	
 	@Override
@@ -50,8 +53,8 @@ public class ComputerDaoImpl implements ComputerDao {
 		
 		try {
 			ResultSet rs = conn.createStatement().executeQuery(GET_ALL);
-			
-			
+			computers = computerRowMapper.mapRows(rs);
+			return computers;
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

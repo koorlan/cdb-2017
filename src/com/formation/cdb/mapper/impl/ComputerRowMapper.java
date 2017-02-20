@@ -15,7 +15,7 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 
 	@Override
 	public List<Computer> mapRows(ResultSet rs) {
-		//Todo
+		//TODO
 		//if(rs == null)
 		//	throw new Exception();
 		
