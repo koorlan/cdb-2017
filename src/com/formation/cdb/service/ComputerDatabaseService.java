@@ -4,6 +4,8 @@ import java.util.List;
 
 import com.formation.cdb.model.Company;
 import com.formation.cdb.model.Computer;
+import com.formation.cdb.persistence.ComputerDao;
+import com.formation.cdb.persistence.DaoFactory;
 
 public class ComputerDatabaseService {
 	private static ComputerDatabaseService INSTANCE;
@@ -23,6 +25,8 @@ public class ComputerDatabaseService {
 	 */
 
 	public List<Computer> getAllComputers(){
+		ComputerDao dao = DaoFactory.getComputerDao();
+		dao.getAll();
 		return null;
 	}
 	
