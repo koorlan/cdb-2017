@@ -2,6 +2,7 @@ package com.formation.cdb.mapper.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.sound.midi.Soundbank;
@@ -13,7 +14,22 @@ public class CompanyRowMapper implements RowMapper<Company> {
 
 	@Override
 	public List<Company> mapRows(ResultSet rs) {
-		// TODO Auto-generated method stub
+		
+		List<Company> companies = new ArrayList<Company>();
+		
+		try {
+			while(rs.next()){
+				long id = rs.getLong("id");
+				String name = rs.getString("name");
+				Company company = new Company(id,name);		
+				companies.add(company);
+			}
+			return companies;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 

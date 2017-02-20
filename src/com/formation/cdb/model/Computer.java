@@ -54,12 +54,22 @@ public class Computer {
 		String newLine = System.getProperty("line.separator");
 		StringBuilder sb = new StringBuilder();
 		sb.append(name +" (id: "+id+")");
-		sb.append(newLine);
-		sb.append("| Company -> " + company);
-		sb.append(newLine);
-		sb.append("| Introduced -> " + introduced);
-		sb.append(newLine);
-		sb.append("| Discontinued -> " + discontinued);
+		
+		if(company != null){
+			sb.append(newLine);
+			sb.append("| Company -> " + company);
+			
+		}
+		if(introduced != null){
+			sb.append(newLine);
+			sb.append("| Introduced -> " + introduced);
+			
+		}
+		if(discontinued != null){
+			sb.append(newLine);
+			sb.append("| Discontinued -> " + discontinued);
+		}
+		
 		return sb.toString();
 	}
 	

@@ -120,7 +120,15 @@ public class ClientConsole {
 	};
 	
 	public void showCompany(){
-		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
+		ComputerDatabaseService service;
+		long id;
+		Company c;
+		
+		service = ComputerDatabaseService.getInstance();
+		System.out.println("Please enter company id:");
+		id = scanner.nextLong();
+		c = service.getCompanyById(id);
+		System.out.println(c);
 	};
 	
 	public void createComputer(){

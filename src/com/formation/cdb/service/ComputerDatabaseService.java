@@ -1,6 +1,7 @@
 package com.formation.cdb.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.formation.cdb.model.Company;
@@ -32,7 +33,8 @@ public class ComputerDatabaseService {
 	}
 	
 	public List<Company> getAllCompanies(){
-		return null;
+		CompanyDao dao = DaoFactory.getCompanyDao();
+		return dao.getAll();
 	}
 	
 	public Computer getComputerById(long id){
@@ -53,7 +55,9 @@ public class ComputerDatabaseService {
 		
 	}
 	
-	public void createComputer(long id){
+	public void createComputer(String name,Date Introduced, Date discontinued){
+		
+		//Get the last id avaiable
 		
 	}
 }

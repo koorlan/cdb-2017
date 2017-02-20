@@ -54,8 +54,22 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 		return null;
 	}
 
+	private static final String GET_ALL = "SELECT * FROM company";
+	
 	@Override
 	public List<Company> getAll() {
+		List<Company> companies;
+		
+		try {
+			ResultSet rs = conn.createStatement().executeQuery(GET_ALL);
+			companies = companyRowMapper.mapRows(rs);
+			return companies;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		//return empty new arrayList if no result
 		return null;
 	}
 
