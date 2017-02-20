@@ -1,5 +1,7 @@
 package com.formation.cdb.persistence;
 
-public interface ComputerDao {
+import com.formation.cdb.model.Computer;
 
+public interface ComputerDao extends Dao<Computer>{
+	
 }

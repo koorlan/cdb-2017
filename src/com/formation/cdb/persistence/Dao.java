@@ -1,5 +1,12 @@
 package com.formation.cdb.persistence;
 
-public interface Dao {
+import java.util.List;
 
+public interface Dao<T> {
+	
+	void create(T e);
+	void update(long id, T e);
+	void delete(long id);
+	T get(long id);
+	List<T> getAll();
 }
