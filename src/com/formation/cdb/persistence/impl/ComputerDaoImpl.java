@@ -1,6 +1,10 @@
 package com.formation.cdb.persistence.impl;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.formation.cdb.model.Computer;
@@ -38,8 +42,22 @@ public class ComputerDaoImpl implements ComputerDao {
 		return null;
 	}
 
+	private static final String GET_ALL = "Select * from computer"; 
+	
 	@Override
 	public List<Computer> getAll() {
+		List<Computer> computers;
+		
+		try {
+			ResultSet rs = conn.createStatement().executeQuery(GET_ALL);
+			
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 		return null;
 	}
 

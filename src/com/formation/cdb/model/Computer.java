@@ -12,12 +12,26 @@ public class Computer {
 	private Company company;
 
 	/**
+	 * Constructor
+	 */
+	public Computer(long id, String name, Date introduced, Date discontinued, Company company) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.introduced = introduced;
+		this.discontinued = discontinued;
+		this.company = company;
+	}
+	
+	
+	/**
 	 * Getters
 	 */
 
 	public long getId() {
 		return id;
 	}
+
 	public String getName() {
 		return name;
 	}
