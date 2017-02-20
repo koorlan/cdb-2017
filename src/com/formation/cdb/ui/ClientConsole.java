@@ -78,7 +78,7 @@ public class ClientConsole {
 				createComputer();
 				break;
 			case "d":
-				createComputer();
+				deleteComputer();
 				break;
 			case "u":
 				updateComputer();
@@ -180,7 +180,33 @@ public class ClientConsole {
 	};
 	
 	public void deleteComputer(){
-
+		ComputerDatabaseService service;
+		long id;
+		Computer computer;
+		String answer;
+		
+		service = ComputerDatabaseService.getInstance();
+		
+		System.out.println("Please enter the computer id you want to deleted");
+		id = scanner.nextLong();
+		scanner.nextLine(); //consume newline;
+		
+		computer = service.getComputerById(id);
+		
+		System.out.println("Are you sure you want delete (y/n)");
+		System.out.println(computer);
+		
+		answer = scanner.nextLine();
+		switch(answer){
+			case"y":
+				service.deleteComputer(id);
+				break;
+			case "n":
+			default:
+				break;
+		}
+		
+		
 	};
 	
 	public void updateComputer(){
