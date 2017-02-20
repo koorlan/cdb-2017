@@ -48,7 +48,30 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 
 	@Override
 	public Computer mapRow(ResultSet rs) {
-		// TODO Auto-generated method stub
+		//TODO assert 1 result
+		try {
+			if(!rs.isBeforeFirst())
+				return null;
+			rs.next();
+			long id = rs.getLong("id");
+			String name = rs.getString("name");
+			Date introduced = rs.getTimestamp("introduced");
+			Date discontinued = rs.getTimestamp("discontinued");
+			
+			
+			long companyId = rs.getLong("company_id");
+			//Try to retrieve a company from the database with this id
+			ComputerDatabaseService cdbService = ComputerDatabaseService.getInstance();
+			
+			Company company = cdbService.getCompanyById(companyId);
+			Computer computer = new Computer(id,name,introduced,discontinued,company);
+			return computer;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 

@@ -3,7 +3,6 @@ package com.formation.cdb.persistence.impl;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,9 +38,22 @@ public class ComputerDaoImpl implements ComputerDao {
 		
 	}
 
+	private static final String GET_ID = "SELECT * FROM computer WHERE id=";
+	
 	@Override
 	public Computer get(long id) {
-		// TODO Auto-generated method stub
+		Computer computer;
+		
+
+		try {
+			ResultSet rs = conn.createStatement().executeQuery(GET_ID+Long.toString(id));
+			computer = computerRowMapper.mapRow(rs);
+			return computer;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		return null;
 	}
 
@@ -58,10 +70,8 @@ public class ComputerDaoImpl implements ComputerDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
-		return null;
+		//Return empty arrayList if no result
+		return new ArrayList<Computer>();
 	}
 
 }

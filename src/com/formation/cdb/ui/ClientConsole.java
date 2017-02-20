@@ -87,8 +87,12 @@ public class ClientConsole {
 	}
 	
 	public void listComputers(){
-		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
-		List<Computer> computers = service.getAllComputers();
+		ComputerDatabaseService service;
+		List<Computer> computers;
+		
+		service = ComputerDatabaseService.getInstance();
+		computers = service.getAllComputers();
+		
 		for(Computer c: computers){
 			System.out.println(c);
 		}
@@ -103,6 +107,16 @@ public class ClientConsole {
 	};
 	
 	public void showComputer(){
+		ComputerDatabaseService service;
+		long id;
+		Computer c;
+		
+		service = ComputerDatabaseService.getInstance();
+		System.out.println("Please enter computer id:");
+		id = scanner.nextLong();
+		c = service.getComputerById(id);
+		System.out.println(c);
+		
 	};
 	
 	public void showCompany(){

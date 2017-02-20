@@ -36,7 +36,8 @@ public class ComputerDatabaseService {
 	}
 	
 	public Computer getComputerById(long id){
-		return null;
+		ComputerDao dao = DaoFactory.getComputerDao();
+		return dao.get(id);
 	}
 	
 	public Company getCompanyById(long id){

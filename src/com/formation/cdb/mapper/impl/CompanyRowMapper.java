@@ -19,16 +19,8 @@ public class CompanyRowMapper implements RowMapper<Company> {
 
 	@Override
 	public Company mapRow(ResultSet rs) {
-		int rowCount;
-		
-		
+		//TODO Assert 1 result
 		try {
-			//rs.last();
-			//rowCount = rs.getRow();
-			//rs.beforeFirst();
-			
-			//if(rowCount > 1)
-			// Throw Exception
 			if(!rs.isBeforeFirst())
 				return null;
 			rs.next();
