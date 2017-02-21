@@ -17,7 +17,8 @@ public class DaoFactory {
 	
 	public static Dao<Computer> getComputerDao(){
 		try {
-			return new ComputerDaoImpl(getConn());
+			ComputerDaoImpl dao = new ComputerDaoImpl(getConn());
+			return dao;
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

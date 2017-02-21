@@ -40,7 +40,7 @@ public class ConnectionManager {
 	 * Methods
 	 */
 	public Connection getConnection(){
-		if(this.conn == null ) logger.warn("connection object is null");
+		if(this.conn == null ) logger.warn("Connection object is null");
 		return this.conn;
 	}
 }
