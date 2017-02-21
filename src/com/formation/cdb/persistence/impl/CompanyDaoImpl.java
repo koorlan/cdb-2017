@@ -10,8 +10,9 @@ import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.persistence.Dao;
 
-public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao {
+public class CompanyDaoImpl implements Dao<Company> {
 
 	private Connection conn;
 	private CompanyRowMapper companyRowMapper;

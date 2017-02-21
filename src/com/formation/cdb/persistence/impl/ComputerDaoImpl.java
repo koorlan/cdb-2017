@@ -12,9 +12,9 @@ import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.impl.ComputerRowMapper;
 import com.formation.cdb.model.impl.Computer;
-import com.formation.cdb.persistence.ComputerDao;
+import com.formation.cdb.persistence.Dao;
 
-public class ComputerDaoImpl implements ComputerDao {
+public class ComputerDaoImpl implements Dao<Computer> {
 
 	private Connection conn;
 	private ComputerRowMapper computerRowMapper;

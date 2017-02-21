@@ -8,6 +8,7 @@ import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.persistence.ComputerDao;
+import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.DaoFactory;
 
 public class ComputerDatabaseService {
@@ -28,7 +29,7 @@ public class ComputerDatabaseService {
 	 */
 
 	public List<Computer> getAllComputers(int offset, int limit){
-		ComputerDao dao = DaoFactory.getComputerDao();
+		Dao<Computer> dao = DaoFactory.getComputerDao();
 		try {
 			return dao.getAll(offset,limit);
 		} catch (PersistenceException e) {
@@ -39,7 +40,7 @@ public class ComputerDatabaseService {
 	}
 	
 	public List<Company> getAllCompanies(int offset, int limit){
-		CompanyDao dao = DaoFactory.getCompanyDao();
+		Dao<Company> dao = DaoFactory.getCompanyDao();
 		try {
 			return dao.getAll(offset,limit);
 		} catch (PersistenceException e) {
@@ -50,22 +51,22 @@ public class ComputerDatabaseService {
 	}
 	
 	public Computer getComputerById(long id){
-		ComputerDao dao = DaoFactory.getComputerDao();
+		Dao<Computer> dao = DaoFactory.getComputerDao();
 		return dao.get(id);
 	}
 	
 	public Company getCompanyById(long id){
-		CompanyDao dao = DaoFactory.getCompanyDao();
+		Dao<Company> dao = DaoFactory.getCompanyDao();
 		return dao.get(id);
 	}
 	
 	public void deleteComputer(long id){
-		ComputerDao dao = DaoFactory.getComputerDao();
+		Dao<Computer> dao = DaoFactory.getComputerDao();
 		dao.delete(id);
 	}
 	
 	public void updateComputer(long id, Computer computer){
-		ComputerDao dao = DaoFactory.getComputerDao();
+		Dao<Computer> dao = DaoFactory.getComputerDao();
 		try {
 			dao.update(id, computer);
 		} catch (PersistenceException e) {
@@ -75,9 +76,9 @@ public class ComputerDatabaseService {
 	}
 	
 	public void createComputer(String name,Date introduced, Date discontinued,long companyId){
-		ComputerDao computerDao;
+		Dao<Computer> computerDao;
 		Computer computer;
-		CompanyDao companyDao;
+		Dao<Company> companyDao;
 		Company company;
 		
 		companyDao = DaoFactory.getCompanyDao();
@@ -94,13 +95,13 @@ public class ComputerDatabaseService {
 	}
 	
 	public int rowCountComputer(){
-		ComputerDao dao;
+		Dao<Computer> dao;
 		dao = DaoFactory.getComputerDao();
 		return dao.rowCount();
 	}
 	
 	public int rowCountCompany(){
-		CompanyDao dao;
+		Dao<Company> dao;
 		dao = DaoFactory.getCompanyDao();		
 		return dao.rowCount();
 	}

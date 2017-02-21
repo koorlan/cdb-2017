@@ -3,6 +3,8 @@ package com.formation.cdb.persistence;
 import java.sql.Connection;
 
 import com.formation.cdb.exception.PersistenceException;
+import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 
@@ -13,7 +15,7 @@ public class DaoFactory {
 		return ConnectionManager.getInstance().getConnection();
 	}
 	
-	public static ComputerDao getComputerDao(){
+	public static Dao<Computer> getComputerDao(){
 		try {
 			return new ComputerDaoImpl(getConn());
 		} catch (PersistenceException e) {
@@ -22,7 +24,7 @@ public class DaoFactory {
 		}
 		return null;
 	};
-	public static CompanyDao getCompanyDao(){
+	public static Dao<Company> getCompanyDao(){
 		try {
 			return new CompanyDaoImpl(getConn());
 		} catch (PersistenceException e) {
