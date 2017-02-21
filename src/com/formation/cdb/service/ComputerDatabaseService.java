@@ -1,11 +1,10 @@
 package com.formation.cdb.service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.formation.cdb.model.Company;
-import com.formation.cdb.model.Computer;
+import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.CompanyDao;
 import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.persistence.DaoFactory;
@@ -27,14 +26,14 @@ public class ComputerDatabaseService {
 	 * Methods
 	 */
 
-	public List<Computer> getAllComputers(){
+	public List<Computer> getAllComputers(int offset, int limit){
 		ComputerDao dao = DaoFactory.getComputerDao();
-		return dao.getAll();
+		return dao.getAll(offset,limit);
 	}
 	
-	public List<Company> getAllCompanies(){
+	public List<Company> getAllCompanies(int offset, int limit){
 		CompanyDao dao = DaoFactory.getCompanyDao();
-		return dao.getAll();
+		return dao.getAll(offset,limit);
 	}
 	
 	public Computer getComputerById(long id){
@@ -69,5 +68,17 @@ public class ComputerDatabaseService {
 		
 		computerDao = DaoFactory.getComputerDao();
 		computerDao.create(computer);
+	}
+	
+	public int rowCountComputer(){
+		ComputerDao dao;
+		dao = DaoFactory.getComputerDao();
+		return dao.rowCount();
+	}
+	
+	public int rowCountCompany(){
+		CompanyDao dao;
+		dao = DaoFactory.getCompanyDao();		
+		return dao.rowCount();
 	}
 }

@@ -5,10 +5,9 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.sound.midi.Soundbank;
 
 import com.formation.cdb.mapper.RowMapper;
-import com.formation.cdb.model.Company;
+import com.formation.cdb.model.impl.Company;
 
 public class CompanyRowMapper implements RowMapper<Company> {
 
@@ -55,4 +54,21 @@ public class CompanyRowMapper implements RowMapper<Company> {
 		return null;
 	}
 
+	@Override
+	public int mapCount(ResultSet rs){
+		int count;
+		try {
+			if(!rs.isBeforeFirst())
+				return 0;
+			rs.next();
+			count = rs.getInt("c");
+			
+			return count;
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+		return 0;
+	}
 }

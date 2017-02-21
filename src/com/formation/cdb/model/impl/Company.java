@@ -1,7 +1,8 @@
-package com.formation.cdb.model;
+package com.formation.cdb.model.impl;
+
 
 public class Company {
-	private long id;
+	long id;
 	private String name;
 
 	/**
@@ -16,11 +17,12 @@ public class Company {
 	/**
 	 * Getters
 	 */
-	public long getId() {
-		return id;
-	}
 	public String getName() {
 		return name;
+	}
+	
+	public long getId(){
+		return id;
 	}
 	
 	/**
@@ -30,7 +32,7 @@ public class Company {
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
-		sb.append(name +" (id: "+id+")");
+		sb.append(name +" (id: "+ id +")");
 		return sb.toString();
 	}
 	

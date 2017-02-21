@@ -2,7 +2,6 @@ package com.formation.cdb.persistence;
 
 import java.sql.Connection;
 
-import com.formation.cdb.model.Computer;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 

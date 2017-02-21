@@ -8,5 +8,6 @@ public interface Dao<T> {
 	void update(long id, T e);
 	void delete(long id);
 	T get(long id);
-	List<T> getAll();
+	List<T> getAll(int offset,int limit);
+	int rowCount();
 }

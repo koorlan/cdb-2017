@@ -1,11 +1,11 @@
-package com.formation.cdb.model;
+package com.formation.cdb.model.impl;
 
 import java.util.Date;
 
-public class Computer {
+
+public class Computer{
 	
-	//BIGINT on SQL DB
-	private long id;
+	long id;
 	private String name;
 	private Date introduced;
 	private Date discontinued;
@@ -15,7 +15,6 @@ public class Computer {
 	 * Constructor
 	 */
 	public Computer(long id, String name, Date introduced, Date discontinued, Company company) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -28,10 +27,10 @@ public class Computer {
 	 * Getters and Setters
 	 */
 
-	public long getId() {
+	public long getId(){
 		return id;
 	}
-
+	
 	public String getName() {
 		return name;
 	}

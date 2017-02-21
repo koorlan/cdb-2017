@@ -1,11 +1,10 @@
 package com.formation.cdb.ui;
 
 import java.util.Date;
-import java.util.List;
 import java.util.Scanner;
 
-import com.formation.cdb.model.Company;
-import com.formation.cdb.model.Computer;
+import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.service.ComputerDatabaseService;
 import com.formation.cdb.util.DateUtil;
 
@@ -93,23 +92,92 @@ public class ClientConsole {
 	}
 	
 	public void listComputers(){
-		ComputerDatabaseService service;
-		List<Computer> computers;
+		PagerComputer pager;
+		String command;
+		boolean exit;
+		int index;
+		int num = 0;
+		String intString;
 		
-		service = ComputerDatabaseService.getInstance();
-		computers = service.getAllComputers();
+		pager = new PagerComputer();
+		exit = false;
+		index = pager.getCurrentPageIndex();
+		do{
+			
+			for(Computer c : pager.getPage(index)){
+				System.out.println(c);
+			}
+	
+			System.out.println(index+" of "+ pager.getNbPages() +" (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
+			command = scanner.nextLine();
+			switch(command){
+			case "n":
+				pager.next();
+				index = pager.getCurrentPageIndex();
+				break;
+			case "p":
+				pager.prev();
+				index = pager.getCurrentPageIndex();
+				break;
+			case "g":
+				System.out.println("enter the page number");
+				intString = scanner.nextLine();
+				intString = intString.trim();
+				if(	intString.isEmpty())
+					num = Integer.parseInt(intString);
+				index = num;
+				break;
+			case "x":
+				exit = true;
+				break;
+			}
+			
+		}while(!exit);
 		
-		for(Computer c: computers){
-			System.out.println(c);
-		}
 	};
 	
 	public void listCompanies(){
-		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
-		List<Company> companies = service.getAllCompanies();
-		for(Company c: companies){
-			System.out.println(c);
-		}
+		PagerCompany pager;
+		String command;
+		boolean exit;
+		int index;
+		int num = 0;
+		String intString;
+		
+		pager = new PagerCompany();
+		exit = false;
+		index = pager.getCurrentPageIndex();
+		do{
+			
+			for(Company c : pager.getPage(index)){
+				System.out.println(c);
+			}
+	
+			System.out.println(index+" of "+ pager.getNbPages() +" (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
+			command = scanner.nextLine();
+			switch(command){
+			case "n":
+				pager.next();
+				index = pager.getCurrentPageIndex();
+				break;
+			case "p":
+				pager.prev();
+				index = pager.getCurrentPageIndex();
+				break;
+			case "g":
+				System.out.println("enter the page number");
+				intString = scanner.nextLine();
+				intString = intString.trim();
+				if(	intString.isEmpty())
+					num = Integer.parseInt(intString);
+				index = num;
+				break;
+			case "x":
+				exit = true;
+				break;
+			}
+			
+		}while(!exit);
 	};
 	
 	public void showComputer(){

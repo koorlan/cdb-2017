@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.formation.cdb.mapper.impl.ComputerRowMapper;
-import com.formation.cdb.model.Computer;
+import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.ComputerDao;
 
 public class ComputerDaoImpl implements ComputerDao {
@@ -124,14 +124,19 @@ public class ComputerDaoImpl implements ComputerDao {
 		return null;
 	}
 
-	private static final String GET_ALL = "Select * from computer"; 
+	private static final String GET_ALL = "Select * from computer LIMIT ?,?"; 
 	
 	@Override
-	public List<Computer> getAll() {
+	public List<Computer> getAll(int offset, int limit) {
 		List<Computer> computers;
+		PreparedStatement st;
+		ResultSet rs;
 		
 		try {
-			ResultSet rs = conn.createStatement().executeQuery(GET_ALL);
+			st = conn.prepareStatement(GET_ALL);
+			st.setInt(1, offset);
+			st.setInt(2, limit);
+			rs = st.executeQuery();
 			computers = computerRowMapper.mapRows(rs);
 			return computers;
 		} catch (SQLException e) {
@@ -140,5 +145,24 @@ public class ComputerDaoImpl implements ComputerDao {
 		//Return empty arrayList if no result
 		return new ArrayList<Computer>();
 	}
-
+	
+	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM computer";
+	
+	@Override
+	public int rowCount(){
+		int count = 0;
+		PreparedStatement st;
+		ResultSet rs;
+		
+		try {
+			st = conn.prepareStatement(ROW_COUNT);
+			rs = st.executeQuery();
+			count = computerRowMapper.mapCount(rs);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
+	}
+	
 }
