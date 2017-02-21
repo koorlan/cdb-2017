@@ -25,7 +25,7 @@ public class Computer {
 	
 	
 	/**
-	 * Getters
+	 * Getters and Setters
 	 */
 
 	public long getId() {
@@ -44,7 +44,24 @@ public class Computer {
 	public Company getCompany() {
 		return company;
 	}
-	
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public void setIntroduced(Date introduced) {
+		this.introduced = introduced;
+	}
+
+	public void setDiscontinued(Date discontinued) {
+		this.discontinued = discontinued;
+	}
+
+	public void setCompany(Company company) {
+		this.company = company;
+	}
+
+
 	/**
 	 * Override
 	 */

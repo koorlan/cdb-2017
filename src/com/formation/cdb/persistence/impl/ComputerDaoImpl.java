@@ -51,20 +51,55 @@ public class ComputerDaoImpl implements ComputerDao {
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		
-		
+		}	
 	}
+
+	private static final String UPDATE = "UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? WHERE id=?";
+	
 
 	@Override
-	public void update(long id, Computer e) {
-		// TODO Auto-generated method stub
-		
+	public void update(long id, Computer c) {
+		try {
+			PreparedStatement st = conn.prepareStatement(UPDATE);
+	st.setString(1, c.getName());
+			
+			if(c.getIntroduced() != null)
+				st.setTimestamp(2, new Timestamp(c.getIntroduced().getTime()));
+			else
+				st.setTimestamp(2, null);
+			
+			if(c.getDiscontinued() != null)
+				st.setTimestamp(3, new Timestamp(c.getDiscontinued().getTime()));
+			else
+				st.setTimestamp(3, null);
+			
+			if(c.getCompany() != null)
+				st.setLong(4, c.getCompany().getId());
+			else
+				st.setTimestamp(4, null);
+			
+			st.setLong(5, id);
+			
+			st.execute();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
+	private static final String DELETE = "DELETE FROM computer WHERE id=?";
+	
 	@Override
 	public void delete(long id) {
-		// TODO Auto-generated method stub
+		try {
+			PreparedStatement st = conn.prepareStatement(DELETE);
+			st.setLong(1, id);
+			st.execute();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

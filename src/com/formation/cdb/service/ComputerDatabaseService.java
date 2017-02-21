@@ -48,11 +48,13 @@ public class ComputerDatabaseService {
 	}
 	
 	public void deleteComputer(long id){
-		
+		ComputerDao dao = DaoFactory.getComputerDao();
+		dao.delete(id);
 	}
 	
-	public void updateComputer(long id){
-		
+	public void updateComputer(long id, Computer computer){
+		ComputerDao dao = DaoFactory.getComputerDao();
+		dao.update(id, computer);
 	}
 	
 	public void createComputer(String name,Date introduced, Date discontinued,long companyId){

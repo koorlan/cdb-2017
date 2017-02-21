@@ -210,7 +210,118 @@ public class ClientConsole {
 	};
 	
 	public void updateComputer(){
-		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
+		ComputerDatabaseService service;
+		String idString;
+		long id;
+		Computer computer;
+		String answer;
+		//New Computer var
+		String newName;
+		String newDateIntroducedString;
+		Date newDateIntroduced = null;
+		String newDateDiscontinuedString;
+		Date newDateDiscontinued = null;
+		String newIdCompanyString;
+		long newIdCompany = 0;
+		Company newCompany;
+		
+		service = ComputerDatabaseService.getInstance();
+		System.out.println("Please enter the computer id you want to update");
+		idString = scanner.nextLine();
+		idString = idString.trim();
+		if(!idString.isEmpty())
+			id = Long.parseLong(idString);
+		else
+			return;
+		computer = service.getComputerById(id);
+		
+		System.out.println("Name: ["+ computer.getName() +"] (e)");
+		answer = null;
+		answer = scanner.nextLine();
+		switch(answer){
+		case "e": //edit
+			System.out.println("Enter new name");
+			newName = scanner.nextLine();
+			newName = newName.trim();
+			if(!newName.isEmpty())
+				computer.setName(newName);
+			else 
+				return;
+			break;
+		default:			
+			break;
+		}
+		
+		System.out.println("Date Introduced: ["+ computer.getIntroduced() +"] (e/d)");
+		answer = null;
+		answer = scanner.nextLine();
+		switch(answer){
+		case "e": //edit
+			System.out.println("Enter new date introduced (DD-MM-YYYY)");
+			newDateIntroducedString = scanner.nextLine();
+			newDateIntroducedString = newDateIntroducedString.trim();
+			if(!newDateIntroducedString.isEmpty())		
+				newDateIntroduced = DateUtil.StringToDate(newDateIntroducedString);
+			computer.setIntroduced(newDateIntroduced);
+			break;
+		case "d": //delete
+			computer.setIntroduced(null);
+			break;
+		default:			
+			break;
+		}
+		
+		System.out.println("Date Discontinued: ["+ computer.getDiscontinued() +"] (e/d)");
+		answer = null;
+		answer = scanner.nextLine();
+		switch(answer){
+		case "e": //edit
+			System.out.println("Enter new date discontinued (DD-MM-YYYY)");
+			newDateDiscontinuedString = scanner.nextLine();
+			newDateDiscontinuedString = newDateDiscontinuedString.trim();
+			if(!newDateDiscontinuedString.isEmpty())		
+				newDateDiscontinued = DateUtil.StringToDate(newDateDiscontinuedString);
+			computer.setDiscontinued(newDateDiscontinued);
+			break;
+		case "d": //delete
+			computer.setDiscontinued(null);
+			break;
+		default:			
+			break;
+		}
+		
+		System.out.println("Compagny (id): ["+ computer.getCompany() +"] (e/d)");
+		answer = null;
+		answer = scanner.nextLine();
+		switch(answer){
+		case "e": //edit
+			System.out.println("Enter new company id");
+			newIdCompanyString = scanner.nextLine();
+			newIdCompanyString = newIdCompanyString.trim();
+			if(!newIdCompanyString.isEmpty())
+				newIdCompany = Long.parseLong(newIdCompanyString);
+			newCompany = service.getCompanyById(newIdCompany);
+			
+			System.out.println("Company :" +newCompany + " (y/n)");
+			answer = null;
+			answer = scanner.nextLine();
+			switch(answer){
+				case "y":
+					computer.setCompany(newCompany);
+					break;
+				default:
+					break;
+			}
+			
+			break;
+		case "d": //delete
+			computer.setCompany(null);
+			break;
+		default:			
+			break;
+		}
+		service.updateComputer(id,computer);
+		
 	};
 	
 	public void closeClientConsole(){
