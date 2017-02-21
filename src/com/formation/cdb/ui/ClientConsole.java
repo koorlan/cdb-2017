@@ -4,16 +4,20 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.service.ComputerDatabaseService;
 import com.formation.cdb.util.DateUtil;
 
+
 public class ClientConsole {
 	
 	private boolean exit;
 	private final Scanner scanner = new Scanner(System.in);
-	
+	private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 	
 	/**
 	 * Constructor
@@ -29,6 +33,7 @@ public class ClientConsole {
 	 */
 	
 	public static void main(String args[]){
+		System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
 		ClientConsole c = new ClientConsole();
 		while(!c.isExit()){
 			c.showMenu();

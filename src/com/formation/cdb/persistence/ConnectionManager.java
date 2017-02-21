@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.formation.cdb.exception.PersistenceException;
 
 public class ConnectionManager {
@@ -14,11 +17,13 @@ public class ConnectionManager {
 	private String login = "admincdb";
 	private String password = "qwerty1234";
 	
+	private Logger logger = LoggerFactory.getLogger(getClass());
 	private Connection conn;
 	
 	public ConnectionManager() throws PersistenceException{
 		try {
 			this.conn = DriverManager.getConnection(url, login, password);
+			logger.info("Connection created");
 		} catch (SQLException e) {
 			throw new PersistenceException("Can't get a connection to database");
 		}
@@ -35,6 +40,7 @@ public class ConnectionManager {
 	 * Methods
 	 */
 	public Connection getConnection(){
+		if(this.conn == null ) logger.warn("connection object is null");
 		return this.conn;
 	}
 }

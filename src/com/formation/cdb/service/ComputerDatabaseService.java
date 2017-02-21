@@ -3,6 +3,9 @@ package com.formation.cdb.service;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
@@ -11,6 +14,8 @@ import com.formation.cdb.persistence.DaoFactory;
 
 public class ComputerDatabaseService {
 	private static ComputerDatabaseService INSTANCE;
+	private  Logger logger = LoggerFactory.getLogger(getClass());
+	
 	
 	public ComputerDatabaseService(){
 	}
@@ -27,35 +32,54 @@ public class ComputerDatabaseService {
 	 */
 
 	public List<Computer> getAllComputers(int offset, int limit){
+		logger.info("Getting computer dao");
 		Dao<Computer> dao = DaoFactory.getComputerDao();
 		try {
-			return dao.getAll(offset,limit);
+			List<Computer> computers = dao.getAll(offset,limit);
+			logger.info("Sucessfully retrieved computers from db");
+			if(computers == null)
+				logger.warn("Compters list is null");
+			if(computers!= null && computers.isEmpty())
+				logger.warn("Computer list is empty");
+			return computers;
 		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
+			logger.error("There were and error while retrieving computers from db");
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
 	public List<Company> getAllCompanies(int offset, int limit){
+		logger.info("Getting company dao");
 		Dao<Company> dao = DaoFactory.getCompanyDao();
 		try {
-			return dao.getAll(offset,limit);
+			List<Company> companies = dao.getAll(offset,limit);
+			if(companies == null)
+				logger.info("Company list is null");
+			if(companies!= null && companies.isEmpty())
+				logger.warn("Company list is empty");
+			logger.info("Sucessfully retrieved compagnies from db");
+			return companies;
 		} catch (PersistenceException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("There were and error while retrieving companies from db");
 		}
 		return null;
 	}
 	
 	public Computer getComputerById(long id){
+		logger.info("Getting computer dao");
 		Dao<Computer> dao = DaoFactory.getComputerDao();
-		return dao.get(id);
+		Computer computer = dao.get(id);
+		logger.info("Successfully retrieved computer from db");
+		return computer;
 	}
 	
 	public Company getCompanyById(long id){
+		logger.info("Getting company dao");
 		Dao<Company> dao = DaoFactory.getCompanyDao();
-		return dao.get(id);
+		Company company = dao.get(id);
+		logger.info("Successfully retireved company from db");
+		return company;
 	}
 	
 	public void deleteComputer(long id){

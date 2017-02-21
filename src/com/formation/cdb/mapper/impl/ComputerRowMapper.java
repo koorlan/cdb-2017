@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import org.slf4j.LoggerFactory;
+
 import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
@@ -31,7 +33,6 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 				long companyId = rs.getLong("company_id");
 				//Try to retrieve a company from the database with this id
 				ComputerDatabaseService cdbService = ComputerDatabaseService.getInstance();
-				
 				Company company = cdbService.getCompanyById(companyId);
 				Computer c = new Computer(id,name,introduced,discontinued,company);
 				
@@ -64,6 +65,7 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 			ComputerDatabaseService cdbService = ComputerDatabaseService.getInstance();
 			
 			Company company = cdbService.getCompanyById(companyId);
+
 			Computer computer = new Computer(id,name,introduced,discontinued,company);
 			return computer;
 			
