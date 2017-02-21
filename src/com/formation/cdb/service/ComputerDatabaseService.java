@@ -6,8 +6,6 @@ import java.util.List;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
-import com.formation.cdb.persistence.CompanyDao;
-import com.formation.cdb.persistence.ComputerDao;
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.DaoFactory;
 
