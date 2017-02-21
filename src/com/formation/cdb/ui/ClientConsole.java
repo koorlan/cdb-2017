@@ -1,5 +1,6 @@
 package com.formation.cdb.ui;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.Scanner;
 
@@ -31,6 +32,7 @@ public class ClientConsole {
 		ClientConsole c = new ClientConsole();
 		while(!c.isExit()){
 			c.showMenu();
+			c.clearScreen();
 		}
 	}
 	
@@ -59,7 +61,7 @@ public class ClientConsole {
 		System.out.println("(x) Close application, adjö!");
 		
 		s = scanner.nextLine();
-		
+		clearScreen();
 		switch(s){
 			case "a":
 				listComputers();
@@ -103,7 +105,7 @@ public class ClientConsole {
 		exit = false;
 		index = pager.getCurrentPageIndex();
 		do{
-			
+			clearScreen();
 			for(Computer c : pager.getPage(index)){
 				System.out.println(c);
 			}
@@ -148,7 +150,7 @@ public class ClientConsole {
 		exit = false;
 		index = pager.getCurrentPageIndex();
 		do{
-			
+			clearScreen();
 			for(Company c : pager.getPage(index)){
 				System.out.println(c);
 			}
@@ -394,5 +396,15 @@ public class ClientConsole {
 	
 	public void closeClientConsole(){
 		exit = true;
+	}
+	
+	public void clearScreen(){
+		//Linux
+		try {
+			Runtime.getRuntime().exec("clear");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

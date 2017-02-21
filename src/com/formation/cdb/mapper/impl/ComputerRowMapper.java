@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
@@ -14,12 +15,11 @@ import com.formation.cdb.service.ComputerDatabaseService;
 public class ComputerRowMapper implements RowMapper<Computer> {
 
 	@Override
-	public List<Computer> mapRows(ResultSet rs) {
-		//TODO
-		//if(rs == null)
-		//	throw new Exception();
-		
+	public List<Computer> mapRows(ResultSet rs) throws MapperException {
 		List<Computer> computers = new ArrayList<Computer>();
+		
+		if(rs == null)
+			throw new MapperException("Null ResultSet");
 		
 		try {
 			while(rs.next()){
@@ -39,15 +39,15 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 			}
 			return computers;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		}
-		
-		return null;
 	}
 
 	@Override
-	public Computer mapRow(ResultSet rs) {
+	public Computer mapRow(ResultSet rs) throws MapperException {
+		if(rs == null)
+			throw new MapperException("Null ResultSet");
+		
 		//TODO assert 1 result
 		try {
 			if(!rs.isBeforeFirst())
@@ -76,7 +76,9 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 	}
 	
 	@Override
-	public int mapCount(ResultSet rs){
+	public int mapCount(ResultSet rs) throws MapperException{
+		if(rs == null)
+			throw new MapperException("Null ResultSet");
 		int count;
 		try {
 			if(!rs.isBeforeFirst())

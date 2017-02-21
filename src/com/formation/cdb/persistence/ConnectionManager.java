@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import com.formation.cdb.exception.PersistenceException;
+
 public class ConnectionManager {
 	private static ConnectionManager INSTANCE;
 	
@@ -14,16 +16,15 @@ public class ConnectionManager {
 	
 	private Connection conn;
 	
-	public ConnectionManager(){
+	public ConnectionManager() throws PersistenceException{
 		try {
 			this.conn = DriverManager.getConnection(url, login, password);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new PersistenceException("Can't get a connection to database");
 		}
 	}
 	
-	public static ConnectionManager getInstance(){
+	public static ConnectionManager getInstance() throws PersistenceException{
 		if(INSTANCE == null){
 			INSTANCE = new ConnectionManager();
 		}

@@ -8,6 +8,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.formation.cdb.exception.MapperException;
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.impl.ComputerRowMapper;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.ComputerDao;
@@ -25,7 +27,10 @@ public class ComputerDaoImpl implements ComputerDao {
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) values (?,?,?,?);" ;
 	
 	@Override
-	public void create(Computer c) {
+	public void create(Computer c) throws PersistenceException {
+		if(c == null)
+			throw new PersistenceException("Null Computer");
+		
 		PreparedStatement st;
 		
 		try {
@@ -49,8 +54,7 @@ public class ComputerDaoImpl implements ComputerDao {
 			
 			st.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//TODO log warn can't create
 		}	
 	}
 
@@ -58,10 +62,12 @@ public class ComputerDaoImpl implements ComputerDao {
 	
 
 	@Override
-	public void update(long id, Computer c) {
+	public void update(long id, Computer c) throws PersistenceException {
+		if(c == null)
+			throw new PersistenceException("Null Computer");
 		try {
 			PreparedStatement st = conn.prepareStatement(UPDATE);
-	st.setString(1, c.getName());
+			st.setString(1, c.getName());
 			
 			if(c.getIntroduced() != null)
 				st.setTimestamp(2, new Timestamp(c.getIntroduced().getTime()));
@@ -97,8 +103,7 @@ public class ComputerDaoImpl implements ComputerDao {
 			st.setLong(1, id);
 			st.execute();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//TODO log warn can't delete
 		}
 		
 	}
@@ -108,8 +113,6 @@ public class ComputerDaoImpl implements ComputerDao {
 	@Override
 	public Computer get(long id) {
 		Computer computer;
-		
-
 		try {
 			PreparedStatement st = conn.prepareStatement(GET_ID);
 			st.setInt(1, (int) id);
@@ -117,11 +120,10 @@ public class ComputerDaoImpl implements ComputerDao {
 			computer = computerRowMapper.mapRow(rs);
 			return computer;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
+		} catch (MapperException e) {
+			return null;
 		}
-		
-		return null;
 	}
 
 	private static final String GET_ALL = "Select * from computer LIMIT ?,?"; 
@@ -140,10 +142,10 @@ public class ComputerDaoImpl implements ComputerDao {
 			computers = computerRowMapper.mapRows(rs);
 			return computers;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			return new ArrayList<Computer>();
+		} catch (MapperException e) {
+			return new ArrayList<Computer>();
 		}
-		//Return empty arrayList if no result
-		return new ArrayList<Computer>();
 	}
 	
 	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM computer";
@@ -159,8 +161,7 @@ public class ComputerDaoImpl implements ComputerDao {
 			rs = st.executeQuery();
 			count = computerRowMapper.mapCount(rs);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (MapperException e) {
 		}
 		return count;
 	}

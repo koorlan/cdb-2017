@@ -23,7 +23,7 @@ public abstract class Pager<T> {
 		page = 0;
 	}
 	
-	public abstract  List<T> getPage(int page);
+	public abstract List<T> getPage(int page);
 	
 	public void next(){
 		if(page < nbPages)

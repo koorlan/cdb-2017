@@ -6,6 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import com.formation.cdb.exception.MapperException;
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.model.impl.Company;
 
@@ -21,20 +23,17 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 	
 	@Override
 	public void create(Company e) {
-		// TODO Auto-generated method stub
-		
+		//Not Implemented
 	}
 
 	@Override
 	public void update(long id, Company e) {
-		// TODO Auto-generated method stub
-		
+		//Not Implemented
 	}
 
 	@Override
 	public void delete(long id) {
-		// TODO Auto-generated method stub
-		
+		//Not Implemented
 	}
 
 	private static final String GET_ID = "SELECT * FROM company WHERE id=?";
@@ -50,20 +49,23 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 			company = companyRowMapper.mapRow(rs);
 			return company;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
+		} catch (MapperException e) {
+			return null;
 		}
-		
-		return null;
+
 	}
 
 	private static final String GET_ALL = "SELECT * FROM company LIMIT ?,?";
 	
 	@Override
-	public List<Company> getAll(int offset, int limit) {
+	public List<Company> getAll(int offset, int limit) throws PersistenceException {
 		List<Company> companies;
 		PreparedStatement st;
 		ResultSet rs;
+		
+		if(offset < 0 || limit < 0)
+			throw new PersistenceException("Bad limit or offset");
 		
 		try {
 			st = conn.prepareStatement(GET_ALL);
@@ -73,12 +75,10 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 			companies = companyRowMapper.mapRows(rs);
 			return companies;
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
+		} catch (MapperException e) {
+			return null;
 		}
-		
-		//return empty new arrayList if no result
-		return null;
 	}
 	
 	
@@ -95,8 +95,7 @@ public class CompanyDaoImpl implements com.formation.cdb.persistence.CompanyDao 
 			rs = st.executeQuery();
 			count = companyRowMapper.mapCount(rs);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (MapperException e) {
 		}
 		return count;
 	}

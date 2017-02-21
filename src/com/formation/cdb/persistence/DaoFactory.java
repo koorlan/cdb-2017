@@ -2,17 +2,33 @@ package com.formation.cdb.persistence;
 
 import java.sql.Connection;
 
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 
 public class DaoFactory {
 	
-	protected static Connection conn = ConnectionManager.getInstance().getConnection() ;
+
+	protected static Connection getConn() throws PersistenceException{
+		return ConnectionManager.getInstance().getConnection();
+	}
 	
 	public static ComputerDao getComputerDao(){
-		return new ComputerDaoImpl(conn);
+		try {
+			return new ComputerDaoImpl(getConn());
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	};
 	public static CompanyDao getCompanyDao(){
-		return new CompanyDaoImpl(conn);
+		try {
+			return new CompanyDaoImpl(getConn());
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	};
 }

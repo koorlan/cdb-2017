@@ -3,6 +3,7 @@ package com.formation.cdb.service;
 import java.util.Date;
 import java.util.List;
 
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.CompanyDao;
@@ -28,12 +29,24 @@ public class ComputerDatabaseService {
 
 	public List<Computer> getAllComputers(int offset, int limit){
 		ComputerDao dao = DaoFactory.getComputerDao();
-		return dao.getAll(offset,limit);
+		try {
+			return dao.getAll(offset,limit);
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public List<Company> getAllCompanies(int offset, int limit){
 		CompanyDao dao = DaoFactory.getCompanyDao();
-		return dao.getAll(offset,limit);
+		try {
+			return dao.getAll(offset,limit);
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public Computer getComputerById(long id){
@@ -53,7 +66,12 @@ public class ComputerDatabaseService {
 	
 	public void updateComputer(long id, Computer computer){
 		ComputerDao dao = DaoFactory.getComputerDao();
-		dao.update(id, computer);
+		try {
+			dao.update(id, computer);
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void createComputer(String name,Date introduced, Date discontinued,long companyId){
@@ -67,7 +85,12 @@ public class ComputerDatabaseService {
 		computer = new Computer(0,name,introduced,discontinued,company);
 		
 		computerDao = DaoFactory.getComputerDao();
-		computerDao.create(computer);
+		try {
+			computerDao.create(computer);
+		} catch (PersistenceException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public int rowCountComputer(){
