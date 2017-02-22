@@ -12,6 +12,7 @@ import com.formation.cdb.model.impl.Company;
 public enum CompanyRowMapper implements RowMapper<Company> {
 	
 	INSTANCE;
+	
 	private CompanyRowMapper(){};
 	
 	@Override
@@ -22,24 +23,29 @@ public enum CompanyRowMapper implements RowMapper<Company> {
 		}
 		
 		try {
-			List<Company>	companies;
-			long			id; 
-			String			name;
-			Company			company;
 			
-			companies	=	new ArrayList<Company>();
+			List<Company>	companies	;
+			long			id			; 
+			String			name		;
+			Company			company		;
+			
+			companies	=	new ArrayList<Company>() ;
 			
 			while	(rs.get().next() ) {
 				
-				id 			= 	rs.get().getLong("id");
-				name 		= 	rs.get().getString("name");
-				company 	= 	new Company(id,name);		
+				id 			= 	rs.get().getLong("id")		;
+				name 		= 	rs.get().getString("name")	;
+				company 	= 	new Company(id,name)		;		
 					
-				companies.add( company );
+				companies.add( company )					;
 			}
-			return Optional.ofNullable( companies );
+			
+			return Optional.ofNullable( companies )			;
+			
 		} catch (SQLException e) {
+			
 			//TODO
+			
 		}
 		return Optional.empty();
 	}
@@ -53,34 +59,41 @@ public enum CompanyRowMapper implements RowMapper<Company> {
 
 		try {
 
-			ResultSet	r		=	rs.get();
-			long 		id		=	r.getLong("id");
-			String		name	=	r.getString("name"); 	
-			Company		company =	new Company(id,name);
+			ResultSet	r		=	rs.get()				;
+			long 		id		=	r.getLong("id")			;
+			String		name	=	r.getString("name")		; 	
+			Company		company =	new Company(id,name)	;
 			
 			return Optional.ofNullable(company);
 			
 		} catch (SQLException e) {
+			
 			//TODO
+			
 		}
 		return Optional.empty();
 	}
 
 	public int countRowsOfResultSet(Optional<ResultSet> rs){
-		int count = 0;
+		
+		int	count	=	0	;
 	
 		if(!rs.isPresent()) {
 			return count;
 		}
 		
 		ResultSet r = rs.get();
+		
 		try {
-			r.last();
-			count = r.getRow();
-			r.first();
+		
+			r.last()			;
+			count = r.getRow()	;
+			r.first()			;
+		
 		} catch (SQLException e) {
+			
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
 		}
 		return count;
 	}
