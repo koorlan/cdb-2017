@@ -18,7 +18,7 @@ public enum CompanyRowMapper implements RowMapper<Company> {
 	@Override
 	public Optional<List<Company>> mapListOfObjectsFromMultipleRows( Optional<ResultSet> rs ){
 
-		if( !rs.isPresent() || countRowsOfResultSet(rs) <= 0) {
+		if( !rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
 			return Optional.empty();
 		}
 		
@@ -53,7 +53,7 @@ public enum CompanyRowMapper implements RowMapper<Company> {
 	@Override
 	public Optional<Company> mapObjectFromOneRow( Optional<ResultSet> rs ){
 		
-		if( !rs.isPresent() || countRowsOfResultSet(rs) <= 0) {
+		if( !rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
 			return Optional.empty();
 		}
 
@@ -74,27 +74,4 @@ public enum CompanyRowMapper implements RowMapper<Company> {
 		return Optional.empty();
 	}
 
-	public int countRowsOfResultSet(Optional<ResultSet> rs){
-		
-		int	count	=	0	;
-	
-		if(!rs.isPresent()) {
-			return count;
-		}
-		
-		ResultSet r = rs.get();
-		
-		try {
-		
-			r.last()			;
-			count = r.getRow()	;
-			r.first()			;
-		
-		} catch (SQLException e) {
-			
-			// TODO Auto-generated catch block
-			
-		}
-		return count;
-	}
 }

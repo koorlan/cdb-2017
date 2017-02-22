@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.mapper.RowMapper;
@@ -15,35 +16,45 @@ import com.formation.cdb.service.ComputerDatabaseService;
 public class ComputerRowMapper implements RowMapper<Computer> {
 
 	@Override
-	public List<Computer> mapRows(ResultSet rs) throws MapperException {
-		List<Computer> computers = new ArrayList<Computer>();
+	public Optional<List<Computer>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
 		
-		if(rs == null)
-			throw new MapperException("Null ResultSet");
+		if( !rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+			return Optional.empty();
+		}		
 		
 		try {
-			while(rs.next()){
-				long id = rs.getLong("id");
-				String name = rs.getString("name");
-				Date introduced = rs.getTimestamp("introduced");
-				Date discontinued = rs.getTimestamp("discontinued");
+			
+			ResultSet 		r			=	rs.get()					;
+			List<Computer> 	computers	=	new ArrayList<Computer>()	;
+			
+			while(r.next()){
 				
-				long companyId = rs.getLong("company_id");
+				long	id				=	r.getLong("id")					;
+				String	name			=	r.getString("name")				;
+				Date	introduced		=	r.getTimestamp("introduced")	;
+				Date	discontinued	=	r.getTimestamp("discontinued")	;
+				
 				//Try to retrieve a company from the database with this id
-				ComputerDatabaseService cdbService = ComputerDatabaseService.getInstance();
-				Company company = cdbService.getCompanyById(companyId);
-				Computer c = new Computer(id,name,introduced,discontinued,company);
+				long						companyId		=	r.getLong("company_id")									;
+				ComputerDatabaseService		cdbService		= 	ComputerDatabaseService.getInstance()					;
+				Company 					company 		=	cdbService.getCompanyById(companyId)					;
+				Computer 					computer		=	new Computer(id,name,introduced,discontinued,company)	;
 				
-				computers.add(c);
+				computers.add(computer);
 			}
-			return computers;
+	
+			return Optional.ofNullable(computers);
 		} catch (SQLException e) {
-			return null;
+			
+			//TODO
+			
 		}
+		
+		return Optional.empty();
 	}
 
 	@Override
-	public Computer mapRow(ResultSet rs) throws MapperException {
+	public Computer mapObjectFromOneRow(Optional<ResultSet> rs) {
 		if(rs == null)
 			throw new MapperException("Null ResultSet");
 		
@@ -76,7 +87,7 @@ public class ComputerRowMapper implements RowMapper<Computer> {
 	}
 	
 	@Override
-	public int mapCount(ResultSet rs) throws MapperException{
+	public int mapCount(ResultSet rs){
 		if(rs == null)
 			throw new MapperException("Null ResultSet");
 		int count;
