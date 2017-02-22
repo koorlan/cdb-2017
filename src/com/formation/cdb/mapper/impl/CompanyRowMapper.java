@@ -4,75 +4,84 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
 
-public class CompanyRowMapper implements RowMapper<Company> {
-
+public enum CompanyRowMapper implements RowMapper<Company> {
+	
+	INSTANCE;
+	private CompanyRowMapper(){};
+	
 	@Override
-	public List<Company> mapRows(ResultSet rs) throws MapperException{
+	public Optional<List<Company>> mapListOfObjectsFromMultipleRows( Optional<ResultSet> rs ){
+
+		if( !rs.isPresent() || countRowsOfResultSet(rs) <= 0) {
+			return Optional.empty();
+		}
 		
-		List<Company> companies;
-		long id;
-		String name;
-		Company company;
-		
-		if(rs == null)
-			throw new MapperException("Null ResultSet");
-		
-		companies = new ArrayList<Company>();
 		try {
-			while(rs.next()){
-				id = rs.getLong("id");
-				name = rs.getString("name");
-				company = new Company(id,name);		
-				companies.add(company);
+			List<Company>	companies;
+			long			id; 
+			String			name;
+			Company			company;
+			
+			companies	=	new ArrayList<Company>();
+			
+			while	(rs.get().next() ) {
+				
+				id 			= 	rs.get().getLong("id");
+				name 		= 	rs.get().getString("name");
+				company 	= 	new Company(id,name);		
+					
+				companies.add( company );
 			}
-			return companies;
+			return Optional.ofNullable( companies );
 		} catch (SQLException e) {
-			return null;
+			//TODO
 		}
+		return Optional.empty();
 	}
 
 	@Override
-	public Company mapRow(ResultSet rs) throws MapperException{
+	public Optional<Company> mapObjectFromOneRow( Optional<ResultSet> rs ){
 		
-		if(rs == null)
-			throw new MapperException("Null ResultSet");
-		//TODO Assert 1 result
+		if( !rs.isPresent() || countRowsOfResultSet(rs) <= 0) {
+			return Optional.empty();
+		}
+
 		try {
-			if(!rs.isBeforeFirst()) //Empty ResultSet
-				return null;
-			rs.next();
-			long id = rs.getLong("id");
-			String name = rs.getString("name");
-			Company company;
-			company = new Company(id,name);
-			return company;
+
+			ResultSet	r		=	rs.get();
+			long 		id		=	r.getLong("id");
+			String		name	=	r.getString("name"); 	
+			Company		company =	new Company(id,name);
+			
+			return Optional.ofNullable(company);
 			
 		} catch (SQLException e) {
-			return null;
+			//TODO
 		}
+		return Optional.empty();
 	}
 
-	@Override
-	public int mapCount(ResultSet rs) throws MapperException{
-		
-		if(rs == null)
-			throw new MapperException("Null ResultSet");
-		int count;
-		try {
-			if(!rs.isBeforeFirst())
-				return 0;
-			rs.next();
-			count = rs.getInt("c");
-			
+	public int countRowsOfResultSet(Optional<ResultSet> rs){
+		int count = 0;
+	
+		if(!rs.isPresent()) {
 			return count;
-			
+		}
+		
+		ResultSet r = rs.get();
+		try {
+			r.last();
+			count = r.getRow();
+			r.first();
 		} catch (SQLException e) {
-			return 0;
-		}	
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return count;
 	}
 }

@@ -1,103 +1,75 @@
 package com.formation.cdb.persistence.impl;
 
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-import com.formation.cdb.exception.MapperException;
-import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.persistence.Dao;
+import com.formation.cdb.persistence.connection.ConnectionManager;
 
-public class CompanyDaoImpl implements Dao<Company> {
+public enum CompanyDaoImpl implements Dao<Company> {
 
-	private Connection conn;
-	private CompanyRowMapper companyRowMapper;
+	INSTANCE;
 	
-	public CompanyDaoImpl(Connection conn){
-		this.conn = conn;
-		this.companyRowMapper = new CompanyRowMapper();
-	}
-	
+	private CompanyDaoImpl(){}
+
 	@Override
 	public void create(Company e) {
-		//Not Implemented
-	}
-
-	@Override
-	public void update(long id, Company e) {
-		//Not Implemented
-	}
-
-	@Override
-	public void delete(long id) {
-		//Not Implemented
-	}
-
-	private static final String GET_ID = "SELECT * FROM company WHERE id=?";
-	
-	@Override
-	public Company get(long id) {
-		Company company;
+		// TODO Auto-generated method stub
 		
-		try {
-			PreparedStatement st = conn.prepareStatement(GET_ID);
-			st.setInt(1, (int)id);
-			ResultSet rs = st.executeQuery();
-			company = companyRowMapper.mapRow(rs);
-			return company;
-		} catch (SQLException e) {
-			return null;
-		} catch (MapperException e) {
-			return null;
-		}
-
 	}
 
-	private static final String GET_ALL = "SELECT * FROM company LIMIT ?,?";
-	
 	@Override
-	public List<Company> getAll(int offset, int limit) throws PersistenceException {
-		List<Company> companies;
-		PreparedStatement st;
-		ResultSet rs;
-		
-		if(offset < 0 || limit < 0)
-			throw new PersistenceException("Bad limit or offset");
-		
-		try {
-			st = conn.prepareStatement(GET_ALL);
-			st.setInt(1, offset);
-			st.setInt(2, limit);
-			rs = st.executeQuery();
-			companies = companyRowMapper.mapRows(rs);
-			return companies;
-		} catch (SQLException e) {
-			return null;
-		} catch (MapperException e) {
-			return null;
-		}
+	public Company readById(long id) {
+		// TODO Auto-generated method stub
+		return null;
 	}
-	
-	
+
+	@Override
+	public void update(Company e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Company e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Company> readAllWithOffsetAndLimit(int offset, int limit) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM company";
 	
 	@Override
-	public int rowCount(){
+	public int rowCount() {
 		int count = 0;
-		PreparedStatement st;
-		ResultSet rs;
-		
-		try {
-			st = conn.prepareStatement(ROW_COUNT);
-			rs = st.executeQuery();
-			count = companyRowMapper.mapCount(rs);
-		} catch (SQLException e) {
-		} catch (MapperException e) {
+		Optional<ResultSet> rs;
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+
+		if(connection.isPresent()){
+			try {
+				rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+				count = CompanyRowMapper.INSTANCE.mapCount(rs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
+		
 		return count;
-	}
+	};
+	
+	
 }

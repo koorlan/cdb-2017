@@ -2,8 +2,10 @@ package com.formation.cdb.model.impl;
 
 import java.util.Date;
 
+import com.formation.cdb.model.Entity;
 
-public class Computer{
+
+public class Computer implements Entity{
 	
 	long id;
 	private String name;

@@ -5,6 +5,7 @@ import java.sql.Connection;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
+import com.formation.cdb.persistence.connection.ConnectionManager;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 
