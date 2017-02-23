@@ -258,7 +258,7 @@ public class ClientConsole {
 		Computer computer = new Computer(0, name, introduced, discontinued, (company.getId() == 0) ? null:company);
 
 		String test = Optional.ofNullable(computer).map(Computer::getCompany).map(Company::getName).orElse("UNKNOWN");
-		System.out.println(test);
+		
 		service.create(computer);
 	};
 	

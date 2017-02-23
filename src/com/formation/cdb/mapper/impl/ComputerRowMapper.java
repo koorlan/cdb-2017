@@ -2,6 +2,7 @@ package com.formation.cdb.mapper.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -34,16 +35,16 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 				long id = r.getLong("id");
 
 				String name = r.getString("name");
-				Date introduced = r.getTimestamp("introduced");
-				Date discontinued = r.getTimestamp("discontinued");
+				LocalDate introduced =  r.getTimestamp("introduced").toLocalDateTime().toLocalDate();
+				LocalDate discontinued = r.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
 
 				// Try to retrieve a company from the database with this id
 				//TODO Join AND REfactor method call mapObjectFromOneRow ?
 				long companyId = r.getLong("company_id");
 				CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
-				Company company = cdbService.readById(companyId);
+				Optional<Company> company = cdbService.readById(companyId);
 				
-				Computer computer = new Computer(id, name, introduced, discontinued, company);
+				Computer computer = new Computer(id, name, introduced, discontinued, company.get());
 
 				computers.add(Optional.ofNullable(computer));
 			}
@@ -73,14 +74,14 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 			
 			long id = r.getLong("id");
 			String name = r.getString("name");
-			Date introduced = r.getTimestamp("introduced");
-			Date discontinued = r.getTimestamp("discontinued");
+			LocalDate introduced = r.getTimestamp("introduced").toLocalDateTime().toLocalDate();
+			LocalDate discontinued = r.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
 			long companyId = r.getLong("company_id");
 			
 			// TODO JOIN
 			CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
-			Company company = cdbService.readById(companyId);
-			Computer computer = new Computer(id, name, introduced, discontinued, company);
+			Optional<Company> company = cdbService.readById(companyId);
+			Computer computer = new Computer(id, name, introduced, discontinued, company.get());
 			
 			return Optional.ofNullable(computer);
 

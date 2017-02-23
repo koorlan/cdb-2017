@@ -2,9 +2,9 @@ package com.formation.cdb.model;
 
 public interface Entity {
 
-	public String toString();
+	String toString();
 
-	public int hashCode();
+	int hashCode();
 
-	public boolean equals(Object o);
+	boolean equals(Object o);
 }

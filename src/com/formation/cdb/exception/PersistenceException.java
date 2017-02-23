@@ -1,6 +1,6 @@
 package com.formation.cdb.exception;
 
-public class PersistenceException extends Exception {
+public class PersistenceException extends RuntimeException {
 
 	/**
 	 * 
@@ -15,5 +15,10 @@ public class PersistenceException extends Exception {
 	public PersistenceException(String s){
 		super(s);
 		System.out.println("PersistenceException: " + s);
+	}
+	
+	public PersistenceException(Throwable e){
+		super(e);
+		e.printStackTrace();
 	}
 }

@@ -1,6 +1,10 @@
 package com.formation.cdb.service.impl;
 
 import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
@@ -11,31 +15,30 @@ public enum CompanyServiceImpl implements CDBService<Company> {
 	
 	private CompanyServiceImpl(){}
 
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	
 	@Override
-	public void create(Company e) {
-		// TODO Auto-generated method stub
-		
+	public void create(Optional<Company> e) {
+		LOGGER.warn("Create method is not implemented");
 	}
 
 	@Override
-	public Company readById(long id) {
+	public Optional<Company> readById(long id) {
 		return CompanyDaoImpl.INSTANCE.readById(id);
 	}
 
 	@Override
-	public void update(Company e) {
-		// TODO Auto-generated method stub
-		
+	public void update(Optional<Company> e) {
+		LOGGER.warn("Update method is not implemented");
 	}
 
 	@Override
-	public void delete(Company e) {
-		// TODO Auto-generated method stub
-		
+	public void delete(Optional<Company> e) {
+		LOGGER.warn("Delete method is not implemented");
 	}
 
 	@Override
-	public List<Company> readAllWithOffsetAndLimit(int offset, int limit) {	
+	public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {	
 		return CompanyDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit);
 	}
 

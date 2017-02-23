@@ -9,6 +9,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.model.impl.Company;
@@ -20,102 +24,87 @@ public enum CompanyDaoImpl implements Dao<Company> {
 	INSTANCE;
 	
 	private CompanyDaoImpl(){}
-
+	
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	
 	@Override
-	public void create(Company e) {
-		// TODO Auto-generated method stub
-		
+	public void create(Optional<Company> e) {
+		LOGGER.warn("Method Create is not implemented");
 	}
 	
 	private static final String READ_BY_ID = "SELECT * FROM company WHERE id=?";
 
 	@Override
-	public Company readById(long id) {
+	public Optional<Company> readById(long id) {
+
+		if(id <= 0){
+			LOGGER.warn("id can't be negative id:"+id);
+			return Optional.empty();
+		}
 		
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 		
 		if(!connection.isPresent()) {
-			return new Company(0, null);
+			LOGGER.warn("can't get a connection");
+			return Optional.empty();
 		}
+		
 			
 		try {
 			
 			PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
 			stmt.setLong(1, id);
 			Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
-			Optional<Company> optionalCompany = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
-			if(optionalCompany.isPresent()) {
-				return optionalCompany.get();
-			}
+			Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
+			return company;
 			
 		} catch (SQLException e) {
-			
-			e.printStackTrace();
-			
+			throw new PersistenceException(e);
 		}
-		
-	
-		
-		return new Company(0, null);
 	}
 
 	@Override
-	public void update(Company e) {
-		// TODO Auto-generated method stub
-		
+	public void update(Optional<Company> e) {
+		LOGGER.warn("Method update is not implemented");
 	}
 
 	@Override
-	public void delete(Company e) {
-		// TODO Auto-generated method stub
-		
+	public void delete(Optional<Company> e) {
+		LOGGER.warn("Method delete is not implemented");
 	}
 
 	private static final String READ_ALL_LIMIT = "SELECT * FROM company LIMIT ?,?";
 	
 	@Override
-	public List<Company> readAllWithOffsetAndLimit(int offset, int limit) {
-		
-		List<Company> companies =  new ArrayList<>();
-		
-		if(offset < 0 || limit < 0) {
-			return companies;
-		}
-		
-		Optional<ResultSet> rs;
-		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-		
-		if(connection.isPresent()) {
-			try {
-				PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-				stmt.setInt(1, offset);
-				stmt.setInt(2, limit);
-				
-				rs = Optional.ofNullable(stmt.executeQuery());
-				
-				Optional<List<Optional<Company>>> optionalCompanies = CompanyRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-				
-				if(optionalCompanies.isPresent()){
-					for(Optional<Company> c : optionalCompanies.get()) {
-						if(!c.isPresent()) {
-							companies = null;
-							companies = new ArrayList<>();
-						} else {
-							companies.add(c.get());
-						}
-					}
-					
-					return companies;
-				}
+	public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
 
-			} catch (SQLException e) {
-				
-				// TODO Auto-generated catch block
-				
-			}
-			
+		if (offset < 0 || limit < 0) {
+			LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
+			return Optional.empty();
 		}
-		return companies;
+
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+
+		if (!connection.isPresent()) {
+			LOGGER.warn("can't get a connection");
+			return Optional.empty();
+		}
+
+		try {
+			PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
+			stmt.setInt(1, offset);
+			stmt.setInt(2, limit);
+
+			Optional<ResultSet> rs;
+			rs = Optional.ofNullable(stmt.executeQuery());
+
+			Optional<List<Optional<Company>>> companies = CompanyRowMapper.INSTANCE
+					.mapListOfObjectsFromMultipleRows(rs);
+
+			return companies;
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		}
 	}
 
 	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM company";
@@ -126,18 +115,18 @@ public enum CompanyDaoImpl implements Dao<Company> {
 		Optional<ResultSet> rs;
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
-		if(connection.isPresent()){
-			try {
-				rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
-				count = RowMapper.mapCountResult(rs);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		if (!connection.isPresent()) {
+			LOGGER.warn("can't get a connection");
+			return 0;
 		}
-		
-		return count;
+
+		try {
+			rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+			count = RowMapper.mapCountResult(rs);
+			return count;
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		}
 	};
 	
 	

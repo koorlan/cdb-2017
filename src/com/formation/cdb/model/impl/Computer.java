@@ -1,5 +1,6 @@
 package com.formation.cdb.model.impl;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
@@ -10,14 +11,14 @@ public class Computer implements Entity{
 	
 	long id;
 	private String name;
-	private Date introduced;
-	private Date discontinued;
+	private LocalDate introduced;
+	private LocalDate discontinued;
 	private Company company;
 
 	/**
 	 * Constructor
 	 */
-	public Computer(long id, String name, Date introduced, Date discontinued, Company company) {
+	public Computer(long id, String name, LocalDate introduced, LocalDate discontinued, Company company) {
 		this.id = id;
 		this.name = name;
 		this.introduced = introduced;
@@ -37,10 +38,10 @@ public class Computer implements Entity{
 	public Optional<String> getName() {
 		return Optional.ofNullable(name);
 	}
-	public Optional<Date> getIntroduced() {
+	public Optional<LocalDate> getIntroduced() {
 		return Optional.ofNullable(introduced);
 	}
-	public Optional<Date> getDiscontinued() {
+	public Optional<LocalDate> getDiscontinued() {
 		return Optional.ofNullable(discontinued);
 	}
 	public Optional<Company> getCompany() {
@@ -51,11 +52,11 @@ public class Computer implements Entity{
 		this.name = name;
 	}
 
-	public void setIntroduced(Date introduced) {
+	public void setIntroduced(LocalDate introduced) {
 		this.introduced = introduced;
 	}
 
-	public void setDiscontinued(Date discontinued) {
+	public void setDiscontinued(LocalDate discontinued) {
 		this.discontinued = discontinued;
 	}
 

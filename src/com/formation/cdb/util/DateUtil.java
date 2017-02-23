@@ -1,22 +1,22 @@
 package com.formation.cdb.util;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 
 public class DateUtil {
-	public static Date StringToDate(String dateString){
-		SimpleDateFormat formatter;
-		Date date;
-		try {
-			formatter = new SimpleDateFormat("dd-MM-yyyy");
-			date = formatter.parse(dateString);
-			return date;
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
-		
+	public static LocalDate StringToDate(String dateString){
+		DateTimeFormatter formatter;
+		LocalDate date;
+
+		formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		date = LocalDateTime.parse(dateString, formatter).toLocalDate();
+		return date;
+	}
+	
+	public static Timestamp dateToTimestamp(LocalDate d){
+		return Timestamp.valueOf(d.atStartOfDay());
 	}
 }

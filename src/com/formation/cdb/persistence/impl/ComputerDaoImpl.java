@@ -4,17 +4,20 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.ArrayList;
+import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.model.impl.Computer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.connection.ConnectionManager;
+import com.formation.cdb.util.DateUtil;
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
-import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.mapper.impl.ComputerRowMapper;
 
 public enum ComputerDaoImpl implements Dao<Computer> {
@@ -22,44 +25,37 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	INSTANCE;
 	private ComputerDaoImpl(){}
 
+	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+	
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) values (?,?,?,?);" ;
 	
 	@Override
-	public void create(Computer e) {
-		// TODO Optional ?
-		if(e == null ) {
-			//TODO LOG
+	public void create(Optional<Computer> e) {
+		
+		if(!e.isPresent()) {
+			LOGGER.warn("Create failed, null computer");
 			return;
 		}
-		
+
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 		
 		if(!connection.isPresent()) {
+			LOGGER.warn("can't get a connection");
 			return;
 		}
 		
 		try {
 			PreparedStatement stmt = connection.get().prepareStatement(INSERT);
-			stmt.setString(1, e.getName());
-
-			if(e.getIntroduced() != null)
-				stmt.setTimestamp(2, new Timestamp(e.getIntroduced().getTime()));
-			else
-				stmt.setTimestamp(2, null);
-
-			if(e.getDiscontinued() != null)
-				stmt.setTimestamp(3, new Timestamp(e.getDiscontinued().getTime()));
-			else
-				stmt.setTimestamp(3, null);
-
+			stmt.setString(1, e.flatMap(Computer::getName).orElseThrow(() -> new PersistenceException("Trying to bypass validation, name is required")));
 			
-			if(e.getCompany() != null)
-				stmt.setLong(4, e.getCompany().getId());
-			else
-				stmt.setNull(4, java.sql.Types.NULL);
-
+			stmt.setTimestamp(2, e.flatMap(Computer::getIntroduced).map(DateUtil::dateToTimestamp).orElse(null) );
+			
+			stmt.setTimestamp(3, e.flatMap(Computer::getDiscontinued).map(DateUtil::dateToTimestamp).orElse(null) );
+			
+			stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
 			
 			stmt.execute();
+			LOGGER.info("Query sucessfully executed " + stmt.toString());
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -70,80 +66,66 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	private static final String READ_BY_ID = "SELECT * FROM computer WHERE id=?";
 	
 	@Override
-	public Computer readById(long id) {
+	public Optional<Computer> readById(long id) {
+		
+		if(id <= 0) {
+			LOGGER.warn("Id can't be negative or equal 0");
+			return Optional.empty();
+		}
 		
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 		
 		if(!connection.isPresent()) {
-			return new Computer(0, null, null, null, null);
+			LOGGER.warn("can't get a connection");
+			return Optional.empty();
 		}
 		
 		try {
-			
+		
 			PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
 			stmt.setInt(1, (int) id);
 			Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
-			Optional<Computer> optionalComputer= ComputerRowMapper.INSTANCE.mapObjectFromOneRow(rs);
-			if(optionalComputer.isPresent()) {
-				return optionalComputer.get();
-			}
+			Optional<Computer> computer = ComputerRowMapper.INSTANCE.mapObjectFromOneRow(rs);
+			LOGGER.info("Sucessfully readed: " + computer.toString());
+			return computer;
 			
 		} catch (SQLException e) {
-			
-			//TODO
-			e.printStackTrace();
+			throw new PersistenceException(e);
 		}
-	
-		
-		
-		return new Computer(0, null, null, null, null);
 	}
 	
 	private static final String UPDATE = "UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? WHERE id=?";
 
 	@Override
-	public void update(Computer e) {
-		//TODO Optional ?
+	public void update(Optional<Computer> e) {
 		
-		if(e == null) {
+		if(!e.isPresent()) {
+			LOGGER.warn("Create failed, null computer");
 			return;
 		}
-		
-		
+
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 		
 		if(!connection.isPresent()) {
-			//TODO LOG
+			LOGGER.warn("can't get a connection");
 			return;
 		}
 		
 		try {
 			PreparedStatement stmt = connection.get().prepareStatement(UPDATE);
+			
+			stmt.setString(1, e.flatMap(Computer::getName).orElseThrow(() -> new PersistenceException("Trying to bypass validation, name is required")));
+			
+			stmt.setTimestamp(2, e.flatMap(Computer::getIntroduced).map(DateUtil::dateToTimestamp).orElse(null) );
+			
+			stmt.setTimestamp(3, e.flatMap(Computer::getDiscontinued).map(DateUtil::dateToTimestamp).orElse(null) );
 
-			stmt.setString(1, e.getName());
-
-			if(e.getIntroduced() != null)
-				stmt.setTimestamp(2, new Timestamp(e.getIntroduced().getTime()));
-			else
-				stmt.setTimestamp(2, null);
-
-			if(e.getDiscontinued() != null)
-				stmt.setTimestamp(3, new Timestamp(e.getDiscontinued().getTime()));
-			else
-				stmt.setTimestamp(3, null);
-
-			if(e.getCompany() != null)
-				stmt.setLong(4, e.getCompany().getId());
-			else
-				stmt.setTimestamp(4, null);
-
-			stmt.setLong(5, e.getId());
-
+			stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
+			
 			stmt.execute();
-		
+			LOGGER.info("Sucessfully updated: " + e);
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new PersistenceException(e1);
 		}
 		
 	}
@@ -151,27 +133,29 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	private static final String DELETE = "DELETE FROM computer WHERE id=?";
 	
 	@Override
-	public void delete(Computer e) {
-		//TODO Optional ?
-		if( e == null) {
+	public void delete(Optional<Computer> e) {
+		
+		if(!e.isPresent()) {
+			LOGGER.warn("Create failed, null computer");
 			return;
 		}
-		
+
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 		
 		if(!connection.isPresent()) {
-			//TODO LOG
+			LOGGER.warn("can't get a connection");
 			return;
 		}
 		
+		
 		try {
 			PreparedStatement stmt = connection.get().prepareStatement(DELETE);
-			stmt.setLong(1, e.getId());
+			stmt.setLong(1, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("id is less or equal zero")) );
 			stmt.execute();
-		
+			
+			LOGGER.info("Succesfully deleted " + e);
 		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
+			throw new PersistenceException(e1);
 		}
 		
 		
@@ -180,48 +164,36 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	private static final String READ_ALL_LIMIT = "Select * from computer LIMIT ?,?";
 
 	@Override
-	public List<Computer> readAllWithOffsetAndLimit(int offset, int limit) {
-		
-		List<Computer> computers =  new ArrayList<>();
-		
-		if(offset < 0 || limit < 0) {
-			return computers;
-		}
-		
-		Optional<ResultSet> rs;
-		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-		
-		if(connection.isPresent()) {
-			try {
-				PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-				stmt.setInt(1, offset);
-				stmt.setInt(2, limit);
-				
-				rs = Optional.ofNullable(stmt.executeQuery());
-				
-				Optional<List<Optional<Computer>>> optionalComputer = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-				
-				if(optionalComputer.isPresent()){
-					for(Optional<Computer> c : optionalComputer.get()) {
-						if(!c.isPresent()) {
-							computers = null;
-							computers = new ArrayList<>();
-						} else {
-							computers.add(c.get());
-						}
-					}
-					
-					return computers;
-				}
+	public Optional<List<Optional<Computer>>> readAllWithOffsetAndLimit(int offset, int limit) {
 
-			} catch (SQLException e) {
-				
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		if (offset < 0 || limit < 0) {
+			LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
+			return Optional.empty();
 		}
-		return computers;
+
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+
+		if (!connection.isPresent()) {
+			LOGGER.warn("can't get a connection");
+			return Optional.empty();
+		}
+		try {
+			PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
+			stmt.setInt(1, offset);
+			stmt.setInt(2, limit);
+
+			Optional<ResultSet> rs;
+			rs = Optional.ofNullable(stmt.executeQuery());
+
+			Optional<List<Optional<Computer>>> computers;
+			computers = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
+
+			return computers;
+
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		}
+
 	}
 
 	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM computer";
@@ -229,22 +201,24 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 	@Override
 	public int rowCount() {
 		int count = 0;
-		Optional<ResultSet> rs;
+
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
-		if(connection.isPresent()){
-			try {
-				rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
-				count = RowMapper.mapCountResult(rs);
-			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
+		if (!connection.isPresent()) {
+			LOGGER.warn("can't get a connection");
+			return 0;
 		}
-		
-		return count;
-	};
+
+		try {
+			Optional<ResultSet> rs;
+			rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+			count = RowMapper.mapCountResult(rs);
+			return count;
+		} catch (SQLException e) {
+			throw new PersistenceException(e);
+		}
+
+	}
 
 	
 }
