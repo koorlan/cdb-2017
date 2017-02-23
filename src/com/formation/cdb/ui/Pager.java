@@ -1,6 +1,7 @@
 package com.formation.cdb.ui;
 
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Pager<T> {
 
@@ -23,7 +24,7 @@ public abstract class Pager<T> {
 		page = 0;
 	}
 	
-	public abstract List<T> getPage(int page);
+	public abstract Optional<List<Optional<T>>> getPage(int page);
 	
 	public void next(){
 		if(page < nbPages)
@@ -35,7 +36,7 @@ public abstract class Pager<T> {
 			page --;
 	}
 	
-	public List<T> getCurrentPage(){
+	public Optional<List<Optional<T>>> getCurrentPage(){
 		return getPage(page);
 	}
 	

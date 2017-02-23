@@ -1,6 +1,7 @@
 package com.formation.cdb.ui;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
@@ -17,7 +18,7 @@ public class PagerCompany extends Pager<Company> {
 	}
 	
 	@Override
-	public List<Company> getPage(int page) {
+	public Optional<List<Optional<Company>>> getPage(int page) {
 		int index;
 		int offset;
 		int limit;

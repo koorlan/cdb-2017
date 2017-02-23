@@ -122,6 +122,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 			stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
 			
+			stmt.setLong(5, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("Trying to bypass validation, id is required")));
+			
 			stmt.execute();
 			LOGGER.info("Sucessfully updated: " + e);
 		} catch (SQLException e1) {

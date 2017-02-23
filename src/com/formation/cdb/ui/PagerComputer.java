@@ -1,6 +1,7 @@
 package com.formation.cdb.ui;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.formation.cdb.model.impl.Computer;
 
@@ -18,7 +19,7 @@ public class PagerComputer extends Pager<Computer> {
 		nbPages = max/pageSize;
 	}
 	
-	public List<Computer> getPage(int page){
+	public Optional<List<Optional<Computer>>> getPage(int page){
 		int index;
 		int offset;
 		int limit;

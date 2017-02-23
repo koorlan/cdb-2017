@@ -3,10 +3,12 @@ package com.formation.cdb.mapper.impl;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.sql.Timestamp;
 
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
@@ -33,10 +35,9 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 			while (r.next()) {
 				
 				long id = r.getLong("id");
-
 				String name = r.getString("name");
-				LocalDate introduced =  r.getTimestamp("introduced").toLocalDateTime().toLocalDate();
-				LocalDate discontinued = r.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
+				LocalDate introduced =  Optional.ofNullable(r.getTimestamp("introduced")).map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
+				LocalDate discontinued = Optional.ofNullable(r.getTimestamp("discontinued")).map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
 
 				// Try to retrieve a company from the database with this id
 				//TODO Join AND REfactor method call mapObjectFromOneRow ?
@@ -44,7 +45,7 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 				CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
 				Optional<Company> company = cdbService.readById(companyId);
 				
-				Computer computer = new Computer(id, name, introduced, discontinued, company.get());
+				Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
 
 				computers.add(Optional.ofNullable(computer));
 			}
@@ -74,8 +75,9 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 			
 			long id = r.getLong("id");
 			String name = r.getString("name");
-			LocalDate introduced = r.getTimestamp("introduced").toLocalDateTime().toLocalDate();
-			LocalDate discontinued = r.getTimestamp("discontinued").toLocalDateTime().toLocalDate();
+			LocalDate introduced =  Optional.ofNullable(r.getTimestamp("introduced")).map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
+			LocalDate discontinued = Optional.ofNullable(r.getTimestamp("discontinued")).map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
+
 			long companyId = r.getLong("company_id");
 			
 			// TODO JOIN

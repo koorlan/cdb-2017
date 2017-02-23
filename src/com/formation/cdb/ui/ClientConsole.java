@@ -1,6 +1,7 @@
 package com.formation.cdb.ui;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.Scanner;
@@ -113,8 +114,11 @@ public class ClientConsole {
 		index = pager.getCurrentPageIndex();
 		do{
 			clearScreen();
-			for(Computer c : pager.getPage(index)){
-				System.out.println(c);
+			if(!pager.getPage(index).isPresent()) {
+				break;
+			}
+			for(Optional<Computer> c : pager.getPage(index).get()){
+				c.ifPresent(x -> System.out.println(x));
 			}
 	
 			System.out.println(index+" of "+ pager.getNbPages() +" (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
@@ -158,8 +162,11 @@ public class ClientConsole {
 		index = pager.getCurrentPageIndex();
 		do{
 			clearScreen();
-			for(Company c : pager.getPage(index)){
-				System.out.println(c);
+			if(!pager.getPage(index).isPresent()) {
+				break;
+			}
+			for(Optional<Company> c : pager.getPage(index).get()){
+				c.ifPresent(x -> System.out.println(x));
 			}
 	
 			System.out.println(index+" of "+ pager.getNbPages() +" (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
@@ -198,8 +205,7 @@ public class ClientConsole {
 		System.out.println("Please enter computer id:");
 		id = scanner.nextLong();
 		scanner.nextLine();//Consume Enter
-		c = service.readById(id);
-		System.out.println(c);
+		service.readById(id).ifPresent(x -> System.out.println(x));
 		
 	};
 	
@@ -212,15 +218,14 @@ public class ClientConsole {
 		System.out.println("Please enter company id:");
 		id = scanner.nextLong();
 		scanner.nextLine();//Consume Enter
-		c = service.readById(id);
-		System.out.println(c);
+		service.readById(id).ifPresent(x -> System.out.println(x));	
 	};
 	
 	public void createComputer(){
 		ComputerServiceImpl service ;
 		String name;
-		Date introduced = null;
-		Date discontinued = null;
+		LocalDate introduced = null;
+		LocalDate discontinued = null;
 		long companyId = 0 ;
 		String dateIntroducedString;
 		String dateDiscontinuedString;
@@ -254,12 +259,12 @@ public class ClientConsole {
 			companyId = Long.parseLong(companyIdString);
 		
 		
-		Company company = CompanyServiceImpl.INSTANCE.readById(companyId);
-		Computer computer = new Computer(0, name, introduced, discontinued, (company.getId() == 0) ? null:company);
+		Optional<Company> company = CompanyServiceImpl.INSTANCE.readById(companyId);
+		Computer computer = new Computer(0, name, introduced, discontinued, company.orElse(null));
 
-		String test = Optional.ofNullable(computer).map(Computer::getCompany).map(Company::getName).orElse("UNKNOWN");
+		//String test = Optional.ofNullable(computer).map(Computer::getCompany).map(Company::getName).orElse("UNKNOWN");
 		
-		service.create(computer);
+		service.create(Optional.ofNullable(computer));
 	};
 	
 	public void deleteComputer(){
@@ -274,15 +279,14 @@ public class ClientConsole {
 		id = scanner.nextLong();
 		scanner.nextLine(); //consume newline;
 		
-		computer = service.readById(id);
 		
 		System.out.println("Are you sure you want delete (y/n)");
-		System.out.println(computer);
+		service.readById(id).ifPresent(x -> System.out.print(x));
 		
 		answer = scanner.nextLine();
 		switch(answer){
 			case"y":
-				service.delete(computer);
+				service.delete(service.readById(id));
 				break;
 			case "n":
 			default:
@@ -301,9 +305,9 @@ public class ClientConsole {
 		//New Computer var
 		String newName;
 		String newDateIntroducedString;
-		Date newDateIntroduced = null;
+		LocalDate newDateIntroduced = null;
 		String newDateDiscontinuedString;
-		Date newDateDiscontinued = null;
+		LocalDate newDateDiscontinued = null;
 		String newIdCompanyString;
 		long newIdCompany = 0;
 		Company newCompany;
@@ -316,7 +320,12 @@ public class ClientConsole {
 			id = Long.parseLong(idString);
 		else
 			return;
-		computer = service.readById(id);
+		
+		Optional<Computer> optionalComputer = service.readById(id);
+		if(!optionalComputer.isPresent()) {
+			return;
+		}
+		computer = optionalComputer.get();
 		
 		System.out.println("Name: ["+ computer.getName() +"] (e)");
 		answer = null;
@@ -383,7 +392,9 @@ public class ClientConsole {
 			newIdCompanyString = newIdCompanyString.trim();
 			if(!newIdCompanyString.isEmpty())
 				newIdCompany = Long.parseLong(newIdCompanyString);
-			newCompany = CompanyServiceImpl.INSTANCE.readById(newIdCompany);
+			
+			Optional<Company> optionalCompany = CompanyServiceImpl.INSTANCE.readById(newIdCompany);
+			newCompany = optionalCompany.get();
 			
 			System.out.println("Company :" +newCompany + " (y/n)");
 			answer = null;
@@ -403,7 +414,7 @@ public class ClientConsole {
 		default:			
 			break;
 		}
-		service.update(computer);
+		service.update(Optional.ofNullable(computer));
 		
 	};
 	
