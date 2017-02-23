@@ -14,6 +14,7 @@ import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
+import com.sun.media.jfxmedia.logging.Logger;
 
 
 public enum ComputerRowMapper implements RowMapper<Computer> {
@@ -42,8 +43,8 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 				// Try to retrieve a company from the database with this id
 				//TODO Join AND REfactor method call mapObjectFromOneRow ?
 				long companyId = r.getLong("company_id");
-				CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
-				Optional<Company> company = cdbService.readById(companyId);
+				//CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
+				Optional<Company> company = (companyId!=0)?Optional.of(new Company(companyId,r.getString("c_name"))) : Optional.empty();
 				
 				Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
 
@@ -80,16 +81,14 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 
 			long companyId = r.getLong("company_id");
 			
-			// TODO JOIN
-			CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
-			Optional<Company> company = cdbService.readById(companyId);
-			Computer computer = new Computer(id, name, introduced, discontinued, company.get());
+			Optional<Company> company = (companyId!=0)?Optional.of(new Company(companyId,r.getString("c_name"))) : Optional.empty();
+			Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
 			
 			return Optional.ofNullable(computer);
 
 		} catch (SQLException e) {
 			
-			// TODO 
+			e.printStackTrace();
 
 		}
 		

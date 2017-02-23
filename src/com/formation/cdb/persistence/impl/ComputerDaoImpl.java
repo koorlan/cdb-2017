@@ -63,7 +63,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 		
 	}
 
-	private static final String READ_BY_ID = "SELECT * FROM computer WHERE id=?";
+	private static final String READ_BY_ID = "SELECT computer.id AS id,computer.name AS name,introduced,discontinued,company_id, company.name AS c_name from computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id=?";
 	
 	@Override
 	public Optional<Computer> readById(long id) {
@@ -163,8 +163,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 		
 	}
 	
-	private static final String READ_ALL_LIMIT = "Select * from computer LIMIT ?,?";
-
+	//private static final String READ_ALL_LIMIT = "Select * from computer LIMIT ?,?";
+	private static final String READ_ALL_LIMIT = "SELECT computer.id AS id,computer.name AS name,introduced,discontinued,company_id, company.name AS c_name from computer LEFT JOIN company ON computer.company_id=company.id LIMIT ?,?";
 	@Override
 	public Optional<List<Optional<Computer>>> readAllWithOffsetAndLimit(int offset, int limit) {
 

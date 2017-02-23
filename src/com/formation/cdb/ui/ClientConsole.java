@@ -281,7 +281,7 @@ public class ClientConsole {
 		
 		
 		System.out.println("Are you sure you want delete (y/n)");
-		service.readById(id).ifPresent(x -> System.out.print(x));
+		service.readById(id).ifPresent(x -> System.out.println(x));
 		
 		answer = scanner.nextLine();
 		switch(answer){
