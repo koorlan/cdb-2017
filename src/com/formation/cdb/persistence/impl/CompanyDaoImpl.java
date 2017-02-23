@@ -37,11 +37,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
 	@Override
 	public Optional<Company> readById(long id) {
 
-		if(id <= 0){
-			LOGGER.warn("id can't be negative id:"+id);
-			return Optional.empty();
-		}
-		
+
 		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 		
 		if(!connection.isPresent()) {
@@ -60,6 +56,8 @@ public enum CompanyDaoImpl implements Dao<Company> {
 			
 		} catch (SQLException e) {
 			throw new PersistenceException(e);
+		} finally {
+			ConnectionManager.close(connection);
 		}
 	}
 

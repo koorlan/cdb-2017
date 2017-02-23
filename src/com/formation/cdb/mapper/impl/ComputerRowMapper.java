@@ -34,18 +34,19 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 			ResultSet r = rs.get();
 			List<Optional<Computer>> computers = new ArrayList<>();
 			while (r.next()) {
-				
+
 				long id = r.getLong("id");
 				String name = r.getString("name");
-				LocalDate introduced =  Optional.ofNullable(r.getTimestamp("introduced")).map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
-				LocalDate discontinued = Optional.ofNullable(r.getTimestamp("discontinued")).map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
+				LocalDate introduced = Optional.ofNullable(r.getTimestamp("introduced")).map(Timestamp::toLocalDateTime)
+						.map(LocalDateTime::toLocalDate).orElse(null);
+				LocalDate discontinued = Optional.ofNullable(r.getTimestamp("discontinued"))
+						.map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
 
-				// Try to retrieve a company from the database with this id
-				//TODO Join AND REfactor method call mapObjectFromOneRow ?
 				long companyId = r.getLong("company_id");
-				//CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
-				Optional<Company> company = (companyId!=0)?Optional.of(new Company(companyId,r.getString("c_name"))) : Optional.empty();
-				
+
+				Optional<Company> company = (companyId != 0)
+						? Optional.of(new Company(companyId, r.getString("c_name"))) : Optional.empty();
+
 				Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
 
 				computers.add(Optional.ofNullable(computer));

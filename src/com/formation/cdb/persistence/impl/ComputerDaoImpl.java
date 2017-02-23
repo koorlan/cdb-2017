@@ -194,6 +194,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
 		} catch (SQLException e) {
 			throw new PersistenceException(e);
+		} finally {
+			ConnectionManager.close(connection);
 		}
 
 	}
