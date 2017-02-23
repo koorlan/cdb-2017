@@ -10,5 +10,5 @@ public interface CDBService<T> {
 	void delete(T e);
 	
 	List<T> readAllWithOffsetAndLimit(int offset, int limit);
-	
+	int sizeOfTable();
 }

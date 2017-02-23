@@ -7,163 +7,244 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import com.formation.cdb.exception.MapperException;
-import com.formation.cdb.exception.PersistenceException;
-import com.formation.cdb.mapper.impl.ComputerRowMapper;
+import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.persistence.Dao;
+import com.formation.cdb.persistence.connection.ConnectionManager;
+import com.formation.cdb.mapper.RowMapper;
+import com.formation.cdb.mapper.impl.CompanyRowMapper;
+import com.formation.cdb.mapper.impl.ComputerRowMapper;
 
-public class ComputerDaoImpl implements Dao<Computer> {
+public enum ComputerDaoImpl implements Dao<Computer> {
 
-	private Connection conn;
-	private ComputerRowMapper computerRowMapper;
-	
-	public ComputerDaoImpl(Connection conn){
-		this.conn = conn;
-		this.computerRowMapper = new ComputerRowMapper();
-	}
-	
+	INSTANCE;
+	private ComputerDaoImpl(){}
+
 	private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) values (?,?,?,?);" ;
 	
 	@Override
-	public void create(Computer c) throws PersistenceException {
-		if(c == null)
-			throw new PersistenceException("Null Computer");
+	public void create(Computer e) {
+		// TODO Optional ?
+		if(e == null ) {
+			//TODO LOG
+			return;
+		}
 		
-		PreparedStatement st;
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+		
+		if(!connection.isPresent()) {
+			return;
+		}
 		
 		try {
-			st = conn.prepareStatement(INSERT);
-			st.setString(1, c.getName());
-			
-			if(c.getIntroduced() != null)
-				st.setTimestamp(2, new Timestamp(c.getIntroduced().getTime()));
+			PreparedStatement stmt = connection.get().prepareStatement(INSERT);
+			stmt.setString(1, e.getName());
+
+			if(e.getIntroduced() != null)
+				stmt.setTimestamp(2, new Timestamp(e.getIntroduced().getTime()));
 			else
-				st.setTimestamp(2, null);
-			
-			if(c.getDiscontinued() != null)
-				st.setTimestamp(3, new Timestamp(c.getDiscontinued().getTime()));
+				stmt.setTimestamp(2, null);
+
+			if(e.getDiscontinued() != null)
+				stmt.setTimestamp(3, new Timestamp(e.getDiscontinued().getTime()));
 			else
-				st.setTimestamp(3, null);
+				stmt.setTimestamp(3, null);
+
 			
-			if(c.getCompany() != null)
-				st.setLong(4, c.getCompany().getId());
+			if(e.getCompany() != null)
+				stmt.setLong(4, e.getCompany().getId());
 			else
-				st.setTimestamp(4, null);
+				stmt.setNull(4, java.sql.Types.NULL);
+
 			
-			st.execute();
-		} catch (SQLException e) {
-			//TODO log warn can't create
-		}	
+			stmt.execute();
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 	}
 
-	private static final String UPDATE = "UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? WHERE id=?";
+	private static final String READ_BY_ID = "SELECT * FROM computer WHERE id=?";
 	
-
 	@Override
-	public void update(long id, Computer c) throws PersistenceException {
-		if(c == null)
-			throw new PersistenceException("Null Computer");
+	public Computer readById(long id) {
+		
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+		
+		if(!connection.isPresent()) {
+			return new Computer(0, null, null, null, null);
+		}
+		
 		try {
-			PreparedStatement st = conn.prepareStatement(UPDATE);
-			st.setString(1, c.getName());
 			
-			if(c.getIntroduced() != null)
-				st.setTimestamp(2, new Timestamp(c.getIntroduced().getTime()));
-			else
-				st.setTimestamp(2, null);
-			
-			if(c.getDiscontinued() != null)
-				st.setTimestamp(3, new Timestamp(c.getDiscontinued().getTime()));
-			else
-				st.setTimestamp(3, null);
-			
-			if(c.getCompany() != null)
-				st.setLong(4, c.getCompany().getId());
-			else
-				st.setTimestamp(4, null);
-			
-			st.setLong(5, id);
-			
-			st.execute();
+			PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
+			stmt.setInt(1, (int) id);
+			Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
+			Optional<Computer> optionalComputer= ComputerRowMapper.INSTANCE.mapObjectFromOneRow(rs);
+			if(optionalComputer.isPresent()) {
+				return optionalComputer.get();
+			}
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			
+			//TODO
 			e.printStackTrace();
 		}
+	
+		
+		
+		return new Computer(0, null, null, null, null);
+	}
+	
+	private static final String UPDATE = "UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? WHERE id=?";
+
+	@Override
+	public void update(Computer e) {
+		//TODO Optional ?
+		
+		if(e == null) {
+			return;
+		}
+		
+		
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+		
+		if(!connection.isPresent()) {
+			//TODO LOG
+			return;
+		}
+		
+		try {
+			PreparedStatement stmt = connection.get().prepareStatement(UPDATE);
+
+			stmt.setString(1, e.getName());
+
+			if(e.getIntroduced() != null)
+				stmt.setTimestamp(2, new Timestamp(e.getIntroduced().getTime()));
+			else
+				stmt.setTimestamp(2, null);
+
+			if(e.getDiscontinued() != null)
+				stmt.setTimestamp(3, new Timestamp(e.getDiscontinued().getTime()));
+			else
+				stmt.setTimestamp(3, null);
+
+			if(e.getCompany() != null)
+				stmt.setLong(4, e.getCompany().getId());
+			else
+				stmt.setTimestamp(4, null);
+
+			stmt.setLong(5, e.getId());
+
+			stmt.execute();
+		
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
 	}
 
 	private static final String DELETE = "DELETE FROM computer WHERE id=?";
 	
 	@Override
-	public void delete(long id) {
-		try {
-			PreparedStatement st = conn.prepareStatement(DELETE);
-			st.setLong(1, id);
-			st.execute();
-		} catch (SQLException e) {
-			//TODO log warn can't delete
+	public void delete(Computer e) {
+		//TODO Optional ?
+		if( e == null) {
+			return;
 		}
 		
-	}
-
-	private static final String GET_ID = "SELECT * FROM computer WHERE id=?";
-	
-	@Override
-	public Computer get(long id) {
-		Computer computer;
-		try {
-			PreparedStatement st = conn.prepareStatement(GET_ID);
-			st.setInt(1, (int) id);
-			ResultSet rs = st.executeQuery();
-			computer = computerRowMapper.mapRow(rs);
-			return computer;
-		} catch (SQLException e) {
-			return null;
-		} catch (MapperException e) {
-			return null;
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+		
+		if(!connection.isPresent()) {
+			//TODO LOG
+			return;
 		}
-	}
-
-	private static final String GET_ALL = "Select * from computer LIMIT ?,?"; 
-	
-	@Override
-	public List<Computer> getAll(int offset, int limit) {
-		List<Computer> computers;
-		PreparedStatement st;
-		ResultSet rs;
 		
 		try {
-			st = conn.prepareStatement(GET_ALL);
-			st.setInt(1, offset);
-			st.setInt(2, limit);
-			rs = st.executeQuery();
-			computers = computerRowMapper.mapRows(rs);
+			PreparedStatement stmt = connection.get().prepareStatement(DELETE);
+			stmt.setLong(1, e.getId());
+			stmt.execute();
+		
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		
+	}
+	
+	private static final String READ_ALL_LIMIT = "Select * from computer LIMIT ?,?";
+
+	@Override
+	public List<Computer> readAllWithOffsetAndLimit(int offset, int limit) {
+		
+		List<Computer> computers =  new ArrayList<>();
+		
+		if(offset < 0 || limit < 0) {
 			return computers;
-		} catch (SQLException e) {
-			return new ArrayList<Computer>();
-		} catch (MapperException e) {
-			return new ArrayList<Computer>();
 		}
+		
+		Optional<ResultSet> rs;
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+		
+		if(connection.isPresent()) {
+			try {
+				PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
+				stmt.setInt(1, offset);
+				stmt.setInt(2, limit);
+				
+				rs = Optional.ofNullable(stmt.executeQuery());
+				
+				Optional<List<Optional<Computer>>> optionalComputer = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
+				
+				if(optionalComputer.isPresent()){
+					for(Optional<Computer> c : optionalComputer.get()) {
+						if(!c.isPresent()) {
+							computers = null;
+							computers = new ArrayList<>();
+						} else {
+							computers.add(c.get());
+						}
+					}
+					
+					return computers;
+				}
+
+			} catch (SQLException e) {
+				
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		return computers;
 	}
-	
+
 	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM computer";
 	
 	@Override
-	public int rowCount(){
+	public int rowCount() {
 		int count = 0;
-		PreparedStatement st;
-		ResultSet rs;
-		
-		try {
-			st = conn.prepareStatement(ROW_COUNT);
-			rs = st.executeQuery();
-			count = computerRowMapper.mapCount(rs);
-		} catch (SQLException e) {
-		} catch (MapperException e) {
+		Optional<ResultSet> rs;
+		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+
+		if(connection.isPresent()){
+			try {
+				rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+				count = RowMapper.mapCountResult(rs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
 		}
+		
 		return count;
-	}
+	};
+
 	
 }

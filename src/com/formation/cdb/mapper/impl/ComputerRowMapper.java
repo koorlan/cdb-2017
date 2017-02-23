@@ -7,103 +7,90 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.exception.MapperException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
-import com.formation.cdb.service.ComputerDatabaseService;
+import com.formation.cdb.service.impl.CompanyServiceImpl;
 
-public class ComputerRowMapper implements RowMapper<Computer> {
 
-	@Override
-	public Optional<List<Computer>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
-		
-		if( !rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
-			return Optional.empty();
-		}		
-		
-		try {
-			
-			ResultSet 		r			=	rs.get()					;
-			List<Computer> 	computers	=	new ArrayList<Computer>()	;
-			
-			while(r.next()){
-				
-				long	id				=	r.getLong("id")					;
-				String	name			=	r.getString("name")				;
-				Date	introduced		=	r.getTimestamp("introduced")	;
-				Date	discontinued	=	r.getTimestamp("discontinued")	;
-				
-				//Try to retrieve a company from the database with this id
-				long						companyId		=	r.getLong("company_id")									;
-				ComputerDatabaseService		cdbService		= 	ComputerDatabaseService.getInstance()					;
-				Company 					company 		=	cdbService.getCompanyById(companyId)					;
-				Computer 					computer		=	new Computer(id,name,introduced,discontinued,company)	;
-				
-				computers.add(computer);
-			}
+public enum ComputerRowMapper implements RowMapper<Computer> {
+
+	INSTANCE;
 	
+	private ComputerRowMapper(){};
+	
+	@Override
+	public Optional<List<Optional<Computer>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
+		if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+			return Optional.empty();
+		}
+
+		try {
+
+			ResultSet r = rs.get();
+			List<Optional<Computer>> computers = new ArrayList<>();
+			while (r.next()) {
+				
+				long id = r.getLong("id");
+
+				String name = r.getString("name");
+				Date introduced = r.getTimestamp("introduced");
+				Date discontinued = r.getTimestamp("discontinued");
+
+				// Try to retrieve a company from the database with this id
+				//TODO Join AND REfactor method call mapObjectFromOneRow ?
+				long companyId = r.getLong("company_id");
+				CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
+				Company company = cdbService.readById(companyId);
+				
+				Computer computer = new Computer(id, name, introduced, discontinued, company);
+
+				computers.add(Optional.ofNullable(computer));
+			}
+
 			return Optional.ofNullable(computers);
 		} catch (SQLException e) {
-			
-			//TODO
-			
+
+			e.printStackTrace();
+
 		}
-		
+
 		return Optional.empty();
 	}
 
 	@Override
-	public Computer mapObjectFromOneRow(Optional<ResultSet> rs) {
-		if(rs == null)
-			throw new MapperException("Null ResultSet");
+	public Optional<Computer> mapObjectFromOneRow(Optional<ResultSet> rs) {
 		
-		//TODO assert 1 result
-		try {
-			if(!rs.isBeforeFirst())
-				return null;
-			rs.next();
-			long id = rs.getLong("id");
-			String name = rs.getString("name");
-			Date introduced = rs.getTimestamp("introduced");
-			Date discontinued = rs.getTimestamp("discontinued");
-			
-			
-			long companyId = rs.getLong("company_id");
-			//Try to retrieve a company from the database with this id
-			ComputerDatabaseService cdbService = ComputerDatabaseService.getInstance();
-			
-			Company company = cdbService.getCompanyById(companyId);
+		if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+			return Optional.empty();
+		}
 
-			Computer computer = new Computer(id,name,introduced,discontinued,company);
-			return computer;
+		try {
 			
+			ResultSet r = rs.get();
+			
+			r.next();
+			
+			long id = r.getLong("id");
+			String name = r.getString("name");
+			Date introduced = r.getTimestamp("introduced");
+			Date discontinued = r.getTimestamp("discontinued");
+			long companyId = r.getLong("company_id");
+			
+			// TODO JOIN
+			CompanyServiceImpl cdbService = CompanyServiceImpl.INSTANCE;
+			Company company = cdbService.readById(companyId);
+			Computer computer = new Computer(id, name, introduced, discontinued, company);
+			
+			return Optional.ofNullable(computer);
+
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+			// TODO 
+
 		}
 		
-		return null;
-	}
-	
-	@Override
-	public int mapCount(ResultSet rs){
-		if(rs == null)
-			throw new MapperException("Null ResultSet");
-		int count;
-		try {
-			if(!rs.isBeforeFirst())
-				return 0;
-			rs.next();
-			count = rs.getInt("c");
-			
-			return count;
-			
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}	
-		return 0;
+		return Optional.empty();
 	}
 
 }

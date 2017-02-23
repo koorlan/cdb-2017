@@ -3,6 +3,7 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 
 import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.service.CDBService;
 
 public enum CompanyServiceImpl implements CDBService<Company> {
@@ -18,8 +19,7 @@ public enum CompanyServiceImpl implements CDBService<Company> {
 
 	@Override
 	public Company readById(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return CompanyDaoImpl.INSTANCE.readById(id);
 	}
 
 	@Override
@@ -35,9 +35,13 @@ public enum CompanyServiceImpl implements CDBService<Company> {
 	}
 
 	@Override
-	public List<Company> readAllLimit(int offset, int length) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Company> readAllWithOffsetAndLimit(int offset, int limit) {	
+		return CompanyDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit);
+	}
+
+	@Override
+	public int sizeOfTable() {
+		return CompanyDaoImpl.INSTANCE.rowCount();
 	};
 	
 }

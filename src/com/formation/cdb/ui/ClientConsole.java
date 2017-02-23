@@ -2,6 +2,7 @@ package com.formation.cdb.ui;
 
 import java.io.IOException;
 import java.util.Date;
+import java.util.Optional;
 import java.util.Scanner;
 
 import org.slf4j.Logger;
@@ -9,7 +10,8 @@ import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.model.impl.Company;
 import com.formation.cdb.model.impl.Computer;
-import com.formation.cdb.service.ComputerDatabaseService;
+import com.formation.cdb.service.impl.CompanyServiceImpl;
+import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
 
 
@@ -188,34 +190,34 @@ public class ClientConsole {
 	};
 	
 	public void showComputer(){
-		ComputerDatabaseService service;
+		ComputerServiceImpl service;
 		long id;
 		Computer c;
 		
-		service = ComputerDatabaseService.getInstance();
+		service = ComputerServiceImpl.INSTANCE;
 		System.out.println("Please enter computer id:");
 		id = scanner.nextLong();
 		scanner.nextLine();//Consume Enter
-		c = service.getComputerById(id);
+		c = service.readById(id);
 		System.out.println(c);
 		
 	};
 	
 	public void showCompany(){
-		ComputerDatabaseService service;
+		CompanyServiceImpl service;
 		long id;
 		Company c;
 		
-		service = ComputerDatabaseService.getInstance();
+		service = CompanyServiceImpl.INSTANCE;
 		System.out.println("Please enter company id:");
 		id = scanner.nextLong();
 		scanner.nextLine();//Consume Enter
-		c = service.getCompanyById(id);
+		c = service.readById(id);
 		System.out.println(c);
 	};
 	
 	public void createComputer(){
-		ComputerDatabaseService service = ComputerDatabaseService.getInstance();
+		ComputerServiceImpl service ;
 		String name;
 		Date introduced = null;
 		Date discontinued = null;
@@ -224,7 +226,7 @@ public class ClientConsole {
 		String dateDiscontinuedString;
 		String companyIdString;
 		
-		service = ComputerDatabaseService.getInstance();
+		service = ComputerServiceImpl.INSTANCE;
 		
 		System.out.println("Please enter computer name [Required]:");
 		name = scanner.nextLine();
@@ -251,22 +253,28 @@ public class ClientConsole {
 		if(!companyIdString.isEmpty())
 			companyId = Long.parseLong(companyIdString);
 		
-		service.createComputer(name, introduced, discontinued, companyId);
+		
+		Company company = CompanyServiceImpl.INSTANCE.readById(companyId);
+		Computer computer = new Computer(0, name, introduced, discontinued, (company.getId() == 0) ? null:company);
+
+		String test = Optional.ofNullable(computer).map(Computer::getCompany).map(Company::getName).orElse("UNKNOWN");
+		System.out.println(test);
+		service.create(computer);
 	};
 	
 	public void deleteComputer(){
-		ComputerDatabaseService service;
+		ComputerServiceImpl service;
 		long id;
 		Computer computer;
 		String answer;
 		
-		service = ComputerDatabaseService.getInstance();
+		service = ComputerServiceImpl.INSTANCE;
 		
 		System.out.println("Please enter the computer id you want to deleted");
 		id = scanner.nextLong();
 		scanner.nextLine(); //consume newline;
 		
-		computer = service.getComputerById(id);
+		computer = service.readById(id);
 		
 		System.out.println("Are you sure you want delete (y/n)");
 		System.out.println(computer);
@@ -274,7 +282,7 @@ public class ClientConsole {
 		answer = scanner.nextLine();
 		switch(answer){
 			case"y":
-				service.deleteComputer(id);
+				service.delete(computer);
 				break;
 			case "n":
 			default:
@@ -285,7 +293,7 @@ public class ClientConsole {
 	};
 	
 	public void updateComputer(){
-		ComputerDatabaseService service;
+		ComputerServiceImpl service;
 		String idString;
 		long id;
 		Computer computer;
@@ -300,7 +308,7 @@ public class ClientConsole {
 		long newIdCompany = 0;
 		Company newCompany;
 		
-		service = ComputerDatabaseService.getInstance();
+		service = ComputerServiceImpl.INSTANCE;
 		System.out.println("Please enter the computer id you want to update");
 		idString = scanner.nextLine();
 		idString = idString.trim();
@@ -308,7 +316,7 @@ public class ClientConsole {
 			id = Long.parseLong(idString);
 		else
 			return;
-		computer = service.getComputerById(id);
+		computer = service.readById(id);
 		
 		System.out.println("Name: ["+ computer.getName() +"] (e)");
 		answer = null;
@@ -375,7 +383,7 @@ public class ClientConsole {
 			newIdCompanyString = newIdCompanyString.trim();
 			if(!newIdCompanyString.isEmpty())
 				newIdCompany = Long.parseLong(newIdCompanyString);
-			newCompany = service.getCompanyById(newIdCompany);
+			newCompany = CompanyServiceImpl.INSTANCE.readById(newIdCompany);
 			
 			System.out.println("Company :" +newCompany + " (y/n)");
 			answer = null;
@@ -395,7 +403,7 @@ public class ClientConsole {
 		default:			
 			break;
 		}
-		service.updateComputer(id,computer);
+		service.update(computer);
 		
 	};
 	

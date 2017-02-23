@@ -3,38 +3,44 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 
 import com.formation.cdb.model.impl.Computer;
+import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 import com.formation.cdb.service.CDBService;
 
-public class ComputerServiceImpl implements CDBService<Computer> {
+public enum ComputerServiceImpl implements CDBService<Computer> {
 
+	INSTANCE;
+	private ComputerServiceImpl(){};
+	
 	@Override
 	public void create(Computer e) {
-		// TODO Auto-generated method stub
-		
+		 ComputerDaoImpl.INSTANCE.create(e);
+		 return;
 	}
 
 	@Override
 	public Computer readById(long id) {
-		// TODO Auto-generated method stub
-		return null;
+		return ComputerDaoImpl.INSTANCE.readById(id);
 	}
 
 	@Override
 	public void update(Computer e) {
-		// TODO Auto-generated method stub
-		
+		ComputerDaoImpl.INSTANCE.update(e);
 	}
 
 	@Override
 	public void delete(Computer e) {
-		// TODO Auto-generated method stub
-		
+		ComputerDaoImpl.INSTANCE.delete(e);
+		return;
 	}
 
 	@Override
-	public List<Computer> readAllLimit(int offset, int length) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Computer> readAllWithOffsetAndLimit(int offset, int limit) {
+		return ComputerDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit);
+	}
+
+	@Override
+	public int sizeOfTable() {
+		return ComputerDaoImpl.INSTANCE.rowCount();
 	}
 
 }

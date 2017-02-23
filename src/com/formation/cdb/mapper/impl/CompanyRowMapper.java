@@ -10,66 +10,67 @@ import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.model.impl.Company;
 
 public enum CompanyRowMapper implements RowMapper<Company> {
-	
-	INSTANCE;
-	
-	private CompanyRowMapper(){};
-	
-	@Override
-	public Optional<List<Company>> mapListOfObjectsFromMultipleRows( Optional<ResultSet> rs ){
 
-		if( !rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+	INSTANCE;
+
+	private CompanyRowMapper() {
+	};
+
+	@Override
+	public Optional<List<Optional<Company>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
+
+		if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
 			return Optional.empty();
 		}
-		
+
 		try {
-			
-			List<Company>	companies	;
-			long			id			; 
-			String			name		;
-			Company			company		;
-			
-			companies	=	new ArrayList<Company>() ;
-			
-			while	(rs.get().next() ) {
+
+			List<Optional<Company>> companies;
+			long id;
+			String name;
+			Company company;
+
+			companies = new ArrayList<>();
+
+			while (rs.get().next()) {
 				
-				id 			= 	rs.get().getLong("id")		;
-				name 		= 	rs.get().getString("name")	;
-				company 	= 	new Company(id,name)		;		
-					
-				companies.add( company )					;
+				id = rs.get().getLong("id");
+				
+				name = rs.get().getString("name");
+				company = new Company(id, name);
+
+				companies.add(Optional.ofNullable(company));
 			}
-			
-			return Optional.ofNullable( companies )			;
-			
+
+			return Optional.ofNullable(companies);
+
 		} catch (SQLException e) {
-			
-			//TODO
-			
+
+			// TODO
+
 		}
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<Company> mapObjectFromOneRow( Optional<ResultSet> rs ){
-		
-		if( !rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+	public Optional<Company> mapObjectFromOneRow(Optional<ResultSet> rs) {
+
+		if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
 			return Optional.empty();
 		}
 
 		try {
+			
+			ResultSet r = rs.get();
+			r.next();
+			long id = r.getLong("id");
+			String name = r.getString("name");
+			Company company = new Company(id, name);
 
-			ResultSet	r		=	rs.get()				;
-			long 		id		=	r.getLong("id")			;
-			String		name	=	r.getString("name")		; 	
-			Company		company =	new Company(id,name)	;
-			
 			return Optional.ofNullable(company);
-			
+
 		} catch (SQLException e) {
-			
-			//TODO
-			
+
 		}
 		return Optional.empty();
 	}

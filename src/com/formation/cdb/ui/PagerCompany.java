@@ -3,16 +3,16 @@ package com.formation.cdb.ui;
 import java.util.List;
 
 import com.formation.cdb.model.impl.Company;
-import com.formation.cdb.service.ComputerDatabaseService;
+import com.formation.cdb.service.impl.CompanyServiceImpl;
 
 public class PagerCompany extends Pager<Company> {
 
 	public PagerCompany(){
 		super();
 		
-		ComputerDatabaseService service;
-		service = ComputerDatabaseService.getInstance();
-		max = service.rowCountCompany();
+		CompanyServiceImpl service;
+		service = CompanyServiceImpl.INSTANCE;
+		max = service.sizeOfTable();
 		nbPages = max/pageSize;
 	}
 	
@@ -23,12 +23,12 @@ public class PagerCompany extends Pager<Company> {
 		int limit;
 		
 		index = (page>nbPages) ? nbPages:page;
-		ComputerDatabaseService service;
-		service = ComputerDatabaseService.getInstance();
+		CompanyServiceImpl service;
+		service = CompanyServiceImpl.INSTANCE;
 		
 		offset = (index*pageSize);
 		limit = pageSize;
-		return service.getAllCompanies(offset, limit);
+		return service.readAllWithOffsetAndLimit(offset, limit);
 	}
 
 }

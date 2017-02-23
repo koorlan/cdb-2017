@@ -2,12 +2,13 @@ package com.formation.cdb.persistence.connection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Optional;
 
 public enum ConnectionManager {
 	INSTANCE;
 	
-	private Optional<Connection> connection;
+	private Optional<Connection> connection = Optional.empty();
 	
 	private ConnectionManager(){};
 	
@@ -18,7 +19,11 @@ public enum ConnectionManager {
 	
 	public Optional<Connection> getConnection(){
 		if(!connection.isPresent()){
-			connection = Optional.ofNullable(DriverManager.getConnection(url, login, password));
+			try {
+				connection = Optional.ofNullable(DriverManager.getConnection(url, login, password));
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+			}
 		}
 		return connection;
 	}
