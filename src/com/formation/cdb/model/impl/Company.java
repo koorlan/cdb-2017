@@ -1,5 +1,6 @@
 package com.formation.cdb.model.impl;
 
+import java.util.Optional;
 
 public class Company {
 	long id;
@@ -17,8 +18,8 @@ public class Company {
 	/**
 	 * Getters
 	 */
-	public String getName() {
-		return name;
+	public Optional<String> getName() {
+		return Optional.ofNullable(name);
 	}
 	
 	public long getId(){

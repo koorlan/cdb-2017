@@ -1,6 +1,7 @@
 package com.formation.cdb.model.impl;
 
 import java.util.Date;
+import java.util.Optional;
 
 import com.formation.cdb.model.Entity;
 
@@ -33,17 +34,17 @@ public class Computer implements Entity{
 		return id;
 	}
 	
-	public String getName() {
-		return name;
+	public Optional<String> getName() {
+		return Optional.ofNullable(name);
 	}
-	public Date getIntroduced() {
-		return introduced;
+	public Optional<Date> getIntroduced() {
+		return Optional.ofNullable(introduced);
 	}
-	public Date getDiscontinued() {
-		return discontinued;
+	public Optional<Date> getDiscontinued() {
+		return Optional.ofNullable(discontinued);
 	}
-	public Company getCompany() {
-		return company;
+	public Optional<Company> getCompany() {
+		return Optional.ofNullable(company);
 	}
 
 	public void setName(String name) {
