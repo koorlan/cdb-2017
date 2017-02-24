@@ -1,4 +1,4 @@
-package com.formation.cdb.model.impl;
+package com.formation.cdb.entities.impl;
 
 import java.util.Optional;
 

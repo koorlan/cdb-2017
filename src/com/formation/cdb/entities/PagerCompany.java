@@ -1,9 +1,9 @@
-package com.formation.cdb.ui;
+package com.formation.cdb.entities;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.entities.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 
 public class PagerCompany extends Pager<Company> {

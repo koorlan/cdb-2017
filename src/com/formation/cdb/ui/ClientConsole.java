@@ -9,8 +9,10 @@ import java.util.Scanner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.formation.cdb.model.impl.Company;
-import com.formation.cdb.model.impl.Computer;
+import com.formation.cdb.entities.PagerCompany;
+import com.formation.cdb.entities.PagerComputer;
+import com.formation.cdb.entities.impl.Company;
+import com.formation.cdb.entities.impl.Computer;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;

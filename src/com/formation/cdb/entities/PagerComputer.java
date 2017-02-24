@@ -1,10 +1,9 @@
-package com.formation.cdb.ui;
+package com.formation.cdb.entities;
 
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.model.impl.Computer;
-
+import com.formation.cdb.entities.impl.Computer;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 
 

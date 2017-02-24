@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 import java.sql.Timestamp;
 
+import com.formation.cdb.entities.impl.Company;
+import com.formation.cdb.entities.impl.Computer;
 import com.formation.cdb.mapper.RowMapper;
-import com.formation.cdb.model.impl.Company;
-import com.formation.cdb.model.impl.Computer;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.sun.media.jfxmedia.logging.Logger;
 

@@ -1,4 +1,4 @@
-package com.formation.cdb.ui;
+package com.formation.cdb.entities;
 
 import java.util.List;
 import java.util.Optional;

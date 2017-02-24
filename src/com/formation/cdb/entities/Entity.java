@@ -1,4 +1,4 @@
-package com.formation.cdb.model;
+package com.formation.cdb.entities;
 
 public interface Entity {
 

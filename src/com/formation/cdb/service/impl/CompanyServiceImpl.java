@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.formation.cdb.model.impl.Company;
+import com.formation.cdb.entities.impl.Company;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.service.CDBService;
 

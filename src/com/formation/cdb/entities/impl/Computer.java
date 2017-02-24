@@ -1,10 +1,10 @@
-package com.formation.cdb.model.impl;
+package com.formation.cdb.entities.impl;
 
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 
-import com.formation.cdb.model.Entity;
+import com.formation.cdb.entities.Entity;
 
 
 public class Computer implements Entity{

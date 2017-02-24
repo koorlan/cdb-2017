@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.formation.cdb.entities.impl.Company;
 import com.formation.cdb.mapper.RowMapper;
-import com.formation.cdb.model.impl.Company;
 
 public enum CompanyRowMapper implements RowMapper<Company> {
 

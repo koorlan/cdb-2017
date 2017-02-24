@@ -3,7 +3,7 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.model.impl.Computer;
+import com.formation.cdb.entities.impl.Computer;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 import com.formation.cdb.service.CDBService;
 
