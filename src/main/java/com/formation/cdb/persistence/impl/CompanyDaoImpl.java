@@ -1,18 +1,16 @@
 package com.formation.cdb.persistence.impl;
 
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.formation.cdb.entities.impl.Company;
+import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.mapper.impl.CompanyRowMapper;
@@ -21,111 +19,111 @@ import com.formation.cdb.persistence.connection.ConnectionManager;
 
 public enum CompanyDaoImpl implements Dao<Company> {
 
-	INSTANCE;
-	
-	private CompanyDaoImpl(){}
-	
-	private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-	
-	@Override
-	public void create(Optional<Company> e) {
-		LOGGER.warn("Method Create is not implemented");
-	}
-	
-	private static final String READ_BY_ID = "SELECT * FROM company WHERE id=?";
+    INSTANCE;
+    /**
+     * Private constructor for Singleton Implementation.
+     */
+    CompanyDaoImpl() {
+    }
 
-	@Override
-	public Optional<Company> readById(long id) {
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    @Override
+    public void create(Optional<Company> e) {
+        LOGGER.warn("Method Create is not implemented");
+    }
 
-		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-		
-		if(!connection.isPresent()) {
-			LOGGER.warn("can't get a connection");
-			return Optional.empty();
-		}
-		
-			
-		try {
-			
-			PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
-			stmt.setLong(1, id);
-			Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
-			Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
-			return company;
-			
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		} finally {
-			ConnectionManager.close(connection);
-		}
-	}
+    private static final String READ_BY_ID = "SELECT * FROM company WHERE id=?";
 
-	@Override
-	public void update(Optional<Company> e) {
-		LOGGER.warn("Method update is not implemented");
-	}
+    @Override
+    public Optional<Company> readById(long id) {
 
-	@Override
-	public void delete(Optional<Company> e) {
-		LOGGER.warn("Method delete is not implemented");
-	}
+        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
-	private static final String READ_ALL_LIMIT = "SELECT * FROM company LIMIT ?,?";
-	
-	@Override
-	public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
+        if (!connection.isPresent()) {
+            LOGGER.warn("can't get a connection");
+            return Optional.empty();
+        }
 
-		if (offset < 0 || limit < 0) {
-			LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-			return Optional.empty();
-		}
+        try {
 
-		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+            PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
+            stmt.setLong(1, id);
+            Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
+            Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
+            return company;
 
-		if (!connection.isPresent()) {
-			LOGGER.warn("can't get a connection");
-			return Optional.empty();
-		}
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
+        }
+    }
 
-		try {
-			PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-			stmt.setInt(1, offset);
-			stmt.setInt(2, limit);
+    @Override
+    public void update(Optional<Company> e) {
+        LOGGER.warn("Method update is not implemented");
+    }
 
-			Optional<ResultSet> rs;
-			rs = Optional.ofNullable(stmt.executeQuery());
+    @Override
+    public void delete(Optional<Company> e) {
+        LOGGER.warn("Method delete is not implemented");
+    }
 
-			Optional<List<Optional<Company>>> companies = CompanyRowMapper.INSTANCE
-					.mapListOfObjectsFromMultipleRows(rs);
+    private static final String READ_ALL_LIMIT = "SELECT * FROM company LIMIT ?,?";
 
-			return companies;
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		}
-	}
+    @Override
+    public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
 
-	private static final String ROW_COUNT = "SELECT COUNT(*) c FROM company";
-	
-	@Override
-	public int rowCount() {
-		int count = 0;
-		Optional<ResultSet> rs;
-		Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+        if (offset < 0 || limit < 0) {
+            LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
+            return Optional.empty();
+        }
 
-		if (!connection.isPresent()) {
-			LOGGER.warn("can't get a connection");
-			return 0;
-		}
+        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
-		try {
-			rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
-			count = RowMapper.mapCountResult(rs);
-			return count;
-		} catch (SQLException e) {
-			throw new PersistenceException(e);
-		}
-	};
-	
-	
+        if (!connection.isPresent()) {
+            LOGGER.warn("can't get a connection");
+            return Optional.empty();
+        }
+
+        try {
+            PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
+            stmt.setInt(1, offset);
+            stmt.setInt(2, limit);
+
+            Optional<ResultSet> rs;
+            rs = Optional.ofNullable(stmt.executeQuery());
+
+            Optional<List<Optional<Company>>> companies = CompanyRowMapper.INSTANCE
+                    .mapListOfObjectsFromMultipleRows(rs);
+
+            return companies;
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
+        }
+    }
+
+    private static final String ROW_COUNT = "SELECT COUNT(*) c FROM company";
+
+    @Override
+    public int rowCount() {
+        int count = 0;
+        Optional<ResultSet> rs;
+        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
+
+        if (!connection.isPresent()) {
+            LOGGER.warn("can't get a connection");
+            return 0;
+        }
+
+        try {
+            rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+            count = RowMapper.mapCountResult(rs);
+            return count;
+        } catch (SQLException e) {
+            throw new PersistenceException(e);
+        }
+    };
+
 }

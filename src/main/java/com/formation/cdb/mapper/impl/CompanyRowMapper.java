@@ -6,73 +6,76 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.entities.impl.Company;
+import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.mapper.RowMapper;
 
 public enum CompanyRowMapper implements RowMapper<Company> {
 
-	INSTANCE;
+    INSTANCE;
 
-	private CompanyRowMapper() {
-	};
+    /**
+     * Constructor private for singleton implementation.
+     */
+    CompanyRowMapper() {
+    };
 
-	@Override
-	public Optional<List<Optional<Company>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
+    @Override
+    public Optional<List<Optional<Company>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
 
-		if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
-			return Optional.empty();
-		}
+        if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+            return Optional.empty();
+        }
 
-		try {
+        try {
 
-			List<Optional<Company>> companies;
-			long id;
-			String name;
-			Company company;
+            List<Optional<Company>> companies;
+            long id;
+            String name;
+            Company company;
 
-			companies = new ArrayList<>();
+            companies = new ArrayList<>();
 
-			while (rs.get().next()) {
-				
-				id = rs.get().getLong("id");
-				
-				name = rs.get().getString("name");
-				company = new Company(id, name);
+            while (rs.get().next()) {
 
-				companies.add(Optional.ofNullable(company));
-			}
+                id = rs.get().getLong("id");
 
-			return Optional.ofNullable(companies);
+                name = rs.get().getString("name");
+                company = new Company(id, name);
 
-		} catch (SQLException e) {
+                companies.add(Optional.ofNullable(company));
+            }
 
-			// TODO
+            return Optional.ofNullable(companies);
 
-		}
-		return Optional.empty();
-	}
+        } catch (SQLException e) {
 
-	@Override
-	public Optional<Company> mapObjectFromOneRow(Optional<ResultSet> rs) {
+            // TODO
 
-		if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
-			return Optional.empty();
-		}
+        }
+        return Optional.empty();
+    }
 
-		try {
-			
-			ResultSet r = rs.get();
-			r.next();
-			long id = r.getLong("id");
-			String name = r.getString("name");
-			Company company = new Company(id, name);
+    @Override
+    public Optional<Company> mapObjectFromOneRow(Optional<ResultSet> rs) {
 
-			return Optional.ofNullable(company);
+        if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+            return Optional.empty();
+        }
 
-		} catch (SQLException e) {
+        try {
 
-		}
-		return Optional.empty();
-	}
+            ResultSet r = rs.get();
+            r.next();
+            long id = r.getLong("id");
+            String name = r.getString("name");
+            Company company = new Company(id, name);
+
+            return Optional.ofNullable(company);
+
+        } catch (SQLException e) {
+
+        }
+        return Optional.empty();
+    }
 
 }

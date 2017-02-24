@@ -7,53 +7,73 @@ import java.util.Optional;
 
 public interface RowMapper<T> {
 
-	Optional<List<Optional<T>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs);
+    /**
+     * Help to map database column to object.
+     * @param rs a result set from the query.
+     * @return Constructed objects on a list.
+     */
+    Optional<List<Optional<T>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs);
 
-	Optional<T> mapObjectFromOneRow(Optional<ResultSet> rs);
+    /**
+     * Same a multiple but for one row.
+     * @param rs a result set from the query.
+     * @return Constructed objects on a list.
+     */
+    Optional<T> mapObjectFromOneRow(Optional<ResultSet> rs);
 
-	public static int countRowsOfResultSet(Optional<ResultSet> rs) {
+    /**
+     * Count how result are on the result set.
+     * @param rs the result set.
+     * @return how many rows on the result set.
+     */
+    static int countRowsOfResultSet(Optional<ResultSet> rs) {
 
-		int count = 0;
+        int count = 0;
 
-		if (!rs.isPresent()) {
-			return count;
-		}
+        if (!rs.isPresent()) {
+            return count;
+        }
 
-		ResultSet r = rs.get();
+        ResultSet r = rs.get();
 
-		try {
+        try {
 
-			r.last();
-			count = r.getRow();
-			r.beforeFirst();
+            r.last();
+            count = r.getRow();
+            r.beforeFirst();
 
-		} catch (SQLException e) {
+        } catch (SQLException e) {
 
-			// TODO Auto-generated catch block
+            // TODO Auto-generated catch block
 
-		}
-		return count;
-	}
+        }
+        return count;
+    }
 
-	public static int mapCountResult(Optional<ResultSet> rs) {
+    /**
+     * Used to have the result of a COUNT(*) query.
+     * @param rs the result set.
+     * @return the count() SQL function result.
+     */
+    static int mapCountResult(Optional<ResultSet> rs) {
 
-		int count = 0;
+        int count = 0;
 
-		if (!rs.isPresent()) {
-			
-			return count;
-		}
+        if (!rs.isPresent()) {
 
-		ResultSet r = rs.get();
+            return count;
+        }
 
-		try {
-			r.next();
-			count = r.getInt("c");
-	
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+        ResultSet r = rs.get();
 
-		}
-		return count;
-	}
+        try {
+            r.next();
+            count = r.getInt("c");
+
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+
+        }
+        return count;
+    }
 }
