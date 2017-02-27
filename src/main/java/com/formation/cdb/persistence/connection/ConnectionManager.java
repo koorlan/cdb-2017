@@ -1,9 +1,12 @@
 package com.formation.cdb.persistence.connection;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,16 +20,42 @@ public enum ConnectionManager {
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    private String url;
+    private String user;
+    private String password;
+
     /**
      * Private constructor for the singleton implementation.
      */
     ConnectionManager() {
-    };
+        String filename = "config.properties";
+        Properties prop = new Properties();
+        InputStream input = null;
+        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        if (input == null) {
+            System.out.println("Sorry, unable to find " + filename);
+        return;
+        }
+        try {
+            prop.load(input);
+            StringBuilder sb = new StringBuilder();
+            sb.append("jdbc:mysql://");
+            sb.append(prop.getProperty("db_addr"));
+            sb.append(':');
+            sb.append(prop.getProperty("db_port"));
+            sb.append('/');
+            sb.append(prop.getProperty("db_name"));
+            sb.append("?zeroDateTimeBehavior=convertToNull");
 
-    // TODO Load this parameter from a configuration file
-    private String url = "jdbc:mysql://localhost:3306/computer-database-db?zeroDateTimeBehavior=convertToNull";
-    private String login = "admincdb";
-    private String password = "qwerty1234";
+            url = sb.toString();
+            user = prop.getProperty("db_user");
+            password = prop.getProperty("db_password");
+
+        } catch (IOException e) {
+            LOGGER.error("Error on config file");
+            throw new PersistenceException(e);
+        }
+    };
 
     /**
      * try to retrieve a connection from the Driver.
@@ -35,7 +64,7 @@ public enum ConnectionManager {
     public Optional<Connection> getConnection() {
         if (!connection.isPresent()) {
             try {
-                connection = Optional.ofNullable(DriverManager.getConnection(url, login, password));
+                connection = Optional.ofNullable(DriverManager.getConnection(url, user, password));
             } catch (SQLException e) {
                 // TODO Auto-generated catch block
             }
