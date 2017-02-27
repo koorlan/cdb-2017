@@ -10,7 +10,7 @@ public class PagerCompany extends Pager<Company> {
 
     /**
      * Constructor of PagerCompany.
-     * Dedicated Pager for Companies (Page<Companies>).
+     * Dedicated Pager for Companies (Page Companies).
      */
     public PagerCompany() {
         super();

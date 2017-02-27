@@ -10,7 +10,7 @@ public class PagerComputer extends Pager<Computer> {
 
     /**
      * Constructor of PagerComputer. Dedicated Pager for Companies
-     * (Page<Computer>).
+     * (Page Computer).
      */
     public PagerComputer() {
         super();

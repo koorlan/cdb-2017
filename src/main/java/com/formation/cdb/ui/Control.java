@@ -33,8 +33,9 @@ public class Control {
 
             valid = valid && isIdGreaterThanZero(computer.getId());
             valid = valid && isValidString(computer.getName());
-            valid = valid && isIntroducedDateBeforeDiscontinuedDate(computer.getIntroduced(), computer.getDiscontinued());
-
+            if (computer.getIntroduced().isPresent() && computer.getDiscontinued().isPresent()) {
+                valid = valid && isIntroducedDateBeforeDiscontinuedDate(computer.getIntroduced(), computer.getDiscontinued());
+            }
             if (computer.getCompany().isPresent()) {
                 Company company = computer.getCompany().get();
                 valid = valid && isIdGreaterThanZero(company.getId());
