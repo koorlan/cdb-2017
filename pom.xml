@@ -14,12 +14,12 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
-		 <checkstyle.config.location>config/checkstyle/checkstyle.xml</checkstyle.config.location>
+		<checkstyle.config.location>config/checkstyle/checkstyle.xml</checkstyle.config.location>
 	</properties>
 
-	 <build>
-    <plugins>
-      <plugin>
+	<build>
+		<plugins>
+			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>2.4.1</version>
@@ -30,25 +30,25 @@
 					</descriptorRefs>
 					<!-- MainClass in mainfest make a executable jar -->
 					<archive>
-					  <manifest>
-						<mainClass>com.formation.cdb.ui.ClientConsole</mainClass>
-					  </manifest>
+						<manifest>
+							<mainClass>com.formation.cdb.ui.ClientConsole</mainClass>
+						</manifest>
 					</archive>
 
 				</configuration>
 				<executions>
-				  <execution>
-					<id>make-assembly</id>
-                                        <!-- bind to the packaging phase -->
-					<phase>package</phase>
-					<goals>
-						<goal>single</goal>
-					</goals>
-				  </execution>
+					<execution>
+						<id>make-assembly</id>
+						<!-- bind to the packaging phase -->
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
 				</executions>
 			</plugin>
-    </plugins>
-  </build>
+		</plugins>
+	</build>
 
 
 	<dependencies>
@@ -72,23 +72,31 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.23</version>
 		</dependency>
-		
+
 		<!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
 		<dependency>
 			<groupId>mysql</groupId>
 			<artifactId>mysql-connector-java</artifactId>
 			<version>5.1.40</version>
 		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-lang/commons-lang -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+
 	</dependencies>
-	
-	  <reporting>
-    <plugins>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-checkstyle-plugin</artifactId>
-        <version>2.9.1</version>
-      </plugin>
-    </plugins>
-  </reporting>
-	
+
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.9.1</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
 </project>

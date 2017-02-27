@@ -249,13 +249,13 @@ public class ClientConsole {
         dateIntroducedString = scanner.nextLine();
         dateIntroducedString = dateIntroducedString.trim();
         if (!dateIntroducedString.isEmpty()) {
-            introduced = DateUtil.StringToDate(dateIntroducedString);
+            introduced = DateUtil.stringToDate(dateIntroducedString);
         }
         System.out.println("Please enter the date it was discontinued (DD-MM-YYYY) [Optional]:");
         dateDiscontinuedString = scanner.nextLine();
         dateDiscontinuedString = dateDiscontinuedString.trim();
         if (!dateDiscontinuedString.isEmpty()) {
-            discontinued = DateUtil.StringToDate(dateDiscontinuedString);
+            discontinued = DateUtil.stringToDate(dateDiscontinuedString);
         }
         System.out.println("Please enter the company id of the computer manufacturer [Optional]:");
         companyIdString = scanner.nextLine();
@@ -363,7 +363,7 @@ public class ClientConsole {
             newDateIntroducedString = scanner.nextLine();
             newDateIntroducedString = newDateIntroducedString.trim();
             if (!newDateIntroducedString.isEmpty()) {
-                newDateIntroduced = DateUtil.StringToDate(newDateIntroducedString);
+                newDateIntroduced = DateUtil.stringToDate(newDateIntroducedString);
             }
             computer.setIntroduced(newDateIntroduced);
             break;
@@ -383,7 +383,7 @@ public class ClientConsole {
             newDateDiscontinuedString = scanner.nextLine();
             newDateDiscontinuedString = newDateDiscontinuedString.trim();
             if (!newDateDiscontinuedString.isEmpty()) {
-                newDateDiscontinued = DateUtil.StringToDate(newDateDiscontinuedString);
+                newDateDiscontinued = DateUtil.stringToDate(newDateDiscontinuedString);
             }
             computer.setDiscontinued(newDateDiscontinued);
             break;
