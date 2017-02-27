@@ -66,7 +66,7 @@ public class Control {
                 Optional<LocalDate> testDate = date.map(DateUtil::stringToDate);
                 return testDate.isPresent();
             } catch (DateTimeParseException e) {
-                LOGGER.warn("There were a problem parsing the date: " + date.get());
+                LOGGER.warn("There were a problem parsing the date: " + date.get() + e);
                 return false;
             }
         }

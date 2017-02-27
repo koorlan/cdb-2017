@@ -242,19 +242,15 @@ public class ClientConsole {
 
         System.out.println("Please enter computer name [Required]:");
         name = scanner.nextLine();
-        if (name.isEmpty()) {
-            return;
-        }
+
         System.out.println("Please enter the date it was introduced (DD-MM-YYYY) [Optional]:");
         dateIntroducedString = scanner.nextLine();
-        dateIntroducedString = dateIntroducedString.trim();
-        if (!dateIntroducedString.isEmpty()) {
+        if (Control.isValidStringDate(Optional.ofNullable(dateIntroducedString))) {
             introduced = DateUtil.stringToDate(dateIntroducedString);
         }
         System.out.println("Please enter the date it was discontinued (DD-MM-YYYY) [Optional]:");
         dateDiscontinuedString = scanner.nextLine();
-        dateDiscontinuedString = dateDiscontinuedString.trim();
-        if (!dateDiscontinuedString.isEmpty()) {
+        if (Control.isValidStringDate(Optional.ofNullable(dateDiscontinuedString))) {
             discontinued = DateUtil.stringToDate(dateDiscontinuedString);
         }
         System.out.println("Please enter the company id of the computer manufacturer [Optional]:");
@@ -265,11 +261,10 @@ public class ClientConsole {
         }
 
         Optional<Company> company = CompanyServiceImpl.INSTANCE.readById(companyId);
-        Computer computer = new Computer(0, name, introduced, discontinued, company.orElse(null));
-
-        //String test = Optional.ofNullable(computer).map(Computer::getCompany).map(Company::getName).orElse("UNKNOWN");
-
-        service.create(Optional.ofNullable(computer));
+        Computer computer = new Computer(1, name, introduced, discontinued, company.orElse(null));
+        if (Control.isValidComputer(Optional.ofNullable(computer))) {
+            service.create(Optional.ofNullable(computer));
+        }
     };
 
     /**
@@ -426,8 +421,9 @@ public class ClientConsole {
         default:
             break;
         }
-        service.update(Optional.ofNullable(computer));
-
+        if (Control.isValidComputer(Optional.ofNullable(computer))) {
+            service.update(Optional.ofNullable(computer));
+        }
     };
     /**
      * Quit the program.
