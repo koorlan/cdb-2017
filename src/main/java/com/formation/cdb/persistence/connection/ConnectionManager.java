@@ -33,7 +33,7 @@ public enum ConnectionManager {
         InputStream input = null;
         input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
-            System.out.println("Sorry, unable to find " + filename);
+            LOGGER.error("Sorry, unable to find " + filename);
         return;
         }
         try {
