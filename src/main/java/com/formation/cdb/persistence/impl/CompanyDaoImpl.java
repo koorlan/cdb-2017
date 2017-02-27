@@ -24,14 +24,14 @@ public enum CompanyDaoImpl implements Dao<Company> {
 
     INSTANCE;
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
-    String READ_BY_ID = "SELECT * FROM company WHERE id=?";
-    String READ_ALL_LIMIT = "SELECT * FROM company LIMIT ?,?";
-    String ROW_COUNT = "SELECT COUNT(*) c FROM company";
+    String READ_BY_ID;
+    String READ_ALL_LIMIT;
+    String ROW_COUNT;
     /**
      * Private constructor for Singleton Implementation.
      */
     CompanyDaoImpl() {
-      //construct queries from configuration file;
+        //construct queries from configuration file;
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
@@ -48,11 +48,9 @@ public enum CompanyDaoImpl implements Dao<Company> {
             sb.append("SELECT * FROM ");
             sb.append(prop.getProperty("db_company_table"));
             sb.append(" WHERE ");
-            sb.append(prop.getProperty("db_company_id"));
+            sb.append(prop.getProperty("db_company_col_id"));
             sb.append("=?;");
-
             READ_BY_ID = sb.toString();
-
             //READ_ALL_LIMIT
 
             sb = new StringBuilder();
@@ -115,7 +113,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
 
     @Override
     public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
-        
+
         if (offset < 0 || limit < 0) {
             LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
             return Optional.empty();

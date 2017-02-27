@@ -41,7 +41,6 @@ public interface RowMapper<T> {
             r.last();
             count = r.getRow();
             r.beforeFirst();
-
         } catch (SQLException e) {
 
             // TODO Auto-generated catch block
@@ -60,7 +59,6 @@ public interface RowMapper<T> {
         int count = 0;
 
         if (!rs.isPresent()) {
-
             return count;
         }
 
@@ -69,7 +67,6 @@ public interface RowMapper<T> {
         try {
             r.next();
             count = r.getInt("c");
-
         } catch (SQLException e) {
             // TODO Auto-generated catch block
 
