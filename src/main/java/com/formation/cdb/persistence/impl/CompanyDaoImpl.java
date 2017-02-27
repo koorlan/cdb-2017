@@ -1,11 +1,14 @@
 package com.formation.cdb.persistence.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,20 +23,60 @@ import com.formation.cdb.persistence.connection.ConnectionManager;
 public enum CompanyDaoImpl implements Dao<Company> {
 
     INSTANCE;
+    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    String READ_BY_ID = "SELECT * FROM company WHERE id=?";
+    String READ_ALL_LIMIT = "SELECT * FROM company LIMIT ?,?";
+    String ROW_COUNT = "SELECT COUNT(*) c FROM company";
     /**
      * Private constructor for Singleton Implementation.
      */
     CompanyDaoImpl() {
-    }
+      //construct queries from configuration file;
+        String filename = "config.properties";
+        Properties prop = new Properties();
+        InputStream input = null;
+        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        if (input == null) {
+            LOGGER.error("Sorry, unable to find " + filename);
+            throw new PersistenceException("Unable to acces config file at " + filename);
+        }
 
-    private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+        try {
+            prop.load(input);
+            StringBuilder sb = new StringBuilder();
+            //READ_BY_ID
+            sb.append("SELECT * FROM ");
+            sb.append(prop.getProperty("db_company_table"));
+            sb.append(" WHERE ");
+            sb.append(prop.getProperty("db_company_id"));
+            sb.append("=?;");
+
+            READ_BY_ID = sb.toString();
+
+            //READ_ALL_LIMIT
+
+            sb = new StringBuilder();
+            sb.append("SELECT * FROM ");
+            sb.append(prop.getProperty("db_company_table"));
+            sb.append(" LIMIT ?,?;");
+
+            READ_ALL_LIMIT = sb.toString();
+            //ROW_COUNT
+            sb = new StringBuilder();
+            sb.append("SELECT COUNT(*) c FROM ");
+            sb.append(prop.getProperty("db_company_table") + ";");
+
+            READ_ALL_LIMIT = sb.toString();
+        } catch (IOException e) {
+            LOGGER.error("Error on config file");
+            throw new PersistenceException(e);
+        }
+    }
 
     @Override
     public void create(Optional<Company> e) {
         LOGGER.warn("Method Create is not implemented");
     }
-
-    private static final String READ_BY_ID = "SELECT * FROM company WHERE id=?";
 
     @Override
     public Optional<Company> readById(long id) {
@@ -70,8 +113,6 @@ public enum CompanyDaoImpl implements Dao<Company> {
         LOGGER.warn("Method delete is not implemented");
     }
 
-    private static final String READ_ALL_LIMIT = "SELECT * FROM company LIMIT ?,?";
-
     @Override
     public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
 
@@ -103,8 +144,6 @@ public enum CompanyDaoImpl implements Dao<Company> {
             throw new PersistenceException(e);
         }
     }
-
-    private static final String ROW_COUNT = "SELECT COUNT(*) c FROM company";
 
     @Override
     public int rowCount() {

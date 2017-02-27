@@ -1,5 +1,7 @@
 package com.formation.cdb.persistence.impl;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -7,6 +9,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,15 +26,122 @@ import com.formation.cdb.mapper.impl.ComputerRowMapper;
 public enum ComputerDaoImpl implements Dao<Computer> {
 
     INSTANCE;
+
+    String INSERT;
+    String READ_BY_ID;
+    String UPDATE;
+    String DELETE;
+    String READ_ALL_LIMIT;
+    String ROW_COUNT;
     /**
      * Private constructor for Singleton Implementation.
      */
     ComputerDaoImpl() {
+        //construct queries from configuration file;
+        String filename = "config.properties";
+        Properties prop = new Properties();
+        InputStream input = null;
+        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        if (input == null) {
+            LOGGER.error("Sorry, unable to find " + filename);
+            throw new PersistenceException("Unable to acces config file at " + filename);
+        }
+
+        try {
+            prop.load(input);
+            StringBuilder sb = new StringBuilder();
+            //INSERT
+            sb.append("INSERT INTO ");
+            sb.append(prop.getProperty("db_computer_table") + " (");
+            sb.append(prop.getProperty("db_computer_col_name") + ",");
+            sb.append(prop.getProperty("db_computer_col_introduced") + ",");
+            sb.append(prop.getProperty("db_computer_col_discontinued") + ",");
+            sb.append(prop.getProperty("db_computer_col_company_id"));
+            sb.append(") values (?,?,?,?);");
+
+            INSERT = sb.toString();
+            //READ_BY_ID
+            sb = new StringBuilder();
+            sb.append("SELECT ");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id") + ",");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_name") + ",");
+            sb.append(prop.getProperty("db_computer_col_introduced") + ",");
+            sb.append(prop.getProperty("db_computer_col_discontinued") + ",");
+            sb.append(prop.getProperty("db_computer_col_company_id") + ",");
+            sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_name"));
+            sb.append(" AS c_name FROM ");
+            sb.append(prop.getProperty("db_computer_table"));
+            sb.append(" LEFT JOIN ");
+            sb.append(prop.getProperty("db_company_table"));
+            sb.append(" ON ");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id"));
+            sb.append('=');
+            sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_id"));
+            sb.append(" WHERE ");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id"));
+            sb.append("=?;");
+
+            READ_BY_ID = sb.toString();
+            //DELETE
+            sb = new StringBuilder();
+            sb.append("DELETE FROM ");
+            sb.append(prop.getProperty("db_computer_table"));
+            sb.append(" WHERE ");
+            sb.append(prop.getProperty("db_computer_col_id"));
+            sb.append("=?;");
+
+            DELETE = sb.toString();
+            //UPDATE
+            sb = new StringBuilder();
+            sb.append("UPDATE ");
+            sb.append(prop.getProperty("db_computer_table"));
+            sb.append(" SET ");
+            sb.append(prop.getProperty("db_computer_col_name") + "=?,");
+            sb.append(prop.getProperty("db_computer_col_introduced") + "=?,");
+            sb.append(prop.getProperty("db_computer_col_discontinued") + "=?,");
+            sb.append(prop.getProperty("db_computer_col_company_id") + "=?");
+            sb.append(" WHERE ");
+            sb.append(prop.getProperty("db_computer_col_id") + "=?;");
+
+            UPDATE = sb.toString();
+            //READ_ALL_LIMIT
+            sb = new StringBuilder();
+
+            sb.append("SELECT ");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id") + ",");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_name") + ",");
+            sb.append(prop.getProperty("db_computer_col_introduced") + ",");
+            sb.append(prop.getProperty("db_computer_col_discontinued") + ",");
+            sb.append(prop.getProperty("db_computer_col_company_id") + ",");
+            sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_name"));
+            sb.append(" AS c_name FROM ");
+            sb.append(prop.getProperty("db_computer_table"));
+            sb.append(" LEFT JOIN ");
+            sb.append(prop.getProperty("db_company_table"));
+            sb.append(" ON ");
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id"));
+            sb.append('=');
+            sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_id"));
+            sb.append(" LIMIT ?,?;");
+
+            READ_ALL_LIMIT = sb.toString();
+            //ROW_COUNT
+
+            sb = new StringBuilder();
+            sb.append("SELECT COUNT(*) c FROM ");
+            sb.append(prop.getProperty("db_computer_table") + ";");
+
+            ROW_COUNT = sb.toString();
+
+        } catch (IOException e) {
+            LOGGER.error("Error on config file");
+            throw new PersistenceException(e);
+        }
     }
 
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    private static final String INSERT = "INSERT INTO computer (name,introduced,discontinued,company_id) values (?,?,?,?);";
+
 
     @Override
     public void create(Optional<Computer> e) {
@@ -67,8 +177,6 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
     }
 
-    private static final String READ_BY_ID = "SELECT computer.id AS id,computer.name AS name,introduced,discontinued,company_id, company.name AS c_name from computer LEFT JOIN company ON computer.company_id=company.id WHERE computer.id=?";
-
     @Override
     public Optional<Computer> readById(long id) {
 
@@ -97,8 +205,6 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             throw new PersistenceException(e);
         }
     }
-
-    private static final String UPDATE = "UPDATE computer SET name=?,introduced=?,discontinued=?,company_id=? WHERE id=?";
 
     @Override
     public void update(Optional<Computer> e) {
@@ -136,8 +242,6 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
     }
 
-    private static final String DELETE = "DELETE FROM computer WHERE id=?";
-
     @Override
     public void delete(Optional<Computer> e) {
 
@@ -167,8 +271,6 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
     }
 
-    //private static final String READ_ALL_LIMIT = "Select * from computer LIMIT ?,?";
-    private static final String READ_ALL_LIMIT = "SELECT computer.id AS id,computer.name AS name,introduced,discontinued,company_id, company.name AS c_name from computer LEFT JOIN company ON computer.company_id=company.id LIMIT ?,?";
     @Override
     public Optional<List<Optional<Computer>>> readAllWithOffsetAndLimit(int offset, int limit) {
 
@@ -203,8 +305,6 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         }
 
     }
-
-    private static final String ROW_COUNT = "SELECT COUNT(*) c FROM computer";
 
     @Override
     public int rowCount() {
