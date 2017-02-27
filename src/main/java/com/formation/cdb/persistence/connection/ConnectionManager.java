@@ -34,7 +34,7 @@ public enum ConnectionManager {
         input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
             LOGGER.error("Sorry, unable to find " + filename);
-        return;
+            throw new PersistenceException("Unable to acces config file at " + filename);
         }
         try {
             prop.load(input);
