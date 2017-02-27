@@ -66,7 +66,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
             sb.append("SELECT COUNT(*) c FROM ");
             sb.append(prop.getProperty("db_company_table") + ";");
 
-            READ_ALL_LIMIT = sb.toString();
+            ROW_COUNT = sb.toString();
         } catch (IOException e) {
             LOGGER.error("Error on config file");
             throw new PersistenceException(e);
@@ -115,7 +115,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
 
     @Override
     public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
-
+        
         if (offset < 0 || limit < 0) {
             LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
             return Optional.empty();
