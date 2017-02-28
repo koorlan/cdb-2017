@@ -64,9 +64,10 @@ public enum ConnectionManager {
     public Optional<Connection> getConnection() {
         if (!connection.isPresent()) {
             try {
+                Class.forName("com.mysql.jdbc.Driver");
                 connection = Optional.ofNullable(DriverManager.getConnection(url, user, password));
-            } catch (SQLException e) {
-                // TODO Auto-generated catch block
+            } catch (SQLException | ClassNotFoundException e) {
+                LOGGER.error("Can't get a connection", e);
             }
         }
         return connection;

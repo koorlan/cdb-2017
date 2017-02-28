@@ -37,8 +37,6 @@ public class CompanyRowMapperTest {
         prop.load(input);
         COL_ID = prop.getProperty("db_company_col_id");
         COL_NAME = prop.getProperty("db_company_col_name");
-
-
     }
     
     @Before
