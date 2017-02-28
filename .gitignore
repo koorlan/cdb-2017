@@ -1,5 +1,7 @@
 # Created by https://www.gitignore.io/api/java,eclipse,maven
 
+WebContent/static/
+
 ### Eclipse ###
 
 .metadata
