@@ -49,7 +49,13 @@ public abstract class Pager<T> {
             page--;
         }
     }
-
+    
+    public void goTo(int index){
+        if (index < nbPages && index > 0) {
+            page = index;
+        }
+    }
+    
     public Optional<List<Optional<T>>> getCurrentPage() {
         return getPage(page);
     }
@@ -60,5 +66,15 @@ public abstract class Pager<T> {
 
     public int getNbPages() {
         return nbPages;
+    }
+    
+    public int getPageSize(){
+        return pageSize;
+    }
+    
+    public void setPageSize(int pageSize){
+        page = (page * this.pageSize) / pageSize;   
+        this.pageSize = pageSize;
+        nbPages = max / pageSize;
     }
 }
