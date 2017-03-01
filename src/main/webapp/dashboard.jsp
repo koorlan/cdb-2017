@@ -34,7 +34,7 @@
 				</form>
 			</div>
 			<div class="pull-right">
-				<a class="btn btn-success" id="addComputer" href="addComputer.jsp">Add
+				<a class="btn btn-success" id="addComputer" href="database?action=add">Add
 					Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 					onclick="$.fn.toggleEditMode();">Edit</a>
 			</div>
@@ -91,14 +91,26 @@
 	<div class="container text-center">
 		<ul class="pagination">
 			<li><a href="database?action=prev" aria-label="Previous"> <span
-					aria-hidden="true">&raquo;</span></a></li> Max pages : ${maxIndexPage}
-			Current page : ${currentIndexPage}
-			<c:forEach var="i" begin="1" end="10">
-				<li><a href="database?action=goto&page=${i}">${i}</a></li>
-			</c:forEach>
+					aria-hidden="true">&laquo;</span>
+					<c:forEach var="i" begin="1" end="4" varStatus="loop">
+					 	<c:choose>
+							<c:when test="${currentIndexPage-loop.end+i >= 0}">
+								<li><a href="database?action=goto&page=${currentIndexPage-loop.end+i}">${currentIndexPage-loop.end+i}</a></li>
+							</c:when>
+						</c:choose>	
+			
+					</c:forEach>
+					 <c:forEach var="i" begin="1" end="4">
+					 	<c:choose>
+							<c:when test="${currentIndexPage + i <= maxIndexPage}">
+								<li><a href="database?action=goto&page=${currentIndexPage+i}">${currentIndexPage+i}</a></li>
+							</c:when>
+						</c:choose>	
+					 
+					</c:forEach>
 
-			<li><a href="database?action=next" aria-label="Next"> <span
-					aria-hidden="true">&raquo;</span></a></li>
+					<li><a href="database?action=next" aria-label="Next"> <span
+							aria-hidden="true">&raquo;</span></a></li>
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">

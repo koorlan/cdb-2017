@@ -51,7 +51,7 @@ public abstract class Pager<T> {
     }
     
     public void goTo(int index){
-        if (index < nbPages && index > 0) {
+        if (index <= nbPages && index >= 0) {
             page = index;
         }
     }

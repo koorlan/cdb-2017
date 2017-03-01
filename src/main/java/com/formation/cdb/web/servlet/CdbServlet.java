@@ -99,6 +99,9 @@ public class CdbServlet extends HttpServlet {
                 }
                 break;
             case "add":
+                int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable();
+                List<CompanyDto> companies = CompanyServiceDto.readAllWithOffsetAndLimit(0, numberOfCompanies);
+                request.getSession().setAttribute("companies", companies);
                 pageToForward = "/addComputer.jsp";
                 break;
             default:
@@ -158,10 +161,41 @@ public class CdbServlet extends HttpServlet {
                     
                 } catch (NumberFormatException e) {
                     System.out.println(e);
-                } 
-                
-               
+                }          
                 break;
+            case "add":
+                try {
+                    String name = request.getParameter("name");
+                    
+                    LocalDate introduced = null;
+                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("introduced"))) && StringUtils.isNotBlank(request.getParameter("introduced"))) {
+                        introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("introduced"));
+                    }
+                   
+                    LocalDate discontinued = null;
+                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("discontinued"))) && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
+                        discontinued = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("discontinued"));
+                    }
+                    int companyId = Integer.parseInt(request.getParameter("companyId"));
+                    
+                    String companyName = null;
+                    if (CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).isPresent()){
+                        companyName = CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).get().getName().orElse("UNKOWN");
+                    }
+          
+                    Company company = null;
+                   
+                    if (companyId != 0) {
+                        company = new Company(companyId,companyName);
+                    } 
+                    Computer c = new Computer(1,name,introduced,discontinued,company);
+                    //TODO IS valid computer
+
+                    ComputerServiceImpl.INSTANCE.create(Optional.of(c));
+                    
+                } catch (NumberFormatException e) {
+                    System.out.println(e);
+                }      
             default:
                 break;
             }

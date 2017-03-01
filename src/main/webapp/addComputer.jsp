@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form action="addComputer" method="POST">
+                    <form action="database" method="POST">
                     <input name="action" type="hidden" value="add" />
                         <fieldset>
 							<div class="form-group">
@@ -39,7 +39,7 @@
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									name="discontinued" type="date" class="form-control"
-									id="discontinued" value="${computer.discontinued}">
+									id="discontinued" placeholder="yyyy-mm-dd"">
 							</div>
 							
 							<div class="form-group">
@@ -47,18 +47,8 @@
 									class="form-control" id="companyId">
 									
 									<option value="0"></option>
-									
-									<c:forEach items="${companies}" var="company">	
-										
-										<c:choose>
-											<c:when test="${company.id == computer.company.id}">
-												<option selected="selected" value="${company.id}">${company.name}</option>
-											</c:when>
-												
-											<c:otherwise>
-												<option value="${company.id}">${company.name}</option>
-											</c:otherwise>
-										</c:choose>
+									<c:forEach items="${companies}" var="company">										
+										<option value="${company.id}">${company.name}</option>
 									</c:forEach>
 
 								</select>
@@ -67,7 +57,7 @@
                         <div class="actions pull-right">
                             <input type="submit" value="Add" class="btn btn-primary">
                             or
-                            <a href="dashboard.html" class="btn btn-default">Cancel</a>
+                            <a href="database" class="btn btn-default">Cancel</a>
                         </div>
                     </form>
                 </div>
