@@ -70,6 +70,26 @@ public class Control {
                 LOGGER.warn("There were a problem parsing the date: " + date.get() + e);
                 return false;
             }
+        }    
+        /**
+         * Validate a date representation by a string..
+         * @param date a LocalDate
+         * @return if the string represent a LocalDate
+         */
+        public static boolean isValidStringDateDashSeparatedDDMMYYYY(Optional<String> date) {
+
+            if (!date.isPresent() && isValidString(date)) {
+                LOGGER.warn("String provided is empty or invalid");
+                return false;
+            }
+
+            try {
+                Optional<LocalDate> testDate = date.map(DateUtil::stringToDateDashSeparatedDDMMYYYY);
+                return testDate.isPresent();
+            } catch (DateTimeParseException e) {
+                LOGGER.warn("There were a problem parsing the date: " + date.get() + e);
+                return false;
+            }
         }
         /**
          * Check if a String is not blank.

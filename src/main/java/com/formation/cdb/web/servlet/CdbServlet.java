@@ -23,6 +23,7 @@ import com.formation.cdb.service.impl.CompanyServiceDto;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.impl.ComputerServiceDto;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
+import com.formation.cdb.ui.Control;
 import com.formation.cdb.util.DateUtil;
 
 /**
@@ -130,12 +131,12 @@ public class CdbServlet extends HttpServlet {
                     String name = request.getParameter("name");
                     
                     LocalDate introduced = null;
-                    if (StringUtils.isNotBlank(request.getParameter("introduced"))) {
+                    if (Control.isValidStringDateDashSeparatedDDMMYYYY(Optional.of(request.getParameter("introduced"))) && StringUtils.isNotBlank(request.getParameter("introduced"))) {
                         introduced = DateUtil.stringToDateDashSeparatedDDMMYYYY(request.getParameter("introduced"));
                     }
                    
                     LocalDate discontinued = null;
-                    if (StringUtils.isNotBlank(request.getParameter("discontinued"))) {
+                    if (Control.isValidStringDateDashSeparatedDDMMYYYY(Optional.of(request.getParameter("discontinued"))) && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
                         discontinued = DateUtil.stringToDateDashSeparatedDDMMYYYY(request.getParameter("discontinued"));
                     }
                     int companyId = Integer.parseInt(request.getParameter("companyId"));
@@ -158,7 +159,7 @@ public class CdbServlet extends HttpServlet {
                 } catch (NumberFormatException e) {
                     System.out.println(e);
                 } 
-
+                
                
                 break;
             default:
