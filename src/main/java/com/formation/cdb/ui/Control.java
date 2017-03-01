@@ -76,7 +76,7 @@ public class Control {
          * @param date a LocalDate
          * @return if the string represent a LocalDate
          */
-        public static boolean isValidStringDateDashSeparatedDDMMYYYY(Optional<String> date) {
+        public static boolean isValidStringDateDashSeparatedYYYYMMDD(Optional<String> date) {
 
             if (!date.isPresent() && isValidString(date)) {
                 LOGGER.warn("String provided is empty or invalid");
@@ -84,7 +84,7 @@ public class Control {
             }
 
             try {
-                Optional<LocalDate> testDate = date.map(DateUtil::stringToDateDashSeparatedDDMMYYYY);
+                Optional<LocalDate> testDate = date.map(DateUtil::stringToDateDashSeparatedYYYYMMDD);
                 return testDate.isPresent();
             } catch (DateTimeParseException e) {
                 LOGGER.warn("There were a problem parsing the date: " + date.get() + e);

@@ -21,7 +21,7 @@ public class DateUtil {
         date = LocalDate.parse(dateString, formatter);
         return date;
     }
-    public static LocalDate stringToDateDashSeparatedDDMMYYYY(String dateString) throws DateTimeParseException {
+    public static LocalDate stringToDateDashSeparatedYYYYMMDD(String dateString) throws DateTimeParseException {
         DateTimeFormatter formatter;
         LocalDate date;
 

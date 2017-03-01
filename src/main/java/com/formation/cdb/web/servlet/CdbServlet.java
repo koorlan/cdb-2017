@@ -131,13 +131,13 @@ public class CdbServlet extends HttpServlet {
                     String name = request.getParameter("name");
                     
                     LocalDate introduced = null;
-                    if (Control.isValidStringDateDashSeparatedDDMMYYYY(Optional.of(request.getParameter("introduced"))) && StringUtils.isNotBlank(request.getParameter("introduced"))) {
-                        introduced = DateUtil.stringToDateDashSeparatedDDMMYYYY(request.getParameter("introduced"));
+                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("introduced"))) && StringUtils.isNotBlank(request.getParameter("introduced"))) {
+                        introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("introduced"));
                     }
                    
                     LocalDate discontinued = null;
-                    if (Control.isValidStringDateDashSeparatedDDMMYYYY(Optional.of(request.getParameter("discontinued"))) && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
-                        discontinued = DateUtil.stringToDateDashSeparatedDDMMYYYY(request.getParameter("discontinued"));
+                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("discontinued"))) && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
+                        discontinued = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("discontinued"));
                     }
                     int companyId = Integer.parseInt(request.getParameter("companyId"));
                     
