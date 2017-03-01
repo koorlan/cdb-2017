@@ -124,7 +124,6 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
             Optional<Company> company = (companyId != 0) ? Optional.of(new Company(companyId, r.getString("c_name")))
                     : Optional.empty();
             Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
-
             return Optional.ofNullable(computer);
 
         } catch (SQLException e) {

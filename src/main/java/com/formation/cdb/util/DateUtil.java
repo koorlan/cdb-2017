@@ -21,6 +21,14 @@ public class DateUtil {
         date = LocalDate.parse(dateString, formatter);
         return date;
     }
+    public static LocalDate stringToDateDashSeparatedDDMMYYYY(String dateString) throws DateTimeParseException {
+        DateTimeFormatter formatter;
+        LocalDate date;
+
+        formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        date = LocalDate.parse(dateString, formatter);
+        return date;
+    }
     /**
      * Convert a LocalDate to a Timestamp used to insert/update/read sql Objects.
      * @param d The LocalDate.

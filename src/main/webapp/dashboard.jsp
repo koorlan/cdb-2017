@@ -22,7 +22,7 @@
 
 	<section id="main">
 	<div class="container">
-		<h1 id="homeTitle">121 Computers found</h1>
+		<h1 id="homeTitle">${totalComputers} Computers found</h1>
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="#" method="GET" class="form-inline">
@@ -34,7 +34,7 @@
 				</form>
 			</div>
 			<div class="pull-right">
-				<a class="btn btn-success" id="addComputer" href="addComputer.html">Add
+				<a class="btn btn-success" id="addComputer" href="addComputer.jsp">Add
 					Computer</a> <a class="btn btn-default" id="editComputer" href="#"
 					onclick="$.fn.toggleEditMode();">Edit</a>
 			</div>
@@ -69,17 +69,19 @@
 				</tr>
 			</thead>
 			<!-- Browse attribute computers -->
-			<tbody id="results">		
+			<tbody id="results">
 				<c:forEach items="${computers}" var="computer">
 					<tr>
-						<td class="editMode"><input type="checkbox" name="cb" class="cb" value="0"></td>
-						<td><a href="editComputer.html" onclick="">${computer.name}</a></td>
-					<td>${computer.introduced}</td>
-					<td>${computer.discontinued}</td>
-					<td>${computer.company.name}</td>
+						<td class="editMode"><input type="checkbox" name="cb"
+							class="cb" value="0"></td>
+						<td><a href="database?action=edit&id=${computer.id}"
+							onclick="">${computer.name}</a></td>
+						<td>${computer.introduced}</td>
+						<td>${computer.discontinued}</td>
+						<td>${computer.company.name}</td>
 					</tr>
 				</c:forEach>
-				
+
 			</tbody>
 		</table>
 	</div>
@@ -88,18 +90,15 @@
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
 		<ul class="pagination">
-			<li>
-				<a href="database?action=prev" aria-label="Previous"> <span aria-hidden="true">&raquo;</span></a>
-			</li>	
-			Max pages : ${maxIndexPage}
-			Current page : ${currentIndexPage}		
+			<li><a href="database?action=prev" aria-label="Previous"> <span
+					aria-hidden="true">&raquo;</span></a></li> Max pages : ${maxIndexPage}
+			Current page : ${currentIndexPage}
 			<c:forEach var="i" begin="1" end="10">
-   				<li><a href="database?action=goto&page=${i}">${i}</a></li>
+				<li><a href="database?action=goto&page=${i}">${i}</a></li>
 			</c:forEach>
-			
-			<li>
-				<a href="database?action=next" aria-label="Next"> <span aria-hidden="true">&raquo;</span></a>
-			</li>
+
+			<li><a href="database?action=next" aria-label="Next"> <span
+					aria-hidden="true">&raquo;</span></a></li>
 		</ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">

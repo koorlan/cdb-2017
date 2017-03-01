@@ -30,15 +30,32 @@ public class ComputerServiceDto {
         for(Optional<Computer> computerO: list.get()){
             if(computerO.isPresent()){
                 Computer c = computerO.get();
-                ComputerDto computerD = new ComputerDto(c.getId(),c.getName().orElse("UNKNOWN"),c.getIntroduced().orElse(null),c.getDiscontinued().orElse(null),null);
+                ComputerDto computerD ;
+                computerD = new ComputerDto(c.getId(),c.getName().orElse("UNKNOWN"),c.getIntroduced().orElse(null),c.getDiscontinued().orElse(null),null);
                 //TODO USER CompanyService DTO
                 if (c.getCompany().isPresent()) {
-                    c.setCompany(new Company(c.getCompany().get().getId(),c.getCompany().get().getName().orElse("UNKNOWN")));
+                    computerD = new ComputerDto(c.getId(),c.getName().orElse("UNKNOWN"),c.getIntroduced().orElse(null),c.getDiscontinued().orElse(null),new CompanyDto(c.getCompany().get().getId(),c.getCompany().get().getName().orElse("UNKOWN")));
+                }else {
+                    computerD = new ComputerDto(c.getId(),c.getName().orElse("UNKNOWN"),c.getIntroduced().orElse(null),c.getDiscontinued().orElse(null),null);
                 }
                 simplifiedList.add(computerD);
             }
         }
         
         return simplifiedList;
+    }
+    
+    public static ComputerDto fromOptionalComputerToSimpleComputer(Optional<Computer> computer) {
+        if (!computer.isPresent()) {
+            return null;
+        }
+        Computer c = computer.get();
+        ComputerDto computerD ;
+        if (c.getCompany().isPresent()) {
+            computerD = new ComputerDto(c.getId(),c.getName().orElse("UNKNOWN"),c.getIntroduced().orElse(null),c.getDiscontinued().orElse(null),new CompanyDto(c.getCompany().get().getId(),c.getCompany().get().getName().orElse("UNKOWN")));
+        }else {
+            computerD = new ComputerDto(c.getId(),c.getName().orElse("UNKNOWN"),c.getIntroduced().orElse(null),c.getDiscontinued().orElse(null),null);
+        }
+        return computerD;
     }
 }

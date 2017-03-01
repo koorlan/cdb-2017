@@ -77,4 +77,8 @@ public abstract class Pager<T> {
         this.pageSize = pageSize;
         nbPages = max / pageSize;
     }
+
+    public int getMax(){
+        return max;
+    }
 }

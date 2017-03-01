@@ -74,7 +74,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             sb.append(" LEFT JOIN ");
             sb.append(prop.getProperty("db_company_table"));
             sb.append(" ON ");
-            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id"));
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_company_id"));
             sb.append('=');
             sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_id"));
             sb.append(" WHERE ");
@@ -119,7 +119,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             sb.append(" LEFT JOIN ");
             sb.append(prop.getProperty("db_company_table"));
             sb.append(" ON ");
-            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_id"));
+            sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_company_id"));
             sb.append('=');
             sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_id"));
             sb.append(" LIMIT ?,?;");
@@ -166,7 +166,11 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
             stmt.setTimestamp(3, e.flatMap(Computer::getDiscontinued).map(DateUtil::dateToTimestamp).orElse(null));
 
-            stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
+            if (e.get().getCompany().isPresent()) {
+                stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
+            } else {
+               stmt.setNull(4, Types.NULL); 
+            }
 
             stmt.execute();
             LOGGER.info("Query sucessfully executed " + stmt.toString());
@@ -230,7 +234,13 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
             stmt.setTimestamp(3, e.flatMap(Computer::getDiscontinued).map(DateUtil::dateToTimestamp).orElse(null));
 
-            stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
+            if (e.get().getCompany().isPresent()) {
+                stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).get());
+            } else {
+                stmt.setNull(4, Types.NULL);
+            }
+           
+ 
 
             stmt.setLong(5, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("Trying to bypass validation, id is required")));
 
