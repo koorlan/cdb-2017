@@ -14,6 +14,7 @@ import java.util.Properties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.formation.cdb.persistence.ComputerAttributes;
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.connection.ConnectionManager;
 import com.formation.cdb.util.DateUtil;
@@ -41,7 +42,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
-        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        input = ComputerDaoImpl.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
             LOGGER.error("Sorry, unable to find " + filename);
             throw new PersistenceException("Unable to acces config file at " + filename);
