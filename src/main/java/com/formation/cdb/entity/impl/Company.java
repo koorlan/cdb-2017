@@ -18,11 +18,11 @@ public class Company extends Entity {
     /**
      * id (primary key) of a company.
      */
-    private long id;
+    private final long id;
     /**
      * the name of the company.
      */
-    private String name;
+    private final String name;
 
     /**
      * Constructor of a company.

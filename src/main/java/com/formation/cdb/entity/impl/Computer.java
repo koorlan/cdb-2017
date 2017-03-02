@@ -19,23 +19,23 @@ public class Computer extends Entity {
     /**
      * id of the computer in the database.
      */
-    long id;
+    private final long id;
     /**
      * Name of a computer in the database.
      */
-    private String name;
+    private final String name;
     /**
      * The data when the computer have been introduced.
      */
-    private LocalDate introduced;
+    private final LocalDate introduced;
     /**
      * The date when the computer have been discontinued of the marker.
      */
-    private LocalDate discontinued;
+    private final LocalDate discontinued;
     /**
      * The company object known as the manufacturer of the computer.
      */
-    private Company company;
+    private final Company company;
 
     /**
      * Constructor of computer.
@@ -82,22 +82,6 @@ public class Computer extends Entity {
 
     public final Optional<Company> getCompany() {
         return Optional.ofNullable(company);
-    }
-
-    public final void setName(final String name) {
-        this.name = name;
-    }
-
-    public final void setIntroduced(final LocalDate introduced) {
-        this.introduced = introduced;
-    }
-
-    public final void setDiscontinued(final LocalDate discontinued) {
-        this.discontinued = discontinued;
-    }
-
-    public final void setCompany(final Company company) {
-        this.company = company;
     }
     
     public static class ComputerBuilder {
