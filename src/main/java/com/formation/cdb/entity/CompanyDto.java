@@ -19,16 +19,12 @@ public class CompanyDto {
     }
     
     public static class CompanyDtoBuilder {
-        long id;
+        private final long id;
         private final String name;
         
-        public CompanyDtoBuilder(String name) {
-            this.name = name;
-        }
-        
-        public CompanyDtoBuilder id(long id) {
+        public CompanyDtoBuilder(long id, String name) {
             this.id = id;
-            return this;
+            this.name = name;
         }
                 
         public CompanyDto build() {
