@@ -32,9 +32,9 @@ public class Company extends Entity {
      * @param name
      *            , String to name that @Company.
      */
-    public Company(final long id, final String name) {
-        this.id = id;
-        this.name = name;
+    public Company(CompanyBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
     }
 
     /**
@@ -54,7 +54,21 @@ public class Company extends Entity {
     public long getId() {
         return id;
     }
-
+    
+    public static class CompanyBuilder {
+        private final long id;
+        private final String name;
+        
+        public CompanyBuilder(long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+        public Company build() {
+            return new Company(this);
+        }
+    }
+    
     /**
      * Overrided method.
      * 

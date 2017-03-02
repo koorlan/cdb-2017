@@ -51,13 +51,12 @@ public class Computer extends Entity {
      * @param company
      *            The manufacturer of the computer.
      */
-    public Computer(final long id, final String name, final LocalDate introduced, final LocalDate discontinued,
-            final Company company) {
-        this.id = id;
-        this.name = name;
-        this.introduced = introduced;
-        this.discontinued = discontinued;
-        this.company = company;
+    public Computer(ComputerBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.introduced = builder.introduced;
+        this.discontinued = builder.discontinued;
+        this.company = builder.company;
     }
 
     /**
@@ -99,6 +98,39 @@ public class Computer extends Entity {
 
     public final void setCompany(final Company company) {
         this.company = company;
+    }
+    
+    public static class ComputerBuilder {
+        private final long id;
+        private final String name;
+        private LocalDate introduced;
+        private LocalDate discontinued;
+        private Company company;
+        
+        public ComputerBuilder(long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+        
+        public ComputerBuilder withIntroduced(LocalDate introduced) {
+            this.introduced = introduced;
+            return this;
+        }
+        
+        public ComputerBuilder withDiscontinued(LocalDate discontinued) {
+            this.discontinued = discontinued;
+            return this;
+        }
+        
+        public ComputerBuilder withCompany(Company company) {
+            this.company = company;
+            return this;
+        }
+        
+        public Computer build() {
+            return new Computer(This);
+        }
+        
     }
 
     @Override

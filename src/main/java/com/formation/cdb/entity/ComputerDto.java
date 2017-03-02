@@ -53,17 +53,17 @@ public class ComputerDto {
             this.name = name;
         }
         
-        public ComputerDtoBuilder introduced(String introduced) {
+        public ComputerDtoBuilder withIntroduced(String introduced) {
             this.introduced = introduced;
             return this;
         }
         
-        public ComputerDtoBuilder discontinued(String discontinued) {
+        public ComputerDtoBuilder withDiscontinued(String discontinued) {
             this.discontinued = discontinued;
             return this;
         }
         
-        public ComputerDtoBuilder company(CompanyDto company) {
+        public ComputerDtoBuilder withCompany(CompanyDto company) {
             this.company = company;
             return this;
         }
