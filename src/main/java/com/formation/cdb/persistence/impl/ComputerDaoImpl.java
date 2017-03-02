@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -282,18 +283,20 @@ public enum ComputerDaoImpl implements Dao<Computer> {
     }
 
     @Override
-    public Optional<List<Optional<Computer>>> readAllWithOffsetAndLimit(int offset, int limit) {
-
+    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit) {
+        
+        List<Computer> computers = new ArrayList<>();
+        
         if (offset < 0 || limit < 0) {
             LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-            return Optional.empty();
+            return computers;
         }
 
         Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
         if (!connection.isPresent()) {
             LOGGER.warn("can't get a connection");
-            return Optional.empty();
+            return computers;
         }
         try {
             PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
@@ -303,17 +306,16 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             Optional<ResultSet> rs;
             rs = Optional.ofNullable(stmt.executeQuery());
 
-            Optional<List<Optional<Computer>>> computers;
             computers = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
 
-            return computers;
+           
 
         } catch (SQLException e) {
             throw new PersistenceException(e);
         } finally {
             ConnectionManager.close(connection);
         }
-
+        return computers;
     }
 
     @Override

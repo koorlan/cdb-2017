@@ -39,7 +39,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
     }
 
     @Override
-    public Optional<List<Optional<Computer>>> readAllWithOffsetAndLimit(int offset, int limit) {
+    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit) {
         return ComputerDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit);
     }
 

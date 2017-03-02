@@ -41,7 +41,7 @@ public enum CompanyServiceImpl implements CDBService<Company> {
     }
 
     @Override
-    public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
+    public List<Company> readAllWithOffsetAndLimit(int offset, int limit) {
         return CompanyDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit);
     }
 

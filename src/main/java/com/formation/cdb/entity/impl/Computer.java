@@ -112,7 +112,7 @@ public class Computer extends Entity {
         }
         
         public Computer build() {
-            return new Computer(This);
+            return new Computer(this);
         }
         
     }
