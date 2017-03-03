@@ -26,7 +26,7 @@
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="database" method="GET" class="form-inline">
-					
+					<input name="action" type="hidden" value="filter" />
 					<input type="search" id="searchbox" name="search"
 						class="form-control" placeholder="Search name" /> <input
 						type="submit" id="searchsubmit" value="Filter by name"
