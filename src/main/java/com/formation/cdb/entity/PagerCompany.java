@@ -34,7 +34,7 @@ public class PagerCompany extends Pager<Company> {
 
         offset = (index * pageSize);
         limit = pageSize;
-        return service.readAllWithOffsetAndLimit(offset, limit, filter);
+        return service.readAllWithOffsetAndLimit(offset-1, limit, filter);
     }
 
     @Override

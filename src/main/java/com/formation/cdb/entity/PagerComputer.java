@@ -17,7 +17,7 @@ public class PagerComputer extends Pager<Computer> {
         ComputerServiceImpl service;
         service = ComputerServiceImpl.INSTANCE;
         max = service.sizeOfTable(filter);
-        nbPages = max / pageSize;
+        nbPages = (int) Math.ceil(max / pageSize);
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PagerComputer extends Pager<Computer> {
         int offset;
         int limit;
 
-        index = (page > nbPages) ? nbPages : page;
+        index = (page -1 > nbPages) ? nbPages : page -1;
         ComputerServiceImpl service;
         service = ComputerServiceImpl.INSTANCE;
 
@@ -40,7 +40,8 @@ public class PagerComputer extends Pager<Computer> {
         ComputerServiceImpl service;
         service = ComputerServiceImpl.INSTANCE;
         max = service.sizeOfTable(filter);
-        nbPages = max / pageSize;
+        nbPages = (int) Math.ceil((double)max / pageSize) ;
+        page = 1;
         this.filter = filter;
     }
 }

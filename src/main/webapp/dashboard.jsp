@@ -89,10 +89,10 @@
 
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
-		<ul class="pagination">
+		<%-- <ul class="pagination">
 			<li><a href="database?action=prev" aria-label="Previous"> <span
 					aria-hidden="true">&laquo;</span>
-					<c:forEach var="i" begin="1" end="4" varStatus="loop">
+					<c:forEach var="i" begin="1" end="3" varStatus="loop">
 					 	<c:choose>
 							<c:when test="${currentIndexPage-loop.end+i > 0}">
 								<li><a href="database?action=goto&page=${currentIndexPage-loop.end+i}">${currentIndexPage-loop.end+i}</a></li>
@@ -100,18 +100,19 @@
 						</c:choose>	
 			
 					</c:forEach>
-					 <c:forEach var="i" begin="1" end="4">
+					 <c:forEach var="i" begin="1" end="3">
 					 	<c:choose>
-							<c:when test="${currentIndexPage + i <= maxIndexPage}">
+							<c:when test="${currentIndexPage + i < maxIndexPage}">
 								<li><a href="database?action=goto&page=${currentIndexPage+i}">${currentIndexPage+i}</a></li>
 							</c:when>
 						</c:choose>	
-					 
 					</c:forEach>
 
 					<li><a href="database?action=next" aria-label="Next"> <span
 							aria-hidden="true">&raquo;</span></a></li>
 		</ul>
+		 --%>
+		 <ul id="pagination-demo" class="pagination"></ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
 			<a class="btn btn-default " href="database?action=size&size=10">10</a>
@@ -122,6 +123,18 @@
 	<script src="./js/jquery.min.js"></script>
 	<script src="./js/bootstrap.min.js"></script>
 	<script src="./js/dashboard.js"></script>
+	<script src="./js/jquery.twbsPagination.min.js"></script>
+<script>
 
+$('#pagination-demo').twbsPagination({
+	initiateStartPageClick: false,
+	startPage: ${currentIndexPage},
+	totalPages: ${maxIndexPage},
+    visiblePages: 7,
+    onPageClick: function (event, page) {
+    	window.location.href = "database?action=goto&page="+page
+    }
+});
+</script>
 </body>
 </html>
