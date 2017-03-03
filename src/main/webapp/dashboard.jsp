@@ -94,7 +94,7 @@
 					aria-hidden="true">&laquo;</span>
 					<c:forEach var="i" begin="1" end="4" varStatus="loop">
 					 	<c:choose>
-							<c:when test="${currentIndexPage-loop.end+i >= 0}">
+							<c:when test="${currentIndexPage-loop.end+i > 0}">
 								<li><a href="database?action=goto&page=${currentIndexPage-loop.end+i}">${currentIndexPage-loop.end+i}</a></li>
 							</c:when>
 						</c:choose>	
