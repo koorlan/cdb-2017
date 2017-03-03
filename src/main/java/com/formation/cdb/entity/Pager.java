@@ -12,7 +12,7 @@ public abstract class Pager<T> {
     protected int nbPages;
 
     protected int page;
-
+    protected String filter;
     /**
      * Default constructor of the un-typed Pager.
      */
@@ -21,6 +21,7 @@ public abstract class Pager<T> {
         max = 0;
         nbPages = max / pageSize;
         page = 0;
+        filter = "";
     }
 
     /**
@@ -80,5 +81,11 @@ public abstract class Pager<T> {
 
     public int getMax(){
         return max;
+    }
+    
+    public abstract void setFilter(String filter);
+    
+    public String getFilter() {
+        return filter;
     }
 }

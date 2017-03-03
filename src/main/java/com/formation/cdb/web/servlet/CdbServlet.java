@@ -92,9 +92,9 @@ public class CdbServlet extends HttpServlet {
 
                         if (computer.isPresent()) {
                             request.getSession().setAttribute("computer", computer.get());
-                            int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable();
+                            int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable("");
                             List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0,
-                                    numberOfCompanies);
+                                    numberOfCompanies, "");
                             List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
                             request.getSession().setAttribute("companies", companiesDto);
                             pageToForward = "/editComputer.jsp";
@@ -105,8 +105,8 @@ public class CdbServlet extends HttpServlet {
                 }
                 break;
             case "add":
-                int numberOfCompanies = CompanyServiceImpl.INSTANCE.sizeOfTable();
-                List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0, numberOfCompanies);
+                int numberOfCompanies = CompanyServiceImpl.INSTANCE.sizeOfTable("");
+                List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0, numberOfCompanies, "");
                 List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
                 request.getSession().setAttribute("companies", companiesDto);
                 pageToForward = "/addComputer.jsp";
@@ -114,7 +114,7 @@ public class CdbServlet extends HttpServlet {
                 
             case "filter":
                 if (request.getParameter("search") != null) {
-                    
+                    pager.setFilter(request.getParameter("search"));
                 }
                 break;
             default:
@@ -128,6 +128,7 @@ public class CdbServlet extends HttpServlet {
             request.getSession().setAttribute("totalComputers", pager.getMax());
             request.getSession().setAttribute("currentIndexPage", pager.getCurrentPageIndex());
             request.getSession().setAttribute("maxIndexPage", pager.getNbPages());
+            request.getSession().setAttribute("filter", pager.getFilter());
         }
         RequestDispatcher rd = getServletContext().getRequestDispatcher(pageToForward);
         rd.forward(request, response);

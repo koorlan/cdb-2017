@@ -114,7 +114,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
     }
 
     @Override
-    public List<Company> readAllWithOffsetAndLimit(int offset, int limit) {
+    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
         
         List<Company> companies = new ArrayList<>();
         
@@ -150,7 +150,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
     }
 
     @Override
-    public int rowCount() {
+    public int rowCount(String filter) {
         int count = 0;
         Optional<ResultSet> rs;
         Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();

@@ -28,7 +28,7 @@
 				<form id="searchForm" action="database" method="GET" class="form-inline">
 					<input name="action" type="hidden" value="filter" />
 					<input type="search" id="searchbox" name="search"
-						class="form-control" placeholder="Search name" /> <input
+						class="form-control" placeholder="Search name" value="${filter }"/> <input
 						type="submit" id="searchsubmit" value="Filter by name"
 						class="btn btn-primary" />
 				</form>

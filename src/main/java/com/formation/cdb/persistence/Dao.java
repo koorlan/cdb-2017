@@ -46,11 +46,11 @@ public interface Dao<T> {
      *            how many result to have (e.g 0,10 for row 0-9).
      * @return list of type T
      */
-    List<T> readAllWithOffsetAndLimit(int offset, int limit);
+    List<T> readAllWithOffsetAndLimit(int offset, int limit, String filter);
 
     /**
      * COUNT(*).
      * @return how many rows on the table.
      */
-    int rowCount();
+    int rowCount(String filter);
 }

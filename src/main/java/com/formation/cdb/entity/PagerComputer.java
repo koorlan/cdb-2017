@@ -14,10 +14,9 @@ public class PagerComputer extends Pager<Computer> {
      */
     public PagerComputer() {
         super();
-
         ComputerServiceImpl service;
         service = ComputerServiceImpl.INSTANCE;
-        max = service.sizeOfTable();
+        max = service.sizeOfTable(filter);
         nbPages = max / pageSize;
     }
 
@@ -33,7 +32,15 @@ public class PagerComputer extends Pager<Computer> {
 
         offset = (index * pageSize);
         limit = pageSize;
-        return service.readAllWithOffsetAndLimit(offset, limit);
+        return service.readAllWithOffsetAndLimit(offset, limit, filter);
     }
 
+    @Override
+    public void setFilter(String filter){
+        ComputerServiceImpl service;
+        service = ComputerServiceImpl.INSTANCE;
+        max = service.sizeOfTable(filter);
+        nbPages = max / pageSize;
+        this.filter = filter;
+    }
 }

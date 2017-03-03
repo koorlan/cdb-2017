@@ -39,13 +39,13 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
     }
 
     @Override
-    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit) {
-        return ComputerDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit);
+    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+        return ComputerDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit, '%'+filter+'%');
     }
 
     @Override
-    public int sizeOfTable() {
-        return ComputerDaoImpl.INSTANCE.rowCount();
+    public int sizeOfTable(String filter) {
+        return ComputerDaoImpl.INSTANCE.rowCount('%'+filter+'%');
     }
 
 }

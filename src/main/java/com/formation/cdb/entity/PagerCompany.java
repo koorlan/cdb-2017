@@ -5,6 +5,7 @@ import java.util.Optional;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
+import com.formation.cdb.service.impl.ComputerServiceImpl;
 
 public class PagerCompany extends Pager<Company> {
 
@@ -17,7 +18,7 @@ public class PagerCompany extends Pager<Company> {
 
         CompanyServiceImpl service;
         service = CompanyServiceImpl.INSTANCE;
-        max = service.sizeOfTable();
+        max = service.sizeOfTable(filter);
         nbPages = max / pageSize;
     }
 
@@ -33,7 +34,15 @@ public class PagerCompany extends Pager<Company> {
 
         offset = (index * pageSize);
         limit = pageSize;
-        return service.readAllWithOffsetAndLimit(offset, limit);
+        return service.readAllWithOffsetAndLimit(offset, limit, filter);
     }
 
+    @Override
+    public void setFilter(String filter){
+        CompanyServiceImpl service;
+        service = CompanyServiceImpl.INSTANCE;
+        max = service.sizeOfTable(filter);
+        nbPages = max / pageSize;
+        this.filter = filter;
+    }
 }
