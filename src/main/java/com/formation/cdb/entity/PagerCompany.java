@@ -22,7 +22,7 @@ public class PagerCompany extends Pager<Company> {
     }
 
     @Override
-    public Optional<List<Optional<Company>>> getPage(int page) {
+    public List<Company> getPage(int page) {
         int index;
         int offset;
         int limit;

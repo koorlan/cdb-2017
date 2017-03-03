@@ -29,7 +29,7 @@ public abstract class Pager<T> {
      * @param page an int to represent which page you want to reach
      * @return A list of the type of the pager.
      */
-    public abstract Optional<List<Optional<T>>> getPage(int page);
+    public abstract List<T> getPage(int page);
 
     /**
      * Increments the page index.
@@ -56,7 +56,7 @@ public abstract class Pager<T> {
         }
     }
     
-    public Optional<List<Optional<T>>> getCurrentPage() {
+    public List<T> getCurrentPage() {
         return getPage(page);
     }
 
