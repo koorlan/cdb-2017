@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -112,11 +113,9 @@ public class ClientConsole {
         exit = false;
         index = pager.getCurrentPageIndex();
         do {
-            if (!pager.getPage(index).isPresent()) {
-                break;
-            }
-            for (Optional<Computer> c : pager.getPage(index).get()) {
-                c.ifPresent(x -> System.out.println(x));
+            
+            for (Computer c : pager.getPage(index)) {
+               System.out.println(c);
             }
 
             System.out.println(index + " of " + pager.getNbPages() + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
@@ -162,11 +161,8 @@ public class ClientConsole {
         exit = false;
         index = pager.getCurrentPageIndex();
         do {
-            if (!pager.getPage(index).isPresent()) {
-                break;
-            }
-            for (Optional<Company> c : pager.getPage(index).get()) {
-                c.ifPresent(x -> System.out.println(x));
+             for (Company c : pager.getPage(index)) {
+               System.out.println(c);
             }
 
             System.out.println(index + " of " + pager.getNbPages() + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
@@ -261,7 +257,11 @@ public class ClientConsole {
         }
 
         Optional<Company> company = CompanyServiceImpl.INSTANCE.readById(companyId);
-        Computer computer = new Computer(1, name, introduced, discontinued, company.orElse(null));
+        Computer computer = new Computer.ComputerBuilder(1,name).withIntroduced(introduced).withDiscontinued(discontinued).withCompany(company.orElse(null)).build();
+                
+                
+                
+                //new Computer(1, name, introduced, discontinued, company.orElse(null));
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
             service.create(Optional.ofNullable(computer));
         }
@@ -304,17 +304,17 @@ public class ClientConsole {
         ComputerServiceImpl service;
         String idString;
         long id;
-        Computer computer;
         String answer;
+        Computer computer;
         //New Computer var
-        String newName;
+        String newName = null;
         String newDateIntroducedString;
         LocalDate newDateIntroduced = null;
         String newDateDiscontinuedString;
         LocalDate newDateDiscontinued = null;
         String newIdCompanyString;
         long newIdCompany = 0;
-        Company newCompany;
+        Company newCompany = null;
 
         service = ComputerServiceImpl.INSTANCE;
         System.out.println("Please enter the computer id you want to update");
@@ -339,11 +339,9 @@ public class ClientConsole {
             System.out.println("Enter new name");
             newName = scanner.nextLine();
             newName = newName.trim();
-            if (!newName.isEmpty()) {
-                computer.setName(newName);
-            } else {
+            if (StringUtils.isBlank(newName)) {
                 return;
-            }
+            } 
             break;
         default:
             break;
@@ -360,10 +358,10 @@ public class ClientConsole {
             if (!newDateIntroducedString.isEmpty()) {
                 newDateIntroduced = DateUtil.stringToDate(newDateIntroducedString);
             }
-            computer.setIntroduced(newDateIntroduced);
+            
             break;
         case "d": //delete
-            computer.setIntroduced(null);
+            newDateIntroduced = null;
             break;
         default:
             break;
@@ -380,10 +378,10 @@ public class ClientConsole {
             if (!newDateDiscontinuedString.isEmpty()) {
                 newDateDiscontinued = DateUtil.stringToDate(newDateDiscontinuedString);
             }
-            computer.setDiscontinued(newDateDiscontinued);
+            
             break;
         case "d": //delete
-            computer.setDiscontinued(null);
+            newDateDiscontinued = null;
             break;
         default:
             break;
@@ -407,8 +405,8 @@ public class ClientConsole {
             answer = null;
             answer = scanner.nextLine();
             switch (answer) {
-                case "y":
-                    computer.setCompany(newCompany);
+                case "n":
+                    newCompany = null;
                     break;
                 default:
                     break;
@@ -416,11 +414,13 @@ public class ClientConsole {
 
             break;
         case "d": //delete
-            computer.setCompany(null);
+            newCompany = null;
             break;
         default:
             break;
         }
+        
+        computer = new Computer.ComputerBuilder(computer.getId(),newName).withIntroduced(newDateIntroduced).withDiscontinued(newDateDiscontinued).withCompany(newCompany).build();
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
             service.update(Optional.ofNullable(computer));
         }
