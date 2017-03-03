@@ -1,7 +1,6 @@
 package com.formation.cdb.entity;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
@@ -17,7 +16,7 @@ public class PagerComputer extends Pager<Computer> {
         ComputerServiceImpl service;
         service = ComputerServiceImpl.INSTANCE;
         max = service.sizeOfTable(filter);
-        nbPages = (int) Math.ceil(max / pageSize);
+        nbPages = (int) Math.ceil((double)max / pageSize);
     }
 
     @Override
@@ -30,7 +29,7 @@ public class PagerComputer extends Pager<Computer> {
         ComputerServiceImpl service;
         service = ComputerServiceImpl.INSTANCE;
 
-        offset = (index * pageSize);
+        offset = index * pageSize;
         limit = pageSize;
         return service.readAllWithOffsetAndLimit(offset, limit, filter);
     }

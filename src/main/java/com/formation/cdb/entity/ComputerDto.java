@@ -1,7 +1,5 @@
 package com.formation.cdb.entity;
 
-import java.time.LocalDate;
-
 
 public class ComputerDto {
     
@@ -11,6 +9,16 @@ public class ComputerDto {
     private final String discontinued;
     private final CompanyDto company;
 
+    public ComputerDto(ComputerDtoBuilder builder) {
+        super();
+        this.id = builder.id;
+        this.name = builder.name;
+        this.introduced = builder.introduced;
+        this.discontinued = builder.discontinued;
+        this.company = builder.company;
+    }
+    
+    
     public long getId() {
         return id;
     }
@@ -30,17 +38,7 @@ public class ComputerDto {
     public CompanyDto getCompany() {
         return company;
     }
-
-    public ComputerDto(ComputerDtoBuilder builder) {
-        super();
-        this.id = builder.id;
-        this.name = builder.name;
-        this.introduced = builder.introduced;
-        this.discontinued = builder.discontinued;
-        this.company = builder.company;
-    }
-    
-    
+ 
     public static class ComputerDtoBuilder {
         private final long id;
         private final String name;

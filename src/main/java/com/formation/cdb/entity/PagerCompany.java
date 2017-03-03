@@ -1,11 +1,11 @@
 package com.formation.cdb.entity;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
-import com.formation.cdb.service.impl.ComputerServiceImpl;
+
 
 public class PagerCompany extends Pager<Company> {
 
@@ -32,7 +32,7 @@ public class PagerCompany extends Pager<Company> {
         CompanyServiceImpl service;
         service = CompanyServiceImpl.INSTANCE;
 
-        offset = (index * pageSize);
+        offset = index * pageSize;
         limit = pageSize;
         return service.readAllWithOffsetAndLimit(offset-1, limit, filter);
     }

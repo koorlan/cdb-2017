@@ -29,9 +29,9 @@ public class Control {
 
             Computer computer = c.get();
 
-            boolean valid = true;
+            boolean valid;
 
-            valid = valid && isIdGreaterThanZero(computer.getId());
+            valid = isIdGreaterThanZero(computer.getId());
             valid = valid && isValidString(computer.getName());
             if (computer.getIntroduced().isPresent() && computer.getDiscontinued().isPresent()) {
                 valid = valid && isIntroducedDateBeforeDiscontinuedDate(computer.getIntroduced(), computer.getDiscontinued());

@@ -1,7 +1,6 @@
 package com.formation.cdb.entity;
 
 import java.util.List;
-import java.util.Optional;
 
 public abstract class Pager<T> {
 
@@ -19,7 +18,7 @@ public abstract class Pager<T> {
     public Pager() {
         pageSize = DEFAULT_PAGE_SIZE;
         max = 0;
-        nbPages = (int) Math.ceil(max / pageSize);
+        nbPages = (int) Math.ceil((double)max / pageSize);
         page = 1;
         filter = "";
     }
