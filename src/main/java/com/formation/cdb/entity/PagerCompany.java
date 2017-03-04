@@ -1,10 +1,11 @@
 package com.formation.cdb.entity;
 
 import java.util.List;
-import java.util.Optional;
+
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
+
 
 public class PagerCompany extends Pager<Company> {
 
@@ -17,12 +18,12 @@ public class PagerCompany extends Pager<Company> {
 
         CompanyServiceImpl service;
         service = CompanyServiceImpl.INSTANCE;
-        max = service.sizeOfTable();
+        max = service.sizeOfTable(filter);
         nbPages = max / pageSize;
     }
 
     @Override
-    public Optional<List<Optional<Company>>> getPage(int page) {
+    public List<Company> getPage(int page) {
         int index;
         int offset;
         int limit;
@@ -31,9 +32,17 @@ public class PagerCompany extends Pager<Company> {
         CompanyServiceImpl service;
         service = CompanyServiceImpl.INSTANCE;
 
-        offset = (index * pageSize);
+        offset = index * pageSize;
         limit = pageSize;
-        return service.readAllWithOffsetAndLimit(offset, limit);
+        return service.readAllWithOffsetAndLimit(offset-1, limit, filter);
     }
 
+    @Override
+    public void setFilter(String filter){
+        CompanyServiceImpl service;
+        service = CompanyServiceImpl.INSTANCE;
+        max = service.sizeOfTable(filter);
+        nbPages = max / pageSize;
+        this.filter = filter;
+    }
 }

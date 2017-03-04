@@ -1,16 +1,13 @@
 package com.formation.cdb.entity;
 
 public class CompanyDto {
-    private long id;
-    
-    private String name;
+    private final long id;
+    private final String name;
 
-    
-    
-    public CompanyDto(long id, String name) {
+    private CompanyDto(CompanyDtoBuilder builder) {
         super();
-        this.id = id;
-        this.name = name;
+        this.id = builder.id;
+        this.name = builder.name;
     }
 
     public long getId() {
@@ -21,5 +18,18 @@ public class CompanyDto {
         return name;
     }
     
+    public static class CompanyDtoBuilder {
+        private final long id;
+        private final String name;
+        
+        public CompanyDtoBuilder(long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+                
+        public CompanyDto build() {
+            return new CompanyDto(this);
+        }
+    }
     
 }

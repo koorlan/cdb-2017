@@ -12,7 +12,7 @@ public interface RowMapper<T> {
      * @param rs a result set from the query.
      * @return Constructed objects on a list.
      */
-    Optional<List<Optional<T>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs);
+    List<T> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs);
 
     /**
      * Same a multiple but for one row.

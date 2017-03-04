@@ -19,9 +19,9 @@ import com.formation.cdb.entity.ComputerDto;
 import com.formation.cdb.entity.PagerComputer;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.service.impl.CompanyServiceDto;
+import com.formation.cdb.mapper.CompanyDtoMapper;
+import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
-import com.formation.cdb.service.impl.ComputerServiceDto;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.ui.Control;
 import com.formation.cdb.util.DateUtil;
@@ -32,8 +32,6 @@ import com.formation.cdb.util.DateUtil;
 @WebServlet(name = "CdbServlet", urlPatterns = "/database")
 public class CdbServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
-
-    private PagerComputer pager = new PagerComputer();
 
     /**
      * @see HttpServlet#HttpServlet()
@@ -50,8 +48,11 @@ public class CdbServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
+        PagerComputer pager;
+        pager = getContextPager(request);
+        
         String pageToForward = "/dashboard.jsp";
-      
+
         if (request.getParameter("action") != null) {
             switch (request.getParameter("action")) {
 
@@ -61,8 +62,8 @@ public class CdbServlet extends HttpServlet {
                         int page = Integer.parseInt(request.getParameter("page"));
                         pager.goTo(page);
                     } catch (NumberFormatException e) {
-                        //TODO warn.
-                    } 
+                        // TODO warn.
+                    }
                 }
                 break;
             case "next":
@@ -77,46 +78,59 @@ public class CdbServlet extends HttpServlet {
                         int size = Integer.parseInt(request.getParameter("size"));
                         pager.setPageSize(size);
                     } catch (NumberFormatException e) {
-                        //TODO warn.
-                    } 
+                        // TODO warn.
+                    }
                 }
                 break;
-            
+
             case "edit":
                 if (request.getParameter("id") != null) {
                     try {
                         int id = Integer.parseInt(request.getParameter("id"));
-                        ComputerDto computer = ComputerServiceDto.fromOptionalComputerToSimpleComputer(ComputerServiceImpl.INSTANCE.readById(Long.valueOf(id)));
-                        
-                        request.getSession().setAttribute("computer", computer);                         
-                        int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable();
-                        List<CompanyDto> companies = CompanyServiceDto.readAllWithOffsetAndLimit(0, numberOfCompanies);
-                        request.getSession().setAttribute("companies", companies);
-                        pageToForward = "/editComputer.jsp";
+                        Optional<ComputerDto> computer = ComputerDtoMapper
+                                .mapComputerDtoFromComputer(ComputerServiceImpl.INSTANCE.readById(Long.valueOf(id)));
+
+                        if (computer.isPresent()) {
+                            request.getSession().setAttribute("computer", computer.get());
+                            int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable("");
+                            List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0,
+                                    numberOfCompanies, "");
+                            List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
+                            request.getSession().setAttribute("companies", companiesDto);
+                            pageToForward = "/editComputer.jsp";
+                        }
                     } catch (NumberFormatException e) {
-                        //TODO warn.
-                    } 
+                        // TODO warn.
+                    }
                 }
                 break;
             case "add":
-                int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable();
-                List<CompanyDto> companies = CompanyServiceDto.readAllWithOffsetAndLimit(0, numberOfCompanies);
-                request.getSession().setAttribute("companies", companies);
+                int numberOfCompanies = CompanyServiceImpl.INSTANCE.sizeOfTable("");
+                List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0, numberOfCompanies, "");
+                List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
+                request.getSession().setAttribute("companies", companiesDto);
                 pageToForward = "/addComputer.jsp";
                 break;
+                
+            case "filter":
+                if (request.getParameter("search") != null) {
+                    pager.setFilter(request.getParameter("search"));
+                }
+                break;
             default:
-                //TODO Log..
+                // TODO Log..
                 break;
             }
         }
         if (pageToForward.equals("/dashboard.jsp")) {
-            List<ComputerDto> list = ComputerServiceDto.fromOptionalListOfOptionaltoSimpleList(pager.getCurrentPage());
+            List<ComputerDto> list = ComputerDtoMapper.mapComputersDtoFromComputers(pager.getCurrentPage());
             request.getSession().setAttribute("computers", list);
             request.getSession().setAttribute("totalComputers", pager.getMax());
             request.getSession().setAttribute("currentIndexPage", pager.getCurrentPageIndex());
             request.getSession().setAttribute("maxIndexPage", pager.getNbPages());
+            request.getSession().setAttribute("filter", pager.getFilter());
         }
-        RequestDispatcher rd = getServletContext().getRequestDispatcher(pageToForward);  
+        RequestDispatcher rd = getServletContext().getRequestDispatcher(pageToForward);
         rd.forward(request, response);
     }
 
@@ -125,77 +139,93 @@ public class CdbServlet extends HttpServlet {
      *      response)
      */
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {        
+            throws ServletException, IOException {
         if (request.getParameter("action") != null) {
             switch (request.getParameter("action")) {
             case "edit":
                 try {
                     int id = Integer.parseInt(request.getParameter("id"));
                     String name = request.getParameter("name");
-                    
+
                     LocalDate introduced = null;
-                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("introduced"))) && StringUtils.isNotBlank(request.getParameter("introduced"))) {
+                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("introduced")))
+                            && StringUtils.isNotBlank(request.getParameter("introduced"))) {
                         introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("introduced"));
                     }
-                   
+
                     LocalDate discontinued = null;
-                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("discontinued"))) && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
+                    if (Control
+                            .isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("discontinued")))
+                            && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
                         discontinued = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("discontinued"));
                     }
                     int companyId = Integer.parseInt(request.getParameter("companyId"));
-                    
+
                     String companyName = null;
-                    if (CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).isPresent()){
-                        companyName = CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).get().getName().orElse("UNKOWN");
+                    if (CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).isPresent()) {
+                        companyName = CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).get().getName()
+                                .orElse("UNKOWN");
                     }
-          
+
                     Company company = null;
-                   
+
                     if (companyId != 0) {
-                        company = new Company(companyId,companyName);
-                    } 
-                    Computer c = new Computer(id,name,introduced,discontinued,company);
-                    //TODO IS valid computer
+                        company = new Company.CompanyBuilder(companyId, companyName).build();
+                    }
+                    Computer c = new Computer.ComputerBuilder(id, name)
+                            .withIntroduced(introduced)
+                            .withDiscontinued(discontinued)
+                            .withCompany(company)
+                            .build();
+                    // TODO IS valid computer
 
                     ComputerServiceImpl.INSTANCE.update(Optional.of(c));
-                    
+
                 } catch (NumberFormatException e) {
                     System.out.println(e);
-                }          
+                }
                 break;
             case "add":
                 try {
                     String name = request.getParameter("name");
-                    
+
                     LocalDate introduced = null;
-                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("introduced"))) && StringUtils.isNotBlank(request.getParameter("introduced"))) {
+                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("introduced")))
+                            && StringUtils.isNotBlank(request.getParameter("introduced"))) {
                         introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("introduced"));
                     }
-                   
+
                     LocalDate discontinued = null;
-                    if (Control.isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("discontinued"))) && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
+                    if (Control
+                            .isValidStringDateDashSeparatedYYYYMMDD(Optional.of(request.getParameter("discontinued")))
+                            && StringUtils.isNotBlank(request.getParameter("discontinued"))) {
                         discontinued = DateUtil.stringToDateDashSeparatedYYYYMMDD(request.getParameter("discontinued"));
                     }
                     int companyId = Integer.parseInt(request.getParameter("companyId"));
-                    
+
                     String companyName = null;
-                    if (CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).isPresent()){
-                        companyName = CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).get().getName().orElse("UNKOWN");
+                    if (CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).isPresent()) {
+                        companyName = CompanyServiceImpl.INSTANCE.readById(Long.valueOf(companyId)).get().getName()
+                                .orElse("UNKOWN");
                     }
-          
+
                     Company company = null;
-                   
+
                     if (companyId != 0) {
-                        company = new Company(companyId,companyName);
-                    } 
-                    Computer c = new Computer(1,name,introduced,discontinued,company);
-                    //TODO IS valid computer
+                        company = new Company.CompanyBuilder(companyId, companyName).build();
+                    }
+                    Computer c = new Computer.ComputerBuilder(1, name)
+                            .withIntroduced(introduced)
+                            .withDiscontinued(discontinued)
+                            .withCompany(company)
+                            .build();
+                    // TODO IS valid computer
 
                     ComputerServiceImpl.INSTANCE.create(Optional.of(c));
-                    
+
                 } catch (NumberFormatException e) {
                     System.out.println(e);
-                }      
+                }
             default:
                 break;
             }
@@ -203,6 +233,47 @@ public class CdbServlet extends HttpServlet {
         doGet(request, response);
     }
     
-
+    private Optional<ComputerDto> mapComputerDtoFromRequest(HttpServletRequest request){
+        int id;
+        try {
+            id = Integer.parseInt(request.getParameter("id"));
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+        String name = request.getParameter("name");
+        
+        if( id == 0 || name == null || StringUtils.isBlank(name)) {
+            return Optional.empty();
+        }
+        
+        String introduced = request.getParameter("introduced");
+        String discontinued = request.getParameter("discontinued");
+       
+        long companyId;
+        try {
+        companyId = Long.parseLong(request.getParameter("companyId"));
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
+        
+        Optional<Company> company = CompanyServiceImpl.INSTANCE.readById(companyId);
+        Optional<CompanyDto> companyDto = CompanyDtoMapper.mapCompanyDtoFromCompany(company);
+        
+        ComputerDto computer = new ComputerDto.ComputerDtoBuilder(id, name)
+                .withIntroduced(introduced)
+                .withDiscontinued(discontinued)
+                .withCompany(companyDto.orElse(null))
+                .build();
+        return Optional.of(computer);
+    }
+    
+    private PagerComputer getContextPager(HttpServletRequest request){
+        
+        if(request.getSession().getAttribute("pager") == null ) {
+            PagerComputer pager = new PagerComputer();
+            request.getSession().setAttribute("pager", pager);
+        }
+        return(PagerComputer) request.getSession().getAttribute("pager");
+    }
 
 }
