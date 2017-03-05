@@ -42,4 +42,25 @@ public class CompanyDtoMapper {
         }       
         return Optional.of(new CompanyDto.CompanyDtoBuilder(id, name.get()).build());       
     }
+
+    public static Optional<Company> mapCompanyFromCompanyDto(Optional<CompanyDto> companyDtoO) {
+        if (!companyDtoO.isPresent()) {
+            return Optional.empty();
+        }
+
+        CompanyDto companyDto = companyDtoO.get();
+        long id = companyDto.getId();
+        String name = companyDto.getName();
+
+        if ( id <= 0) {
+            return Optional.empty();
+        }
+
+        if ( StringUtils.isBlank(name)) {
+            return Optional.empty();
+        }
+
+        Company company = new Company.CompanyBuilder(id,name).build();
+        return Optional.of(company);
+    }
 }
