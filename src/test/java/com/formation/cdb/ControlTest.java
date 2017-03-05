@@ -27,90 +27,144 @@ public class ControlTest {
 
     @Test
     public void isValidComputerTestWithZeroId() {
-        Computer c = new Computer(0, "test", null, null, null);
+        Computer c = new Computer.ComputerBuilder(0, "test").build();
         assertFalse(isValidComputer(Optional.of((Computer) c)));
     }
 
     @Test
     public void isValidComputerWithNegativeId() {
-        Computer c = new Computer(-1, "test", null, null, null);
+        Computer c = new Computer.ComputerBuilder(-1, "test").build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithDiscontinuedDateBeforeIntroducedDate() {
-        Computer c = new Computer(1, "test", LocalDate.of(2011, 1, 1), LocalDate.of(2010, 1, 1), null);
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011,1,1))
+                .withDiscontinued(LocalDate.of(2010,1,1))
+                .withCompany(null)
+                .build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithNullName() {
-        Computer c = new Computer(1, null, null, null, null);
+        Computer c = new Computer.ComputerBuilder(1, null)
+                .withIntroduced(null)
+                .withDiscontinued(null)
+                .withCompany(null)
+                .build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
     
     @Test
     public void isValidComputerWithEmptyName() {
-        Computer c = new Computer(1, "", null, null, null);
+        Computer c = new Computer.ComputerBuilder(1, "")
+                .withIntroduced(null)
+                .withDiscontinued(null)
+                .withCompany(null)
+                .build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerValid() {
-        Computer c = new Computer(1, "test", null, null, null);
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(null)
+                .withDiscontinued(null)
+                .withCompany(null)
+                .build();
         assertTrue(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithValidIntroducedDate() {
-        Computer c = new Computer(1, "test", LocalDate.of(2011, 1, 1), null, null);
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011,1,1))
+                .withDiscontinued(null)
+                .withCompany(null)
+                .build();
         assertTrue(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithValidDiscontinuedDate() {
-        Computer c = new Computer(1, "test", null, LocalDate.of(2011, 1, 1), null);
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(null)
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(null)
+                .build();
         assertTrue(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithAllFieldsExceptCompany() {
-        Computer c = new Computer(1, "test", LocalDate.of(2010, 1, 1), LocalDate.of(2011, 1, 1), null);
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(null)
+                .build();
         assertTrue(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithInvalidCompanyIdNegative() {
-        Company cy = new Company(-1, "company");
-        Computer c = new Computer(1, "test", null, null, cy);
+        Company cy = new Company.CompanyBuilder(-1, "company").build();
+
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(cy)
+                .build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithInvalidCompanyIdZero() {
-        Company cy = new Company(0, "company");
-        Computer c = new Computer(1, "test", null, null, cy);
+        Company cy = new Company.CompanyBuilder(0, "company").build();
+
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(cy)
+                .build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithInvalidCompanyNameNull() {
-        Company cy = new Company(1, null);
-        Computer c = new Computer(1, "test", null, null, cy);
+        Company cy = new Company.CompanyBuilder(1, null).build();
+
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(cy)
+                .build();
         assertFalse(isValidComputer(Optional.of(c)));
     }
 
     @Test
     public void isValidComputerWithInvalidCompanyNameEmpty() {
-        Company cy = new Company(1, "");
-        Computer c = new Computer(1, "test", null, null, cy);
+        Company cy = new Company.CompanyBuilder(1, "").build();
+
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(cy)
+                .build();
+
         assertFalse(isValidComputer(Optional.of(c)));
     }
     
     @Test
     public void isValidComputerWithAllFieldsIncludingValidCompany() {
-        Company cy = new Company(1, "test");
-        Computer c = new Computer(1, "test", null, null, cy);
+        Company cy = new Company.CompanyBuilder(1, "company").build();
+
+        Computer c = new Computer.ComputerBuilder(1, "test")
+                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withDiscontinued(LocalDate.of(2011, 1, 1))
+                .withCompany(cy)
+                .build();
         assertTrue(isValidComputer(Optional.of(c)));
     }
 

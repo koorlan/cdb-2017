@@ -26,12 +26,12 @@ import com.formation.cdb.util.DateUtil;
 public class ComputerRowMapperTest {
     private ResultSet resultSet;
     
-    static String COL_ID;
-    static String COL_NAME;
-    static String COL_INTRODUCED;
-    static String COL_DISCONTINUED;
-    static String COL_COMPANY_ID;
-    
+    private static String COL_ID;
+    private static String COL_NAME;
+    private static String COL_INTRODUCED;
+    private static String COL_DISCONTINUED;
+    private static String COL_COMPANY_ID;
+
     @BeforeClass
     public static void initClass() throws IOException{
         String filename = "config.properties";
@@ -92,14 +92,12 @@ public class ComputerRowMapperTest {
         Mockito.when(resultSet.getTimestamp(COL_DISCONTINUED)).thenReturn(DateUtil.dateToTimestamp(LocalDate.of(2010, 2, 10))) ;
         Mockito.when(resultSet.getLong(COL_COMPANY_ID)).thenReturn(2l);
         Mockito.when(resultSet.getString("c_name")).thenReturn("company_test");
-        
-        Optional<List<Optional<Computer>>> computerListO = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(Optional.of(resultSet));
-        assertTrue(computerListO.isPresent());
-        List<Optional<Computer>> computerList = computerListO.get();
+
+
+        List<Computer> computerList = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(Optional.of(resultSet));
         assertEquals(computerList.size(),2);
-        for (Optional<Computer> cO: computerList) {
-            assertTrue(cO.isPresent());
-            Computer computer = cO.get();
+        for (Computer computer: computerList) {
+
             assertEquals(computer.getId(),1l);
             assertTrue(computer.getName().isPresent());
             assertEquals(computer.getName().get(),"computer_test");
