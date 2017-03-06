@@ -79,9 +79,7 @@ public abstract class Pager<T> {
         nbPages = (int) Math.ceil((double) max / pageSize);
     }
 
-    public int getMax(){
-        return max;
-    }
+    public abstract int getMax();
     
     public abstract void setFilter(String filter);
     

@@ -47,20 +47,20 @@
 							</div>
 							
 							<div class="form-group">
-								<label for="companyId">Company</label> <select name="companyId"
+								<label for="companyId">Company</label> <select name="company"
 									class="form-control" id="companyId">
 									
-									<option value="0"></option>
+									<option value=""></option>
 									
 									<c:forEach items="${companies}" var="company">	
 										
 										<c:choose>
 											<c:when test="${company.id == computer.company.id}">
-												<option selected="selected" value="${company.id}">${company.name}</option>
+												<option selected="selected" value="${company.id}:${company.name}">${company.name}</option>
 											</c:when>
 												
 											<c:otherwise>
-												<option value="${company.id}">${company.name}</option>
+												<option value="${company.id}:${company.name}">${company.name}</option>
 											</c:otherwise>
 										</c:choose>
 									</c:forEach>

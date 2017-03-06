@@ -45,4 +45,12 @@ public class PagerCompany extends Pager<Company> {
         nbPages = max / pageSize;
         this.filter = filter;
     }
+
+    @Override
+    public int getMax() {
+        CompanyServiceImpl service;
+        service = CompanyServiceImpl.INSTANCE;
+        max = service.sizeOfTable(filter);
+        return max;
+    }
 }

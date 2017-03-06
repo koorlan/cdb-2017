@@ -100,7 +100,7 @@ public class ControlTest {
     @Test
     public void isValidComputerWithAllFieldsExceptCompany() {
         Computer c = new Computer.ComputerBuilder(1, "test")
-                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withIntroduced(LocalDate.of(2010, 1, 1))
                 .withDiscontinued(LocalDate.of(2011, 1, 1))
                 .withCompany(null)
                 .build();
@@ -161,7 +161,7 @@ public class ControlTest {
         Company cy = new Company.CompanyBuilder(1, "company").build();
 
         Computer c = new Computer.ComputerBuilder(1, "test")
-                .withIntroduced(LocalDate.of(2011, 1, 1))
+                .withIntroduced(LocalDate.of(2010, 1, 1))
                 .withDiscontinued(LocalDate.of(2011, 1, 1))
                 .withCompany(cy)
                 .build();

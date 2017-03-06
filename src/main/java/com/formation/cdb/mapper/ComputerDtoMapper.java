@@ -1,9 +1,13 @@
 package com.formation.cdb.mapper;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import com.formation.cdb.entity.CompanyDto;
@@ -53,5 +57,54 @@ public class ComputerDtoMapper {
         }
             
         return Optional.of(computerDtoBuilder.build());       
+    }
+
+    public static Optional<Computer> mapComputerFromComputerDto(Optional<ComputerDto> computerDtoO) {
+        if (!computerDtoO.isPresent()) {
+            return Optional.empty();
+        }
+
+        ComputerDto computerDto = computerDtoO.get();
+        long id = computerDto.getId();
+        String name = computerDto.getName();
+        String introduced = computerDto.getIntroduced();
+        String discontinued = computerDto.getDiscontinued();
+        CompanyDto companyDto = computerDto.getCompany();
+
+        LocalDate introducedDate = null;
+        LocalDate discontinuedDate = null;
+
+        if ( id <= 0) {
+            return Optional.empty();
+        }
+
+        if ( StringUtils.isBlank(name)) {
+            return Optional.empty();
+        }
+
+        if ( StringUtils.isNotBlank(introduced)) {
+            try {
+                introducedDate = DateUtil.stringToDateDashSeparatedYYYYMMDD(introduced);
+            } catch (DateTimeParseException e) {
+                return Optional.empty();
+            }
+        }
+
+        if ( StringUtils.isNotBlank(discontinued)) {
+            try {
+                discontinuedDate = DateUtil.stringToDateDashSeparatedYYYYMMDD(discontinued);
+            } catch (DateTimeParseException e) {
+                return Optional.empty();
+            }
+        }
+
+        Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.ofNullable(companyDto));
+
+        Computer computer = new Computer.ComputerBuilder(id, name)
+                .withIntroduced(introducedDate)
+                .withDiscontinued(discontinuedDate)
+                .withCompany(company.orElse(null))
+                .build();
+        return Optional.of(computer);
     }
 }

@@ -12,12 +12,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.exception.PersistenceException;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 
 public enum ConnectionManager {
     INSTANCE;
 
     private Optional<Connection> connection = Optional.empty();
-
+    private HikariDataSource dataSource;
+    
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
     private String url;
@@ -28,7 +31,7 @@ public enum ConnectionManager {
      * Private constructor for the singleton implementation.
      */
     ConnectionManager() {
-        String filename = "config.properties";
+        String filename = "hikari.properties";
         Properties prop = new Properties();
         InputStream input = null;
         input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
@@ -38,18 +41,9 @@ public enum ConnectionManager {
         }
         try {
             prop.load(input);
-            StringBuilder sb = new StringBuilder();
-            sb.append("jdbc:mysql://");
-            sb.append(prop.getProperty("db_addr"));
-            sb.append(':');
-            sb.append(prop.getProperty("db_port"));
-            sb.append('/');
-            sb.append(prop.getProperty("db_name"));
-            sb.append("?zeroDateTimeBehavior=convertToNull");
-
-            url = sb.toString();
-            user = prop.getProperty("db_user");
-            password = prop.getProperty("db_password");
+            HikariConfig config = new HikariConfig(prop);
+            dataSource = new HikariDataSource(config);
+            dataSource.setMaximumPoolSize(1);
 
         } catch (IOException e) {
             LOGGER.error("Error on config file");
@@ -65,7 +59,8 @@ public enum ConnectionManager {
         if (!connection.isPresent()) {
             try {
                 Class.forName("com.mysql.jdbc.Driver");
-                connection = Optional.ofNullable(DriverManager.getConnection(url, user, password));
+                //connection = Optional.ofNullable(DriverManager.getConnection(url, user, password));
+                connection = Optional.ofNullable(dataSource.getConnection());
             } catch (SQLException | ClassNotFoundException e) {
                 LOGGER.error("Can't get a connection", e);
             }
