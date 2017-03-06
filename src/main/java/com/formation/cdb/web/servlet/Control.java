@@ -9,6 +9,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Control {
 
@@ -38,7 +40,7 @@ public class Control {
         String nameFromRequest = request.getParameter("name");
 
         isRequestValid &= isNameValid(nameFromRequest);
-        LOGGER.warn(Boolean.toString(isRequestValid));
+        
         return isRequestValid && isRequestValidForMappingComputerDto(request);
     }
 
@@ -113,7 +115,16 @@ public class Control {
     }
 
     private static boolean isNameValid(String nameFromRequest) {
-        return StringUtils.isNotBlank(nameFromRequest);
+        
+        boolean valid = StringUtils.isNotBlank(nameFromRequest);
+        
+        Pattern p = Pattern.compile("^[\\w\\d\\. \\-\\(\\)\\[\\]\u00C0-\u00ff]*$");
+       
+        Matcher m = p.matcher(nameFromRequest);
+        
+        valid &= m.matches();
+        
+        return valid;
     }
 
     private static boolean isDateValid(String dateFromRequest) {

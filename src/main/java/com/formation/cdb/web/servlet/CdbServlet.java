@@ -2,6 +2,7 @@ package com.formation.cdb.web.servlet;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -147,12 +148,32 @@ public class CdbServlet extends HttpServlet {
                     computerDto = mapComputerDtoByRequestWithId(request);
                     computer = ComputerDtoMapper.mapComputerFromComputerDto(computerDto);
                     ComputerServiceImpl.INSTANCE.update(computer);
+                    response.sendRedirect("database");
                     break;
                 case "add":
                     computerDto = mapComputerDtoByRequestWithoutId(request);
                     computer = ComputerDtoMapper.mapComputerFromComputerDto(computerDto);
                     ComputerServiceImpl.INSTANCE.create(computer);
                     response.sendRedirect("database");
+                    break;
+                case "delete":
+                    if (request.getParameter("selection") != null) {
+                        String str = request.getParameter("selection");
+                        
+                        List<String> items = Arrays.asList(str.split("\\s*,\\s*"));
+                        for (String s: items) {
+                            try {
+                                long id = Long.parseLong(s);
+                                Computer c = new Computer.ComputerBuilder(id, "").build();
+                                ComputerServiceImpl.INSTANCE.delete(Optional.of(c));
+                                
+                            } catch ( NumberFormatException numberFormatException){
+                                
+                            }
+                        }
+                        
+                        
+                    }
                     break;
                 default:
                     break;
