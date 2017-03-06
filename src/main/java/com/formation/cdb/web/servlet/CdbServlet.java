@@ -153,12 +153,12 @@ public class CdbServlet extends HttpServlet {
                     computerDto = mapComputerDtoByRequestWithoutId(request);
                     computer = ComputerDtoMapper.mapComputerFromComputerDto(computerDto);
                     ComputerServiceImpl.INSTANCE.create(computer);
+                    response.sendRedirect("database");
                     break;
                 default:
                     break;
             }
         }
-        doGet(request, response);
     }
 
     private PagerComputer getContextPager(HttpServletRequest request) {
