@@ -43,8 +43,7 @@ public enum ConnectionManager {
             prop.load(input);
             HikariConfig config = new HikariConfig(prop);
             dataSource = new HikariDataSource(config);
-            
-            
+            dataSource.setMaximumPoolSize(1);
 
         } catch (IOException e) {
             LOGGER.error("Error on config file");

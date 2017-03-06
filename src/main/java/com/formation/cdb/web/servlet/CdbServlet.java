@@ -47,7 +47,6 @@ public class CdbServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         PagerComputer pager;
         pager = getContextPager(request);
 
