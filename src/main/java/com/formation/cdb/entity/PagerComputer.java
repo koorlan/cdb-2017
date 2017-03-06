@@ -43,4 +43,12 @@ public class PagerComputer extends Pager<Computer> {
         page = 1;
         this.filter = filter;
     }
+
+    @Override
+    public int getMax() {
+        ComputerServiceImpl service;
+        service = ComputerServiceImpl.INSTANCE;
+        max = service.sizeOfTable(filter);
+        return max;
+    }
 }
