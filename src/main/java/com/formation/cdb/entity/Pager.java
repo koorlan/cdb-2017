@@ -1,7 +1,6 @@
 package com.formation.cdb.entity;
 
 import java.util.List;
-import java.util.Optional;
 
 public abstract class Pager<T> {
 
@@ -12,15 +11,16 @@ public abstract class Pager<T> {
     protected int nbPages;
 
     protected int page;
-
+    protected String filter;
     /**
      * Default constructor of the un-typed Pager.
      */
     public Pager() {
         pageSize = DEFAULT_PAGE_SIZE;
         max = 0;
-        nbPages = max / pageSize;
-        page = 0;
+        nbPages = (int) Math.ceil((double)max / pageSize);
+        page = 1;
+        filter = "";
     }
 
     /**
@@ -29,7 +29,7 @@ public abstract class Pager<T> {
      * @param page an int to represent which page you want to reach
      * @return A list of the type of the pager.
      */
-    public abstract Optional<List<Optional<T>>> getPage(int page);
+    public abstract List<T> getPage(int page);
 
     /**
      * Increments the page index.
@@ -45,18 +45,18 @@ public abstract class Pager<T> {
      * Decrements the page index.
      */
     public void prev() {
-        if (page > 0) {
+        if (page > 1) {
             page--;
         }
     }
     
     public void goTo(int index){
-        if (index <= nbPages && index >= 0) {
+        if (index <= nbPages && index >= 1) {
             page = index;
         }
     }
     
-    public Optional<List<Optional<T>>> getCurrentPage() {
+    public List<T> getCurrentPage() {
         return getPage(page);
     }
 
@@ -73,12 +73,17 @@ public abstract class Pager<T> {
     }
     
     public void setPageSize(int pageSize){
-        page = (page * this.pageSize) / pageSize;   
+        page = (int) Math.floor( (double) ( (page-1) * this.pageSize) / pageSize);
+        page ++;
         this.pageSize = pageSize;
-        nbPages = max / pageSize;
+        nbPages = (int) Math.ceil((double) max / pageSize);
     }
 
-    public int getMax(){
-        return max;
+    public abstract int getMax();
+    
+    public abstract void setFilter(String filter);
+    
+    public String getFilter() {
+        return filter;
     }
 }

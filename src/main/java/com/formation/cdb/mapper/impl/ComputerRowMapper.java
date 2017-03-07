@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,15 +62,17 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
     };
 
     @Override
-    public Optional<List<Optional<Computer>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
+    public List<Computer> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
+        
+        List<Computer> computers = new ArrayList<>();
+        
         if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
-            return Optional.empty();
+            return computers;
         }
 
         try {
 
             ResultSet r = rs.get();
-            List<Optional<Computer>> computers = new ArrayList<>();
             while (r.next()) {
 
                 long id = r.getLong(COL_ID);
@@ -80,23 +83,21 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
                         .map(Timestamp::toLocalDateTime).map(LocalDateTime::toLocalDate).orElse(null);
 
                 long companyId = r.getLong(COL_COMPANY_ID);
-
-                Optional<Company> company = (companyId != 0)
-                        ? Optional.of(new Company(companyId, r.getString("c_name"))) : Optional.empty();
-
-                Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
-
-                computers.add(Optional.ofNullable(computer));
+                String companyName = r.getString("c_name");
+                
+                Optional<Computer> computer = constructComputerFromResultSetvalues(id, name, introduced, discontinued, companyId, companyName);
+                
+                if ( computer.isPresent() ) {
+                    computers.add(computer.get());
+                }
             }
-
-            return Optional.ofNullable(computers);
         } catch (SQLException e) {
 
             e.printStackTrace();
 
         }
 
-        return Optional.empty();
+        return computers;
     }
 
     @Override
@@ -109,7 +110,6 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
         try {
 
             ResultSet r = rs.get();
-
             r.next();
 
             long id = r.getLong(COL_ID);
@@ -120,12 +120,10 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
                     .map(LocalDateTime::toLocalDate).orElse(null);
 
             long companyId = r.getLong(COL_COMPANY_ID);
-
-            Optional<Company> company = (companyId != 0) ? Optional.of(new Company(companyId, r.getString("c_name")))
-                    : Optional.empty();
-            Computer computer = new Computer(id, name, introduced, discontinued, company.orElse(null));
-            return Optional.ofNullable(computer);
-
+            String companyName = r.getString("c_name");
+            
+            Optional<Computer> computer = constructComputerFromResultSetvalues(id, name, introduced, discontinued, companyId, companyName);
+            return computer;
         } catch (SQLException e) {
 
             e.printStackTrace();
@@ -133,6 +131,36 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
         }
 
         return Optional.empty();
+    }
+    
+    private Optional<Computer> constructComputerFromResultSetvalues(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId, String companyName){
+        if ( id == 0 || name == null || StringUtils.isBlank(name) ) {
+            return Optional.empty();
+        }
+        
+        Optional<Company> company;
+        
+        if ( companyId == 0 || companyName == null || StringUtils.isBlank(companyName)) {
+            company = Optional.empty();
+        } else {
+            company = Optional.of(new Company.CompanyBuilder(companyId, companyName).build());
+        }
+        
+        Computer.ComputerBuilder computerBuilder = new Computer.ComputerBuilder(id, name);
+        if ( introduced != null ) {
+            computerBuilder.withIntroduced(introduced);
+        }
+        
+        if ( discontinued != null ) {
+            computerBuilder.withDiscontinued(discontinued);
+        }
+        
+        if ( company.isPresent() ) {
+            computerBuilder.withCompany(company.get());
+        }
+        
+        Computer computer = computerBuilder.build();
+        return Optional.of(computer);
     }
 
 }

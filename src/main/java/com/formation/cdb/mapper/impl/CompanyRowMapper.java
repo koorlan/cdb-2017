@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.entity.impl.Company.CompanyBuilder;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.persistence.connection.ConnectionManager;
@@ -32,7 +33,7 @@ public enum CompanyRowMapper implements RowMapper<Company> {
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
-        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        input = CompanyRowMapper.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
             LOGGER.error("Sorry, unable to find " + filename);
             throw new PersistenceException("Unable to acces config file at " + filename);
@@ -49,39 +50,35 @@ public enum CompanyRowMapper implements RowMapper<Company> {
     };
 
     @Override
-    public Optional<List<Optional<Company>>> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
-
+    public List<Company> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
+        
+        List<Company> companies =  new ArrayList<>();
+        
         if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
-            return Optional.empty();
+            return companies;
         }
 
         try {
-
-            List<Optional<Company>> companies;
+   
             long id;
             String name;
-            Company company;
-
-            companies = new ArrayList<>();
 
             while (rs.get().next()) {
 
-                id = rs.get().getLong(COL_ID);
-
-                name = rs.get().getString(COL_NAME);
-                company = new Company(id, name);
-
-                companies.add(Optional.ofNullable(company));
+               id = rs.get().getLong(COL_ID);
+               name = rs.get().getString(COL_NAME);
+               
+               if( !(id == 0 || name == null) ) {
+                   Company company = new Company.CompanyBuilder(id, name).build();
+                   companies.add(company);
+               }         
             }
-
-            return Optional.ofNullable(companies);
-
         } catch (SQLException e) {
 
             // TODO
 
         }
-        return Optional.empty();
+        return companies;
     }
 
     @Override
@@ -97,10 +94,12 @@ public enum CompanyRowMapper implements RowMapper<Company> {
             r.next();
             long id = r.getLong(COL_ID);
             String name = r.getString(COL_NAME);
-            Company company = new Company(id, name);
-
-            return Optional.ofNullable(company);
-
+           
+            if( !(id == 0 || name == null) ) {
+                Company company = new Company.CompanyBuilder(id,name).build();
+                return Optional.of(company);
+            }
+            
         } catch (SQLException e) {
             e.printStackTrace();
         }

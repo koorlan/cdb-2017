@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -27,11 +28,12 @@ public enum CompanyDaoImpl implements Dao<Company> {
     String READ_BY_ID;
     String READ_ALL_LIMIT;
     String ROW_COUNT;
+
     /**
      * Private constructor for Singleton Implementation.
      */
     CompanyDaoImpl() {
-        //construct queries from configuration file;
+        // construct queries from configuration file;
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
@@ -44,14 +46,14 @@ public enum CompanyDaoImpl implements Dao<Company> {
         try {
             prop.load(input);
             StringBuilder sb = new StringBuilder();
-            //READ_BY_ID
+            // READ_BY_ID
             sb.append("SELECT * FROM ");
             sb.append(prop.getProperty("db_company_table"));
             sb.append(" WHERE ");
             sb.append(prop.getProperty("db_company_col_id"));
             sb.append("=?;");
             READ_BY_ID = sb.toString();
-            //READ_ALL_LIMIT
+            // READ_ALL_LIMIT
 
             sb = new StringBuilder();
             sb.append("SELECT * FROM ");
@@ -59,7 +61,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
             sb.append(" LIMIT ?,?;");
 
             READ_ALL_LIMIT = sb.toString();
-            //ROW_COUNT
+            // ROW_COUNT
             sb = new StringBuilder();
             sb.append("SELECT COUNT(*) c FROM ");
             sb.append(prop.getProperty("db_company_table") + ";");
@@ -72,7 +74,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
     }
 
     @Override
-    public void create(Optional<Company> e) {
+    public void create(Optional<Company> company) {
         LOGGER.warn("Method Create is not implemented");
     }
 
@@ -102,28 +104,30 @@ public enum CompanyDaoImpl implements Dao<Company> {
     }
 
     @Override
-    public void update(Optional<Company> e) {
+    public void update(Optional<Company> company) {
         LOGGER.warn("Method update is not implemented");
     }
 
     @Override
-    public void delete(Optional<Company> e) {
+    public void delete(Optional<Company> company) {
         LOGGER.warn("Method delete is not implemented");
     }
 
     @Override
-    public Optional<List<Optional<Company>>> readAllWithOffsetAndLimit(int offset, int limit) {
-
+    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+        
+        List<Company> companies = new ArrayList<>();
+        
         if (offset < 0 || limit < 0) {
             LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-            return Optional.empty();
+            return companies;
         }
 
         Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
         if (!connection.isPresent()) {
             LOGGER.warn("can't get a connection");
-            return Optional.empty();
+            return companies;
         }
 
         try {
@@ -134,17 +138,19 @@ public enum CompanyDaoImpl implements Dao<Company> {
             Optional<ResultSet> rs;
             rs = Optional.ofNullable(stmt.executeQuery());
 
-            Optional<List<Optional<Company>>> companies = CompanyRowMapper.INSTANCE
-                    .mapListOfObjectsFromMultipleRows(rs);
+            companies = CompanyRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
 
-            return companies;
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
+        
+        return companies;
     }
 
     @Override
-    public int rowCount() {
+    public int rowCount(String filter) {
         int count = 0;
         Optional<ResultSet> rs;
         Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();

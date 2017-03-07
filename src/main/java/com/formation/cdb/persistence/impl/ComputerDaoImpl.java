@@ -7,6 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
@@ -122,6 +123,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             sb.append(prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_company_id"));
             sb.append('=');
             sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_id"));
+            sb.append( " WHERE " + prop.getProperty("db_computer_table") + '.' + prop.getProperty("db_computer_col_name") + " LIKE ?");
             sb.append(" LIMIT ?,?;");
 
             READ_ALL_LIMIT = sb.toString();
@@ -129,7 +131,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
             sb = new StringBuilder();
             sb.append("SELECT COUNT(*) c FROM ");
-            sb.append(prop.getProperty("db_computer_table") + ";");
+            sb.append(prop.getProperty("db_computer_table") + " WHERE NAME LIKE ?;");
 
             ROW_COUNT = sb.toString();
 
@@ -282,42 +284,44 @@ public enum ComputerDaoImpl implements Dao<Computer> {
     }
 
     @Override
-    public Optional<List<Optional<Computer>>> readAllWithOffsetAndLimit(int offset, int limit) {
-
+    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+        
+        List<Computer> computers = new ArrayList<>();
+        
         if (offset < 0 || limit < 0) {
             LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-            return Optional.empty();
+            return computers;
         }
 
         Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
 
         if (!connection.isPresent()) {
             LOGGER.warn("can't get a connection");
-            return Optional.empty();
+            return computers;
         }
         try {
             PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-            stmt.setInt(1, offset);
-            stmt.setInt(2, limit);
+            stmt.setString(1, filter);
+            stmt.setInt(2, offset);
+            stmt.setInt(3, limit);
 
             Optional<ResultSet> rs;
             rs = Optional.ofNullable(stmt.executeQuery());
 
-            Optional<List<Optional<Computer>>> computers;
             computers = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
 
-            return computers;
+           
 
         } catch (SQLException e) {
             throw new PersistenceException(e);
         } finally {
             ConnectionManager.close(connection);
         }
-
+        return computers;
     }
 
     @Override
-    public int rowCount() {
+    public int rowCount(String filter) {
         int count = 0;
 
         Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
@@ -329,7 +333,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
         try {
             Optional<ResultSet> rs;
-            rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+            PreparedStatement stmt = connection.get().prepareStatement(ROW_COUNT);
+            stmt.setString(1, filter);
+            rs = Optional.ofNullable(stmt.executeQuery());
             count = RowMapper.mapCountResult(rs);
             return count;
         } catch (SQLException e) {

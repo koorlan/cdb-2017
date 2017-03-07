@@ -23,7 +23,7 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1>Add Computer</h1>
-                    <form action="database" method="POST">
+                    <form action="database" method="POST" onsubmit="return validateForm()">
                     <input name="action" type="hidden" value="add" />
                         <fieldset>
 							<div class="form-group">
@@ -31,24 +31,33 @@
 									name="name" type="text" class="form-control" id="computerName"
 									placeholder="MackBook Pro">
 							</div>
+							
+							<div id="alert-name-danger"  style="display:none;" class="alert alert-danger" role="alert">The name is invalid, it can't be empty and can contains only alphanumeric, space, dot, dash or parenthesis</div>
+							
 							<div class="form-group">
 								<label for="introduced">Introduced date</label> <input
 									name="introduced" type="date" class="form-control"
 									id="introduced" placeholder="yyyy-mm-dd">
 							</div>
+							
+							<div id="alert-introduced-danger"  style="display:none;" class="alert alert-danger" role="alert">Date is invalid format year-month-day (YYYY-MM-DD)</div>
+							
 							<div class="form-group">
 								<label for="discontinued">Discontinued date</label> <input
 									name="discontinued" type="date" class="form-control"
-									id="discontinued" placeholder="yyyy-mm-dd"">
+									id="discontinued" placeholder="yyyy-mm-dd">
 							</div>
 							
+							<div id="alert-discontinued-danger"  style="display:none;" class="alert alert-danger" role="alert">Date is invalid format year-month-day (YYYY-MM-DD)</div>
+							<div id="alert-date-danger"  style="display:none;" class="alert alert-danger" role="alert">Discontinued date must be after introduced</div>
+							
 							<div class="form-group">
-								<label for="companyId">Company</label> <select name="companyId"
+								<label for="companyId">Company</label> <select name="company"
 									class="form-control" id="companyId">
 									
-									<option value="0"></option>
+									<option value=""></option>
 									<c:forEach items="${companies}" var="company">										
-										<option value="${company.id}">${company.name}</option>
+										<option value="${company.id}:${company.name}">${company.name}</option>
 									</c:forEach>
 
 								</select>
@@ -64,5 +73,9 @@
             </div>
         </div>
     </section>
+    <script src="./js/jquery.min.js"></script>
+	<script src="./js/bootstrap.min.js"></script>
+	<script src="./js/addComputer.js"></script>
+	
 </body>
 </html>
