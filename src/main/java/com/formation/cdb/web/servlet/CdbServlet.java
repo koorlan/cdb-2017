@@ -174,6 +174,7 @@ public class CdbServlet extends HttpServlet {
                         
                         
                     }
+                    response.sendRedirect("database");
                     break;
                 default:
                     break;
@@ -192,7 +193,10 @@ public class CdbServlet extends HttpServlet {
 
     public Optional<ComputerDto> mapComputerDtoByRequestWithoutId(HttpServletRequest request) {
         if (!Control.isRequestValidForMappingComputerDtoWithoutId(request)) {
-            LoggerFactory.getLogger("servlet").error("REturn optional empty");
+            LoggerFactory.getLogger("servlet").error(request.getParameter("name"));
+            LoggerFactory.getLogger("servlet").error(request.getParameter("introduced"));
+            LoggerFactory.getLogger("servlet").error(request.getParameter("discontinued"));
+            LoggerFactory.getLogger("servlet").error(request.getParameter("company"));
             return Optional.empty();
         }
 

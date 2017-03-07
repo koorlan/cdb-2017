@@ -118,11 +118,11 @@ public class Control {
         
         boolean valid = StringUtils.isNotBlank(nameFromRequest);
         
-        Pattern p = Pattern.compile("^[\\w\\d\\. \\-\\(\\)\\[\\]\u00C0-\u00ff]*$");
+        //Pattern p = Pattern.compile("^[\\w\\d\\. \\-\\(\\)\\[\\]\u00C0-\u00ff]*$");
        
-        Matcher m = p.matcher(nameFromRequest);
+        //Matcher m = p.matcher(nameFromRequest);
         
-        valid &= m.matches();
+        //valid &= m.matches();
         
         return valid;
     }

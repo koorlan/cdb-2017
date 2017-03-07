@@ -179,6 +179,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         } catch (SQLException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
+        } finally {
+            ConnectionManager.close(connection);
         }
 
     }
@@ -209,6 +211,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
     }
 
@@ -250,6 +254,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             LOGGER.info("Sucessfully updated: " + e);
         } catch (SQLException e1) {
             throw new PersistenceException(e1);
+        } finally {
+            ConnectionManager.close(connection);
         }
 
     }
@@ -278,6 +284,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             LOGGER.info("Succesfully deleted " + e);
         } catch (SQLException e1) {
             throw new PersistenceException(e1);
+        } finally {
+            ConnectionManager.close(connection);
         }
 
 
@@ -340,6 +348,8 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             return count;
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
 
     }

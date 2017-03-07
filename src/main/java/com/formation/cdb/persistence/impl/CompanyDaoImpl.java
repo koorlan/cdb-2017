@@ -166,6 +166,8 @@ public enum CompanyDaoImpl implements Dao<Company> {
             return count;
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
     };
 
