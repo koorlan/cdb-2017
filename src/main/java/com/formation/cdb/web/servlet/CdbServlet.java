@@ -98,9 +98,11 @@ public class CdbServlet extends HttpServlet {
                                 List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
                                 request.getSession().setAttribute("companies", companiesDto);
                                 pageToForward = "/editComputer.jsp";
+                            } else {
+                                LoggerFactory.getLogger("servlet").error("edit failed, computer dose not exist");
                             }
                         } catch (NumberFormatException e) {
-                            // TODO warn.
+                            LoggerFactory.getLogger("servlet").error("Edit, parse Int failed");
                         }
                     }
                     break;
@@ -114,6 +116,7 @@ public class CdbServlet extends HttpServlet {
 
                 case "filter":
                     if (request.getParameter("search") != null) {
+                        LoggerFactory.getLogger("servlet").info("Filter on " + request.getParameter("search"));
                         pager.setFilter(request.getParameter("search"));
                     }
                     break;
@@ -193,10 +196,7 @@ public class CdbServlet extends HttpServlet {
 
     public Optional<ComputerDto> mapComputerDtoByRequestWithoutId(HttpServletRequest request) {
         if (!Control.isRequestValidForMappingComputerDtoWithoutId(request)) {
-            LoggerFactory.getLogger("servlet").error(request.getParameter("name"));
-            LoggerFactory.getLogger("servlet").error(request.getParameter("introduced"));
-            LoggerFactory.getLogger("servlet").error(request.getParameter("discontinued"));
-            LoggerFactory.getLogger("servlet").error(request.getParameter("company"));
+            LoggerFactory.getLogger("servlet").error("Return optional empty");
             return Optional.empty();
         }
 
@@ -227,7 +227,7 @@ public class CdbServlet extends HttpServlet {
 
     public Optional<ComputerDto> mapComputerDtoByRequestWithId(HttpServletRequest request) {
         if (!Control.isRequestValidForMappingComputerDtoWithId(request)) {
-            LoggerFactory.getLogger("servlet").error("REturn optional empty");
+            LoggerFactory.getLogger("servlet").error("Return optional empty");
             return Optional.empty();
         }
 

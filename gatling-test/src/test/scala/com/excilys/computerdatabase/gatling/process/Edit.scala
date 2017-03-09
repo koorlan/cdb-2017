@@ -13,6 +13,7 @@ object Edit {
 
   val edit = exec(http("Edit: Search for edit")
     .get(config.getString("application.urls.dashboardPage"))
+    .queryParam("action","filter")
     .queryParam(config.getString("application.urls.param.search").toString(), "${addComputerName}")
     .check(
       status.is(200),
@@ -29,6 +30,7 @@ object Edit {
     )
     .exec(http("Edit: Edit Post")
       .post(config.getString("application.urls.editPost").get)
+      .formParam("action","edit")
       .formParam(config.getString("application.urls.form.edit.id").get, "${computer_id}")
       .formParam(config.getString("application.urls.form.edit.name").get, "${addComputerName}_edited")
       .formParam(config.getString("application.urls.form.edit.introduced").get, "${addComputerIntroduced}")

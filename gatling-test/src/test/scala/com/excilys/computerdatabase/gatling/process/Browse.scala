@@ -26,10 +26,8 @@ object Browse {
     .repeat(numberPage) {
       exec(http("Browse: Browse page: ${page},  pageSize: ${pageSize}, column: ${column}, order: ${order}")
         .get(config.getString("application.urls.dashboardPage"))
+        .queryParam("action", "goto")
         .queryParam(config.getString("application.urls.param.page").toString(), "${page}")
-        .queryParam(config.getString("application.urls.param.pageSize").toString(), "${pageSize}")
-        .queryParam(config.getString("application.urls.param.column").toString(), "${column}")
-        .queryParam(config.getString("application.urls.param.order").toString(), "${order}")
         .check(status.is(200))
       )
         .pause(3, 10)

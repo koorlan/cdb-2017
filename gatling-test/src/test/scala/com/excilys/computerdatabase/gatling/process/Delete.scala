@@ -21,6 +21,7 @@ object Delete {
     .pause(3, 10)
     .exec(http("Delete: Delete post")
       .post(config.getString("application.urls.deletePost").get)
+      .formParam("action","delete")
       .formParam(config.getString("application.urls.form.delete.selection").get, "${computerId}"))
     .pause(3, 10)
 }

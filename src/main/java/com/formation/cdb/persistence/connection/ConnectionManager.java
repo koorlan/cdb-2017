@@ -51,7 +51,7 @@ public enum ConnectionManager {
             prop.load(input);
             HikariConfig config = new HikariConfig(prop);
             dataSource = new HikariDataSource(config);
-            dataSource.setMaximumPoolSize(1);
+            dataSource.setMaximumPoolSize(3000);
 
         } catch (IOException e) {
             LOGGER.error("Error on config file");
@@ -61,7 +61,7 @@ public enum ConnectionManager {
 
     /**
      * try to retrieve a connection from the Driver.
-     * 
+     *
      * @return an optional connection.. maybe yes.. maybe no :).
      */
     public Optional<Connection> getConnection() {
@@ -81,7 +81,7 @@ public enum ConnectionManager {
 
     /**
      * Try to close a given connection.
-     * 
+     *
      * @param connection
      *            the connection to close.
      */
@@ -90,7 +90,6 @@ public enum ConnectionManager {
             try {
                 x.close();
                 ConnectionManager.INSTANCE.connection.set(Optional.empty());
-                //ConnectionManager.INSTANCE.LOGGER.info("Closed Connection");
             } catch (SQLException e) {
                 throw new PersistenceException(e);
             }
