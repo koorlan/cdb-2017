@@ -104,6 +104,7 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
     public Optional<Computer> mapObjectFromOneRow(Optional<ResultSet> rs) {
 
         if (!rs.isPresent() || RowMapper.countRowsOfResultSet(rs) <= 0) {
+            LOGGER.error("map 1 object, failed, ResultSet present : " + rs.isPresent() + " rowsOfRs: " + RowMapper.countRowsOfResultSet(rs));
             return Optional.empty();
         }
 
@@ -121,13 +122,11 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
 
             long companyId = r.getLong(COL_COMPANY_ID);
             String companyName = r.getString("c_name");
-            
+            LOGGER.info("Try to map, " + id + " " + name + " "+ introduced + " "+ discontinued + " "+ companyId + " "+ companyName );
             Optional<Computer> computer = constructComputerFromResultSetvalues(id, name, introduced, discontinued, companyId, companyName);
             return computer;
         } catch (SQLException e) {
-
-            e.printStackTrace();
-
+            LOGGER.error("Map object from one row failed, SQL exception");
         }
 
         return Optional.empty();

@@ -71,7 +71,7 @@ function validateForm () {
 	validate &= validateDate($('#introduced').val());
 	validate &= validateDate($('#discontinued').val());
 	validate &= validateIntroducedBeforeDiscontinued($('#introduced').val(), $('#discontinued').val());
-	return validate === true;
+	return validate === 1;
 }
 
 

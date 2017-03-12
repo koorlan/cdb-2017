@@ -94,8 +94,8 @@ public enum CompanyDaoImpl implements Dao<Company> {
             stmt.setLong(1, id);
             Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
             Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
+            stmt.close();
             return company;
-
         } catch (SQLException e) {
             throw new PersistenceException(e);
         } finally {
@@ -139,7 +139,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
             rs = Optional.ofNullable(stmt.executeQuery());
 
             companies = CompanyRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-
+            stmt.close();
         } catch (SQLException e) {
             throw new PersistenceException(e);
         } finally {
@@ -161,11 +161,15 @@ public enum CompanyDaoImpl implements Dao<Company> {
         }
 
         try {
-            rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+            PreparedStatement stmt = connection.get().prepareStatement(ROW_COUNT);
+            rs = Optional.ofNullable(stmt.executeQuery());
             count = RowMapper.mapCountResult(rs);
+            stmt.close();
             return count;
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
     };
 
