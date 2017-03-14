@@ -13,7 +13,7 @@ public class DatabaseTest {
     @Test
     public void isConnectionNotEmpty() {
         Optional<Connection> conn = ConnectionManager.INSTANCE.getConnection();
-        Assert.assertTrue(conn.isPresent());
+        Assert.assertTrue(false);
     }
     
 
