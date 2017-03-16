@@ -32,7 +32,7 @@ Utiliser une Instance t2.micro d'EC2
 
 Use korlan/jenkins.
 Configure Volumes
-/var/run/docker.socker -> /var/run/docker.sock
+/var/run/docker.sock -> /var/run/docker.sock
 /usr/bin/docker -> /usr/bin/docker
 /prod-volume -> /prod-volume
 /test-volume -> /test-volume
@@ -60,7 +60,7 @@ sudo docker network create --driver bridge test-network
 sudo docker network create --driver bridge prod-network
 sudo docker run -d --name=mysql-prod --net prod-network korlan/mysql:latest
 sudo docker run -d --name=mysql --net test-network korlan/mysql:latest
-sudo docker run -d -p 8081:8080 --name tomcat --net prod-network -v /prod-volume:/usr/local/tomcat/webapps/ tomcat:7-jre8
+sudo docker run -d -p 8081:8080 --name tomcat --net prod-network -v /prod-volume:  tomcat:7-jre8
 
 sudo docker run --net test-network --name maven -v /test-volume:/usr/src/mymaven -w /usr/src/mymaven -i maven:3.3.9-jdk-8 mvn clean package
 Note: it will fail (no pom.xml) but container is created and can be start by jenkins after jenkis pull data.
