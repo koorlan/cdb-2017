@@ -114,3 +114,33 @@ node {
 * trigger build
 * goto node ip:8081
 * cdb should be alive
+
+```
+node {
+   stage('Prepare') {
+     sh "sudo chown -R jenkins:jenkins /var/jenkins_home/workspace && sudo rm -rf *"
+     git branch: 'feature/clean-pom', url: 'https://github.com/koorlan/cdb-2017.git'
+   }
+   stage('Test & Build') {
+      // Run the maven build
+      if (isUnix()) {
+        sh "sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli service start --sync maven-test"
+        timeout(240) {
+          waitUntil {
+            return (fileExists('target/cdb.war'));
+            }
+        }
+        junit '**/target/surefire-reports/TEST-*.xml'
+
+      }
+   }
+   stage('Deploy') {
+      sh "sudo rm -rf /prod/* && sudo cp target/cdb.war /prod"
+   }
+   stage('DockerHub') {
+        sh "sudo docker commit \$(sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli container inspect cdb-1 | jq '.docker_id' | tr -d '\"'  ) korlan/tomcat:latest"
+        sh "sudo docker login -u korlan -p excilys && sudo docker push korlan/tomcat:latest"
+
+   }
+}
+```
