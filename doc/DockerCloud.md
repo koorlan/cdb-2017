@@ -188,3 +188,9 @@ node {
    }
 }
 ```
+
+docker inspect $$ -f {{State.Running}} $(sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli container inspect maven-test-1 | jq '.docker_id' | tr -d '\"'  )
+
+
+
+if [ "$test1" == "true" ]; then echo "Yay"; fi
