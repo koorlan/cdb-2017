@@ -115,6 +115,50 @@ node {
 * goto node ip:8081
 * cdb should be alive
 
+### WITH STACK
+
+Sur le noeud (optional)
+/etc/fstab
+tmpfs /tmp tmpfs defaults,size=256m 0 0
+tmpfs /prod tmpfs defaults,size=512m 0 0
+tmpfs /test tmpfs defaults,size=512m 0 0
+
+
+STACK
+```
+cdb:
+  image: 'tomcat:7-jre8'
+  ports:
+    - '8080'
+  volumes:
+    - '/prod:/usr/local/tomcat/webapps'
+jenkins:
+  expose:
+    - '50000'
+  image: 'korlan/jenkins:latest'
+  ports:
+    - '8080'
+  volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - '/usr/bin/docker:/usr/bin/docker'
+    - '/prod:/prod'
+    - '/test:/var/jenkins_home/workspace/cdb'
+maven-test:
+  command: mvn clean package
+  image: 'maven:3.3.9-jdk-8'
+  links:
+    - 'mysql-test:mysql'
+  volumes:
+    - '/test:/usr/src/mymaven'
+  working_dir: /usr/src/mymaven
+mysql-prod:
+  image: 'korlan/mysql:latest'
+mysql-test:
+  image: 'korlan/mysql:latest'
+
+```
+
+PIPE
 ```
 node {
    stage('Prepare') {
@@ -135,7 +179,7 @@ node {
       }
    }
    stage('Deploy') {
-      sh "sudo rm -rf /prod/* && sudo cp target/cdb.war /prod"
+      sh "sudo cp target/cdb.war /prod"
    }
    stage('DockerHub') {
         sh "sudo docker commit \$(sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli container inspect cdb-1 | jq '.docker_id' | tr -d '\"'  ) korlan/tomcat:latest"
