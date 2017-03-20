@@ -27,14 +27,19 @@ import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
 import org.slf4j.LoggerFactory;
 
+// TODO: Auto-generated Javadoc
 /**
- * Servlet implementation class CdbServlet
+ * Servlet implementation class CdbServlet.
  */
 @WebServlet(name = "CdbServlet", urlPatterns = "/database")
 public class CdbServlet extends HttpServlet {
+    
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
 
     /**
+     * Instantiates a new cdb servlet.
+     *
      * @see HttpServlet#HttpServlet()
      */
     public CdbServlet() {
@@ -43,6 +48,12 @@ public class CdbServlet extends HttpServlet {
     }
 
     /**
+     * Do get.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse
      * response)
      */
@@ -138,6 +149,12 @@ public class CdbServlet extends HttpServlet {
     }
 
     /**
+     * Do post.
+     *
+     * @param request the request
+     * @param response the response
+     * @throws ServletException the servlet exception
+     * @throws IOException Signals that an I/O exception has occurred.
      * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
      * response)
      */
@@ -185,6 +202,12 @@ public class CdbServlet extends HttpServlet {
         }
     }
 
+    /**
+     * Gets the context pager.
+     *
+     * @param request the request
+     * @return the context pager
+     */
     private PagerComputer getContextPager(HttpServletRequest request) {
 
         if (request.getSession().getAttribute("pager") == null) {
@@ -194,6 +217,12 @@ public class CdbServlet extends HttpServlet {
         return (PagerComputer) request.getSession().getAttribute("pager");
     }
 
+    /**
+     * Map computer dto by request without id.
+     *
+     * @param request the request
+     * @return the optional
+     */
     public Optional<ComputerDto> mapComputerDtoByRequestWithoutId(HttpServletRequest request) {
         if (!Control.isRequestValidForMappingComputerDtoWithoutId(request)) {
             LoggerFactory.getLogger("servlet").error("Return optional empty");
@@ -225,6 +254,12 @@ public class CdbServlet extends HttpServlet {
         return Optional.of(computerDto);
     }
 
+    /**
+     * Map computer dto by request with id.
+     *
+     * @param request the request
+     * @return the optional
+     */
     public Optional<ComputerDto> mapComputerDtoByRequestWithId(HttpServletRequest request) {
         if (!Control.isRequestValidForMappingComputerDtoWithId(request)) {
             LoggerFactory.getLogger("servlet").error("Return optional empty");

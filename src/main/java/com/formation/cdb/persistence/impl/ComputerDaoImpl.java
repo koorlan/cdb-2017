@@ -24,15 +24,31 @@ import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.mapper.impl.ComputerRowMapper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum ComputerDaoImpl.
+ */
 public enum ComputerDaoImpl implements Dao<Computer> {
 
+    /** The instance. */
     INSTANCE;
 
+    /** The insert. */
     String INSERT;
+    
+    /** The read by id. */
     String READ_BY_ID;
+    
+    /** The update. */
     String UPDATE;
+    
+    /** The delete. */
     String DELETE;
+    
+    /** The read all limit. */
     String READ_ALL_LIMIT;
+    
+    /** The row count. */
     String ROW_COUNT;
     /**
      * Private constructor for Singleton Implementation.
@@ -141,10 +157,14 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         }
     }
 
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
 
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#create(java.util.Optional)
+     */
     @Override
     public void create(Optional<Computer> e) {
 
@@ -185,6 +205,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#readById(long)
+     */
     @Override
     public Optional<Computer> readById(long id) {
 
@@ -217,6 +240,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#update(java.util.Optional)
+     */
     @Override
     public void update(Optional<Computer> e) {
 
@@ -263,6 +289,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#delete(java.util.Optional)
+     */
     @Override
     public void delete(Optional<Computer> e) {
 
@@ -295,6 +324,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#readAllWithOffsetAndLimit(int, int, java.lang.String)
+     */
     @Override
     public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
         
@@ -332,6 +364,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         return computers;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#rowCount(java.lang.String)
+     */
     @Override
     public int rowCount(String filter) {
         int count = 0;

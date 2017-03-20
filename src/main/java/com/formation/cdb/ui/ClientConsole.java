@@ -17,10 +17,20 @@ import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ClientConsole.
+ */
 public class ClientConsole {
+    
+    /** The exit. */
     //TODO Refactor all..Ugly Impl.
     private boolean exit;
+    
+    /** The scanner. */
     private final Scanner scanner = new Scanner(System.in);
+    
+    /** The logger. */
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     /**

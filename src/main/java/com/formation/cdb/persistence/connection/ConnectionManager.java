@@ -15,16 +15,31 @@ import com.formation.cdb.exception.PersistenceException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum ConnectionManager.
+ */
 public enum ConnectionManager {
+    
+    /** The instance. */
     INSTANCE;
 
+    /** The connection. */
     private ThreadLocal<Optional<Connection>> connection;
+    
+    /** The data source. */
     private HikariDataSource dataSource;
 
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    /** The url. */
     private String url;
+    
+    /** The user. */
     private String user;
+    
+    /** The password. */
     private String password;
 
     /**

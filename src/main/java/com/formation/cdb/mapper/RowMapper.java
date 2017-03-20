@@ -5,6 +5,12 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface RowMapper.
+ *
+ * @param <T> the generic type
+ */
 public interface RowMapper<T> {
 
     /**

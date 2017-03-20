@@ -21,12 +21,26 @@ import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.persistence.connection.ConnectionManager;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CompanyRowMapperTest.
+ */
 public class CompanyRowMapperTest {
+    
+    /** The result set. */
     private ResultSet resultSet;
 
+    /** The col id. */
     private static String COL_ID;
+    
+    /** The col name. */
     private static String COL_NAME;
 
+    /**
+     * Inits the class.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @BeforeClass
     public static void initClass() throws IOException {
         String filename = "config.properties";
@@ -39,11 +53,19 @@ public class CompanyRowMapperTest {
         COL_NAME = prop.getProperty("db_company_col_name");
     }
 
+    /**
+     * Before each test.
+     */
     @Before
     public void beforeEachTest() {
         resultSet = Mockito.mock(ResultSet.class);
     }
 
+    /**
+     * Test map object from one row.
+     *
+     * @throws SQLException the SQL exception
+     */
     @Test
     public void testMapObjectFromOneRow() throws SQLException {
         Mockito.when(resultSet.getRow()).thenReturn(1);
@@ -60,6 +82,11 @@ public class CompanyRowMapperTest {
 
     }
 
+    /**
+     * Test map list of objects from multiple rows.
+     *
+     * @throws SQLException the SQL exception
+     */
     @Test
     public void testMapListOfObjectsFromMultipleRows() throws SQLException {
 

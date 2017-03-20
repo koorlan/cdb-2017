@@ -10,7 +10,13 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.service.CDBService;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum CompanyServiceImpl.
+ */
 public enum CompanyServiceImpl implements CDBService<Company> {
+    
+    /** The instance. */
     INSTANCE;
     /**
      * Private constructor for singleton implementation.
@@ -18,33 +24,52 @@ public enum CompanyServiceImpl implements CDBService<Company> {
     CompanyServiceImpl() {
     }
 
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.service.CDBService#create(java.util.Optional)
+     */
     @Override
     public void create(Optional<Company> e) {
         LOGGER.warn("Create method is not implemented");
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.service.CDBService#readById(long)
+     */
     @Override
     public Optional<Company> readById(long id) {
         return CompanyDaoImpl.INSTANCE.readById(id);
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.service.CDBService#update(java.util.Optional)
+     */
     @Override
     public void update(Optional<Company> e) {
         LOGGER.warn("Update method is not implemented");
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.service.CDBService#delete(java.util.Optional)
+     */
     @Override
     public void delete(Optional<Company> e) {
         LOGGER.warn("Delete method is not implemented");
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.service.CDBService#readAllWithOffsetAndLimit(int, int, java.lang.String)
+     */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
         return CompanyDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.service.CDBService#sizeOfTable(java.lang.String)
+     */
     @Override
     public int sizeOfTable(String filter) {
         return CompanyDaoImpl.INSTANCE.rowCount('%'+filter+'%');

@@ -7,6 +7,10 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PagerCompany.
+ */
 public class PagerCompany extends Pager<Company> {
 
     /**
@@ -22,6 +26,9 @@ public class PagerCompany extends Pager<Company> {
         nbPages = max / pageSize;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Pager#getPage(int)
+     */
     @Override
     public List<Company> getPage(int page) {
         int index;
@@ -37,6 +44,9 @@ public class PagerCompany extends Pager<Company> {
         return service.readAllWithOffsetAndLimit(offset-1, limit, filter);
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Pager#setFilter(java.lang.String)
+     */
     @Override
     public void setFilter(String filter){
         CompanyServiceImpl service;
@@ -46,6 +56,9 @@ public class PagerCompany extends Pager<Company> {
         this.filter = filter;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Pager#getMax()
+     */
     @Override
     public int getMax() {
         CompanyServiceImpl service;

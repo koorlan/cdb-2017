@@ -12,8 +12,18 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class CompanyDtoMapper.
+ */
 public class CompanyDtoMapper {
     
+    /**
+     * Map companies dto from companies.
+     *
+     * @param companies the companies
+     * @return the list
+     */
     public static List<CompanyDto> mapCompaniesDtoFromCompanies( List<Company> companies ) {
         
         List<CompanyDto> companiesDto = new ArrayList<>();
@@ -29,6 +39,12 @@ public class CompanyDtoMapper {
         return companiesDto;
     }
     
+    /**
+     * Map company dto from company.
+     *
+     * @param company the company
+     * @return the optional
+     */
     public static Optional<CompanyDto> mapCompanyDtoFromCompany(Optional<Company> company) {
         if ( !company.isPresent() ) {
             return Optional.empty();
@@ -43,6 +59,12 @@ public class CompanyDtoMapper {
         return Optional.of(new CompanyDto.CompanyDtoBuilder(id, name.get()).build());       
     }
 
+    /**
+     * Map company from company dto.
+     *
+     * @param companyDtoO the company dto O
+     * @return the optional
+     */
     public static Optional<Company> mapCompanyFromCompanyDto(Optional<CompanyDto> companyDtoO) {
         if (!companyDtoO.isPresent()) {
             return Optional.empty();

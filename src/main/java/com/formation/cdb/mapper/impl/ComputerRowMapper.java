@@ -24,16 +24,31 @@ import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.persistence.connection.ConnectionManager;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum ComputerRowMapper.
+ */
 public enum ComputerRowMapper implements RowMapper<Computer> {
 
+    /** The instance. */
     INSTANCE;
 
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(ComputerRowMapper.class);
 
+    /** The col id. */
     String COL_ID;
+    
+    /** The col name. */
     String COL_NAME;
+    
+    /** The col introduced. */
     String COL_INTRODUCED;
+    
+    /** The col discontinued. */
     String COL_DISCONTINUED;
+    
+    /** The col company id. */
     String COL_COMPANY_ID;
     /**
      * Constructor private for singleton implementation.
@@ -61,6 +76,9 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
         }
     };
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.mapper.RowMapper#mapListOfObjectsFromMultipleRows(java.util.Optional)
+     */
     @Override
     public List<Computer> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
         
@@ -100,6 +118,9 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
         return computers;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.mapper.RowMapper#mapObjectFromOneRow(java.util.Optional)
+     */
     @Override
     public Optional<Computer> mapObjectFromOneRow(Optional<ResultSet> rs) {
 
@@ -132,6 +153,17 @@ public enum ComputerRowMapper implements RowMapper<Computer> {
         return Optional.empty();
     }
     
+    /**
+     * Construct computer from result setvalues.
+     *
+     * @param id the id
+     * @param name the name
+     * @param introduced the introduced
+     * @param discontinued the discontinued
+     * @param companyId the company id
+     * @param companyName the company name
+     * @return the optional
+     */
     private Optional<Computer> constructComputerFromResultSetvalues(long id, String name, LocalDate introduced, LocalDate discontinued, long companyId, String companyName){
         if ( id == 0 || name == null || StringUtils.isBlank(name) ) {
             return Optional.empty();

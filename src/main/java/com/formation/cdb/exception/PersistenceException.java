@@ -1,7 +1,12 @@
 package com.formation.cdb.exception;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PersistenceException.
+ */
 public class PersistenceException extends RuntimeException {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 2262868307263845216L;
 
     /**

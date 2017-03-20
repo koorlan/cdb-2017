@@ -8,9 +8,10 @@ import java.util.Optional;
 
 import com.formation.cdb.entity.Entity;
 
+// TODO: Auto-generated Javadoc
 /**
  * Company class is a representation of what a company look like on database.
- * 
+ *
  * @author korlan
  * @version 0.0.1
  */
@@ -26,11 +27,8 @@ public class Company extends Entity {
 
     /**
      * Constructor of a company.
-     * 
-     * @param id
-     *            , long number, the id in the Database of the @Company.
-     * @param name
-     *            , String to name that @Company.
+     *
+     * @param builder the builder
      */
     public Company(CompanyBuilder builder) {
         this.id = builder.id;
@@ -39,7 +37,6 @@ public class Company extends Entity {
 
     /**
      * Getter of the company name.
-     * 
      * @return An @Optional of the @Company name
      */
     public Optional<String> getName() {
@@ -48,30 +45,46 @@ public class Company extends Entity {
 
     /**
      * Get the @id of a @Company.
-     * 
      * @return of the Company object on the database.
      */
     public long getId() {
         return id;
     }
-    
+
+    /**
+     * The Class CompanyBuilder.
+     */
     public static class CompanyBuilder {
+
+        /** The id. */
         private final long id;
+
+        /** The name. */
         private final String name;
-        
+
+        /**
+         * Instantiates a new company builder.
+         *
+         * @param id the id
+         * @param name the name
+         */
         public CompanyBuilder(long id, String name) {
             this.id = id;
             this.name = name;
         }
-        
+
+        /**
+         * Builds the.
+         *
+         * @return the company
+         */
         public Company build() {
             return new Company(this);
         }
     }
-    
+
     /**
      * Overrided method.
-     * 
      * @return String representation of a @Company
      */
     @Override
@@ -81,6 +94,9 @@ public class Company extends Entity {
         return sb.toString();
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Entity#hashCode()
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -90,22 +106,31 @@ public class Company extends Entity {
         return result;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Entity#equals(java.lang.Object)
+     */
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         Company other = (Company) obj;
-        if (id != other.id)
+        if (id != other.id) {
             return false;
+        }
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         return true;
     }
 
