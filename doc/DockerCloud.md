@@ -163,19 +163,28 @@ PIPE
 node {
    stage('Prepare') {
      sh "sudo chown -R jenkins:jenkins /var/jenkins_home/workspace && sudo rm -rf *"
-     git branch: 'feature/clean-pom', url: 'https://github.com/koorlan/cdb-2017.git'
+     git branch: 'master', url: 'https://github.com/koorlan/cdb-2017.git'
    }
-   stage('Test & Build') {
+   stage('Package') {
       // Run the maven build
       if (isUnix()) {
         sh "sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli service start --sync maven-test"
+      }
+   }
+   stage('Test'){
+   if (isUnix()) {
+
         timeout(240) {
           waitUntil {
-            return (fileExists('target/cdb.war'));
+                STATUS = sh (
+                    script: "sudo docker inspect -f {{.State.Running}} \$(sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli container inspect maven-test-1 | jq '.docker_id' | tr -d '\"'  )",
+                    returnStdout: true
+                ).trim()
+                echo "${STATUS}"
+            return (STATUS == "false");
             }
         }
         junit '**/target/surefire-reports/TEST-*.xml'
-
       }
    }
    stage('Deploy') {
@@ -188,9 +197,3 @@ node {
    }
 }
 ```
-
-docker inspect $$ -f {{State.Running}} $(sudo docker run -i -e DOCKERCLOUD_USER=korlan2 -e DOCKERCLOUD_PASS=excilys dockercloud/cli container inspect maven-test-1 | jq '.docker_id' | tr -d '\"'  )
-
-
-
-if [ "$test1" == "true" ]; then echo "Yay"; fi
