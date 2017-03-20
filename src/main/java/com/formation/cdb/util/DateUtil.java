@@ -6,6 +6,10 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DateUtil.
+ */
 public class DateUtil {
     /**
      * convert a string to a java.time.LocalDate.
@@ -21,6 +25,14 @@ public class DateUtil {
         date = LocalDate.parse(dateString, formatter);
         return date;
     }
+    
+    /**
+     * String to date dash separated YYYYMMDD.
+     *
+     * @param dateString the date string
+     * @return the local date
+     * @throws DateTimeParseException the date time parse exception
+     */
     public static LocalDate stringToDateDashSeparatedYYYYMMDD(String dateString) throws DateTimeParseException {
         DateTimeFormatter formatter;
         LocalDate date;

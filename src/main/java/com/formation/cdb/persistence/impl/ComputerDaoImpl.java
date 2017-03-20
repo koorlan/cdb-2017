@@ -24,15 +24,31 @@ import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.mapper.impl.ComputerRowMapper;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum ComputerDaoImpl.
+ */
 public enum ComputerDaoImpl implements Dao<Computer> {
 
+    /** The instance. */
     INSTANCE;
 
+    /** The insert. */
     String INSERT;
+    
+    /** The read by id. */
     String READ_BY_ID;
+    
+    /** The update. */
     String UPDATE;
+    
+    /** The delete. */
     String DELETE;
+    
+    /** The read all limit. */
     String READ_ALL_LIMIT;
+    
+    /** The row count. */
     String ROW_COUNT;
     /**
      * Private constructor for Singleton Implementation.
@@ -141,10 +157,14 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         }
     }
 
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
 
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#create(java.util.Optional)
+     */
     @Override
     public void create(Optional<Computer> e) {
 
@@ -177,12 +197,17 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             stmt.execute();
             LOGGER.info("Query sucessfully executed " + stmt.toString());
         } catch (SQLException e1) {
-            // TODO Auto-generated catch block
-            e1.printStackTrace();
+            LOGGER.info("Create failed " + e.orElse(null));
+            throw new PersistenceException(e1);
+        } finally {
+            ConnectionManager.close(connection);
         }
 
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#readById(long)
+     */
     @Override
     public Optional<Computer> readById(long id) {
 
@@ -203,15 +228,21 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
             stmt.setInt(1, (int) id);
             Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
+            LOGGER.info("Try to read id: " + id);
             Optional<Computer> computer = ComputerRowMapper.INSTANCE.mapObjectFromOneRow(rs);
             LOGGER.info("Sucessfully readed: " + computer.toString());
             return computer;
 
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#update(java.util.Optional)
+     */
     @Override
     public void update(Optional<Computer> e) {
 
@@ -226,10 +257,11 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             LOGGER.warn("can't get a connection");
             return;
         }
-
+       
         try {
+            
             PreparedStatement stmt = connection.get().prepareStatement(UPDATE);
-
+                
             stmt.setString(1, e.flatMap(Computer::getName).orElseThrow(() -> new PersistenceException("Trying to bypass validation, name is required")));
 
             stmt.setTimestamp(2, e.flatMap(Computer::getIntroduced).map(DateUtil::dateToTimestamp).orElse(null));
@@ -242,18 +274,24 @@ public enum ComputerDaoImpl implements Dao<Computer> {
                 stmt.setNull(4, Types.NULL);
             }
            
- 
-
             stmt.setLong(5, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("Trying to bypass validation, id is required")));
 
             stmt.execute();
+            stmt.close();
             LOGGER.info("Sucessfully updated: " + e);
         } catch (SQLException e1) {
+            LOGGER.info("Update failed " + e.orElse(null));
             throw new PersistenceException(e1);
+        } finally {
+            ConnectionManager.close(connection);
+           
         }
 
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#delete(java.util.Optional)
+     */
     @Override
     public void delete(Optional<Computer> e) {
 
@@ -274,15 +312,21 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             PreparedStatement stmt = connection.get().prepareStatement(DELETE);
             stmt.setLong(1, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("id is less or equal zero")));
             stmt.execute();
-
+            stmt.close();
             LOGGER.info("Succesfully deleted " + e);
         } catch (SQLException e1) {
+            LOGGER.info("Delete failed " + e.orElse(null));
             throw new PersistenceException(e1);
+        } finally {
+            ConnectionManager.close(connection);
         }
 
 
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#readAllWithOffsetAndLimit(int, int, java.lang.String)
+     */
     @Override
     public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
         
@@ -310,7 +354,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
 
             computers = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
 
-           
+            stmt.close();
 
         } catch (SQLException e) {
             throw new PersistenceException(e);
@@ -320,6 +364,9 @@ public enum ComputerDaoImpl implements Dao<Computer> {
         return computers;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#rowCount(java.lang.String)
+     */
     @Override
     public int rowCount(String filter) {
         int count = 0;
@@ -337,9 +384,12 @@ public enum ComputerDaoImpl implements Dao<Computer> {
             stmt.setString(1, filter);
             rs = Optional.ofNullable(stmt.executeQuery());
             count = RowMapper.mapCountResult(rs);
+            stmt.close();
             return count;
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
 
     }

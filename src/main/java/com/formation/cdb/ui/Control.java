@@ -13,8 +13,13 @@ import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.util.DateUtil;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Control.
+ */
 public class Control {
 
+        /** The Constant LOGGER. */
         private static final Logger LOGGER = LoggerFactory.getLogger(Control.class);
         /**
          * Validate a computer Model.

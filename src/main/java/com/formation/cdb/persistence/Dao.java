@@ -3,6 +3,12 @@ package com.formation.cdb.persistence;
 import java.util.List;
 import java.util.Optional;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Interface Dao.
+ *
+ * @param <T> the generic type
+ */
 public interface Dao<T> {
     /**
      * CRUD , create an element.
@@ -39,17 +45,19 @@ public interface Dao<T> {
     /**
      * Construct a list of T by creating T object from the database
      * informations.
-     * @param offset
-     *            the number of the row to start (the first of the table = 0,
+     *
+     * @param offset            the number of the row to start (the first of the table = 0,
      *            as arrays).
-     * @param limit
-     *            how many result to have (e.g 0,10 for row 0-9).
+     * @param limit            how many result to have (e.g 0,10 for row 0-9).
+     * @param filter the filter
      * @return list of type T
      */
     List<T> readAllWithOffsetAndLimit(int offset, int limit, String filter);
 
     /**
      * COUNT(*).
+     *
+     * @param filter the filter
      * @return how many rows on the table.
      */
     int rowCount(String filter);

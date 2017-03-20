@@ -15,22 +15,45 @@ import com.formation.cdb.exception.PersistenceException;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum ConnectionManager.
+ */
 public enum ConnectionManager {
+    
+    /** The instance. */
     INSTANCE;
 
-    private Optional<Connection> connection = Optional.empty();
-    private HikariDataSource dataSource;
+    /** The connection. */
+    private ThreadLocal<Optional<Connection>> connection;
     
+    /** The data source. */
+    private HikariDataSource dataSource;
+
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
+    /** The url. */
     private String url;
+    
+    /** The user. */
     private String user;
+    
+    /** The password. */
     private String password;
 
     /**
      * Private constructor for the singleton implementation.
      */
     ConnectionManager() {
+
+        connection = new ThreadLocal<Optional<Connection>>() {
+            @Override
+            protected Optional<Connection> initialValue() {
+                return Optional.empty();
+            }
+        };
+
         String filename = "hikari.properties";
         Properties prop = new Properties();
         InputStream input = null;
@@ -43,7 +66,7 @@ public enum ConnectionManager {
             prop.load(input);
             HikariConfig config = new HikariConfig(prop);
             dataSource = new HikariDataSource(config);
-            dataSource.setMaximumPoolSize(1);
+            dataSource.setMaximumPoolSize(3000);
 
         } catch (IOException e) {
             LOGGER.error("Error on config file");
@@ -53,23 +76,27 @@ public enum ConnectionManager {
 
     /**
      * try to retrieve a connection from the Driver.
+     *
      * @return an optional connection.. maybe yes.. maybe no :).
      */
     public Optional<Connection> getConnection() {
-        if (!connection.isPresent()) {
+
+        if (!connection.get().isPresent()) {
             try {
-                Class.forName("com.mysql.jdbc.Driver");
-                //connection = Optional.ofNullable(DriverManager.getConnection(url, user, password));
-                connection = Optional.ofNullable(dataSource.getConnection());
-            } catch (SQLException | ClassNotFoundException e) {
+                Optional<Connection> connectionO = Optional.ofNullable(dataSource.getConnection());
+                if (connectionO.isPresent()) {
+                    connection.set(connectionO);
+                }
+            } catch (SQLException e) {
                 LOGGER.error("Can't get a connection", e);
             }
         }
-        return connection;
+        return connection.get();
     }
 
     /**
      * Try to close a given connection.
+     *
      * @param connection
      *            the connection to close.
      */
@@ -77,8 +104,7 @@ public enum ConnectionManager {
         connection.ifPresent((x) -> {
             try {
                 x.close();
-                ConnectionManager.INSTANCE.connection = Optional.empty();
-                ConnectionManager.INSTANCE.LOGGER.info("Closed Connection");
+                ConnectionManager.INSTANCE.connection.set(Optional.empty());
             } catch (SQLException e) {
                 throw new PersistenceException(e);
             }
