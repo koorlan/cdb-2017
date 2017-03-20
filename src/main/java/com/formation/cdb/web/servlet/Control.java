@@ -12,18 +12,43 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Control.
+ */
 public class Control {
 
+    /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(Control.class);
 
+    /**
+     * Checks if is request parameter present.
+     *
+     * @param request the request
+     * @param parameter the parameter
+     * @return true, if is request parameter present
+     */
     public static boolean isRequestParameterPresent(HttpServletRequest request, String parameter) {
         return request.getParameter(parameter) != null;
     }
 
+    /**
+     * Checks if is session attribute present.
+     *
+     * @param request the request
+     * @param attribute the attribute
+     * @return true, if is session attribute present
+     */
     public static boolean isSessionAttributePresent(HttpServletRequest request, String attribute) {
         return request.getSession().getAttribute(attribute) != null;
     }
 
+    /**
+     * Checks if is request valid for mapping computer dto without id.
+     *
+     * @param request the request
+     * @return true, if is request valid for mapping computer dto without id
+     */
     public static boolean isRequestValidForMappingComputerDtoWithoutId(HttpServletRequest request) {
         boolean isRequestValid;
 
@@ -44,6 +69,12 @@ public class Control {
         return isRequestValid && isRequestValidForMappingComputerDto(request);
     }
 
+    /**
+     * Checks if is request valid for mapping computer dto with id.
+     *
+     * @param request the request
+     * @return true, if is request valid for mapping computer dto with id
+     */
     public static boolean isRequestValidForMappingComputerDtoWithId(HttpServletRequest request) {
         boolean isRequestValid;
         isRequestValid = isRequestParameterPresent(request, "id");
@@ -66,6 +97,12 @@ public class Control {
         return isRequestValid && isRequestValidForMappingComputerDto(request);
     }
 
+    /**
+     * Checks if is request valid for mapping computer dto.
+     *
+     * @param request the request
+     * @return true, if is request valid for mapping computer dto
+     */
     private static boolean isRequestValidForMappingComputerDto(HttpServletRequest request) {
 
         boolean isRequestValid = true;
@@ -105,6 +142,12 @@ public class Control {
         return isRequestValid;
     }
 
+    /**
+     * Checks if is id valid.
+     *
+     * @param idFromRequest the id from request
+     * @return true, if is id valid
+     */
     private static boolean isIdValid(String idFromRequest) {
         try {
             long id = Long.parseLong(idFromRequest);
@@ -114,19 +157,31 @@ public class Control {
         }
     }
 
+    /**
+     * Checks if is name valid.
+     *
+     * @param nameFromRequest the name from request
+     * @return true, if is name valid
+     */
     private static boolean isNameValid(String nameFromRequest) {
         
         boolean valid = StringUtils.isNotBlank(nameFromRequest);
         
-        Pattern p = Pattern.compile("^[\\w\\d\\. \\-\\(\\)\\[\\]\u00C0-\u00ff]*$");
+        //Pattern p = Pattern.compile("^[\\w\\d\\. \\-\\(\\)\\[\\]\u00C0-\u00ff]*$");
        
-        Matcher m = p.matcher(nameFromRequest);
+        //Matcher m = p.matcher(nameFromRequest);
         
-        valid &= m.matches();
+        //valid &= m.matches();
         
         return valid;
     }
 
+    /**
+     * Checks if is date valid.
+     *
+     * @param dateFromRequest the date from request
+     * @return true, if is date valid
+     */
     private static boolean isDateValid(String dateFromRequest) {
         try {
             LocalDate date = DateUtil.stringToDateDashSeparatedYYYYMMDD(dateFromRequest);
@@ -136,6 +191,13 @@ public class Control {
         }
     }
 
+    /**
+     * Checks if is introduced before discontinued.
+     *
+     * @param introducedFromRequest the introduced from request
+     * @param discontinuedFromRequest the discontinued from request
+     * @return true, if is introduced before discontinued
+     */
     private static boolean isIntroducedBeforeDiscontinued(String introducedFromRequest, String discontinuedFromRequest) {
         try {
             LocalDate introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(introducedFromRequest);

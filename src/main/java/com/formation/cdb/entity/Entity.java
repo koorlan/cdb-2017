@@ -1,5 +1,9 @@
 package com.formation.cdb.entity;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class Entity.
+ */
 public abstract class Entity {
 
     /**

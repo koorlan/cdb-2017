@@ -21,12 +21,25 @@ import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.connection.ConnectionManager;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum CompanyDaoImpl.
+ */
 public enum CompanyDaoImpl implements Dao<Company> {
 
+    /** The instance. */
     INSTANCE;
+    
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
+    
+    /** The read by id. */
     String READ_BY_ID;
+    
+    /** The read all limit. */
     String READ_ALL_LIMIT;
+    
+    /** The row count. */
     String ROW_COUNT;
 
     /**
@@ -73,11 +86,17 @@ public enum CompanyDaoImpl implements Dao<Company> {
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#create(java.util.Optional)
+     */
     @Override
     public void create(Optional<Company> company) {
         LOGGER.warn("Method Create is not implemented");
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#readById(long)
+     */
     @Override
     public Optional<Company> readById(long id) {
 
@@ -94,8 +113,8 @@ public enum CompanyDaoImpl implements Dao<Company> {
             stmt.setLong(1, id);
             Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
             Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
+            stmt.close();
             return company;
-
         } catch (SQLException e) {
             throw new PersistenceException(e);
         } finally {
@@ -103,16 +122,25 @@ public enum CompanyDaoImpl implements Dao<Company> {
         }
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#update(java.util.Optional)
+     */
     @Override
     public void update(Optional<Company> company) {
         LOGGER.warn("Method update is not implemented");
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#delete(java.util.Optional)
+     */
     @Override
     public void delete(Optional<Company> company) {
         LOGGER.warn("Method delete is not implemented");
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#readAllWithOffsetAndLimit(int, int, java.lang.String)
+     */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
         
@@ -139,7 +167,7 @@ public enum CompanyDaoImpl implements Dao<Company> {
             rs = Optional.ofNullable(stmt.executeQuery());
 
             companies = CompanyRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-
+            stmt.close();
         } catch (SQLException e) {
             throw new PersistenceException(e);
         } finally {
@@ -149,6 +177,9 @@ public enum CompanyDaoImpl implements Dao<Company> {
         return companies;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.persistence.Dao#rowCount(java.lang.String)
+     */
     @Override
     public int rowCount(String filter) {
         int count = 0;
@@ -161,11 +192,15 @@ public enum CompanyDaoImpl implements Dao<Company> {
         }
 
         try {
-            rs = Optional.ofNullable(connection.get().prepareStatement(ROW_COUNT).executeQuery());
+            PreparedStatement stmt = connection.get().prepareStatement(ROW_COUNT);
+            rs = Optional.ofNullable(stmt.executeQuery());
             count = RowMapper.mapCountResult(rs);
+            stmt.close();
             return count;
         } catch (SQLException e) {
             throw new PersistenceException(e);
+        } finally {
+            ConnectionManager.close(connection);
         }
     };
 

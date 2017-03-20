@@ -15,8 +15,18 @@ import com.formation.cdb.entity.ComputerDto;
 import com.formation.cdb.entity.ComputerDto.ComputerDtoBuilder;
 import com.formation.cdb.entity.impl.Computer;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ComputerDtoMapper.
+ */
 public class ComputerDtoMapper {
     
+    /**
+     * Map computers dto from computers.
+     *
+     * @param computers the computers
+     * @return the list
+     */
     public static List<ComputerDto> mapComputersDtoFromComputers( List<Computer> computers ) {
         
         List<ComputerDto> computersDto=  new ArrayList<>();
@@ -30,6 +40,12 @@ public class ComputerDtoMapper {
         return computersDto;
     }
     
+    /**
+     * Map computer dto from computer.
+     *
+     * @param computer the computer
+     * @return the optional
+     */
     public static Optional<ComputerDto> mapComputerDtoFromComputer(Optional<Computer> computer) {
         if ( !computer.isPresent() ) {
             return Optional.empty();
@@ -59,6 +75,12 @@ public class ComputerDtoMapper {
         return Optional.of(computerDtoBuilder.build());       
     }
 
+    /**
+     * Map computer from computer dto.
+     *
+     * @param computerDtoO the computer dto O
+     * @return the optional
+     */
     public static Optional<Computer> mapComputerFromComputerDto(Optional<ComputerDto> computerDtoO) {
         if (!computerDtoO.isPresent()) {
             return Optional.empty();

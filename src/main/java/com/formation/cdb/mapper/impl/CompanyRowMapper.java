@@ -18,13 +18,22 @@ import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.persistence.connection.ConnectionManager;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum CompanyRowMapper.
+ */
 public enum CompanyRowMapper implements RowMapper<Company> {
 
+    /** The instance. */
     INSTANCE;
 
+    /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(ComputerRowMapper.class);
 
+    /** The col id. */
     String COL_ID;
+    
+    /** The col name. */
     String COL_NAME;
     /**
      * Constructor private for singleton implementation.
@@ -49,6 +58,9 @@ public enum CompanyRowMapper implements RowMapper<Company> {
         }
     };
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.mapper.RowMapper#mapListOfObjectsFromMultipleRows(java.util.Optional)
+     */
     @Override
     public List<Company> mapListOfObjectsFromMultipleRows(Optional<ResultSet> rs) {
         
@@ -81,6 +93,9 @@ public enum CompanyRowMapper implements RowMapper<Company> {
         return companies;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.mapper.RowMapper#mapObjectFromOneRow(java.util.Optional)
+     */
     @Override
     public Optional<Company> mapObjectFromOneRow(Optional<ResultSet> rs) {
 

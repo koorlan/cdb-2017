@@ -5,6 +5,10 @@ import java.util.List;
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class PagerComputer.
+ */
 public class PagerComputer extends Pager<Computer> {
 
     /**
@@ -19,6 +23,9 @@ public class PagerComputer extends Pager<Computer> {
         nbPages = (int) Math.ceil((double)max / pageSize);
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Pager#getPage(int)
+     */
     @Override
     public List<Computer> getPage(int page) {
         int index;
@@ -34,6 +41,9 @@ public class PagerComputer extends Pager<Computer> {
         return service.readAllWithOffsetAndLimit(offset, limit, filter);
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Pager#setFilter(java.lang.String)
+     */
     @Override
     public void setFilter(String filter){
         ComputerServiceImpl service;
@@ -44,6 +54,9 @@ public class PagerComputer extends Pager<Computer> {
         this.filter = filter;
     }
 
+    /* (non-Javadoc)
+     * @see com.formation.cdb.entity.Pager#getMax()
+     */
     @Override
     public int getMax() {
         ComputerServiceImpl service;

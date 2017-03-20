@@ -23,15 +23,35 @@ import com.formation.cdb.persistence.connection.ConnectionManager;
 import com.formation.cdb.util.DateUtil;
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ComputerRowMapperTest.
+ */
 public class ComputerRowMapperTest {
+    
+    /** The result set. */
     private ResultSet resultSet;
     
+    /** The col id. */
     private static String COL_ID;
+    
+    /** The col name. */
     private static String COL_NAME;
+    
+    /** The col introduced. */
     private static String COL_INTRODUCED;
+    
+    /** The col discontinued. */
     private static String COL_DISCONTINUED;
+    
+    /** The col company id. */
     private static String COL_COMPANY_ID;
 
+    /**
+     * Inits the class.
+     *
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     @BeforeClass
     public static void initClass() throws IOException{
         String filename = "config.properties";
@@ -48,11 +68,19 @@ public class ComputerRowMapperTest {
 
     }
     
+    /**
+     * Before each test.
+     */
     @Before
     public void beforeEachTest() {
         resultSet = Mockito.mock(ResultSet.class); 
     }
     
+    /**
+     * Test map object from one row.
+     *
+     * @throws SQLException the SQL exception
+     */
     @Test
     public void testMapObjectFromOneRow() throws SQLException{
        Mockito.when(resultSet.getRow()).thenReturn(1);
@@ -80,6 +108,11 @@ public class ComputerRowMapperTest {
        assertEquals(computer.getCompany().get().getName().get(),"company_test");
     }
     
+    /**
+     * Test map list of objects from multiple rows.
+     *
+     * @throws SQLException the SQL exception
+     */
     @Test
     public void testMapListOfObjectsFromMultipleRows() throws SQLException{
 

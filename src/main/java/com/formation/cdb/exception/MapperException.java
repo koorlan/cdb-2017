@@ -1,7 +1,12 @@
 package com.formation.cdb.exception;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MapperException.
+ */
 public class MapperException extends RuntimeException {
 
+    /** The Constant serialVersionUID. */
     private static final long serialVersionUID = -7860210964614081535L;
 
     /**
