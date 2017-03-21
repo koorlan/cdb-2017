@@ -6,7 +6,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -26,17 +29,36 @@ import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.web.context.support.HttpRequestHandlerServlet;
+import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 
 // TODO: Auto-generated Javadoc
 /**
  * Servlet implementation class CdbServlet.
  */
+@Configurable
 @WebServlet(name = "CdbServlet", urlPatterns = "/database")
-public class CdbServlet extends HttpServlet {
+public class CdbServlet extends Servlet {
     
     /** The Constant serialVersionUID. */
     private static final long serialVersionUID = 1L;
-
+    
+    @Autowired
+    private CompanyServiceImpl companyServiceImpl;
+    
+    @Autowired
+    private ComputerServiceImpl computerServiceImpl;
+    
+    @Autowired
+    private PagerComputer pagerComputer;
+    
+    
+    
     /**
      * Instantiates a new cdb servlet.
      *
@@ -59,9 +81,7 @@ public class CdbServlet extends HttpServlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        PagerComputer pager;
-        pager = getContextPager(request);
-
+        
         String pageToForward = "/dashboard.jsp";
 
         if (request.getParameter("action") != null) {
@@ -71,23 +91,23 @@ public class CdbServlet extends HttpServlet {
                     if (request.getParameter("page") != null) {
                         try {
                             int page = Integer.parseInt(request.getParameter("page"));
-                            pager.goTo(page);
+                            pagerComputer.goTo(page);
                         } catch (NumberFormatException e) {
                             // TODO warn.
                         }
                     }
                     break;
                 case "next":
-                    pager.next();
+                    pagerComputer.next();
                     break;
                 case "prev":
-                    pager.prev();
+                    pagerComputer.prev();
                     break;
                 case "size":
                     if (request.getParameter("size") != null) {
                         try {
                             int size = Integer.parseInt(request.getParameter("size"));
-                            pager.setPageSize(size);
+                            pagerComputer.setPageSize(size);
                         } catch (NumberFormatException e) {
                             // TODO warn.
                         }
@@ -99,12 +119,12 @@ public class CdbServlet extends HttpServlet {
                         try {
                             int id = Integer.parseInt(request.getParameter("id"));
                             Optional<ComputerDto> computer = ComputerDtoMapper
-                                    .mapComputerDtoFromComputer(ComputerServiceImpl.INSTANCE.readById(Long.valueOf(id)));
+                                    .mapComputerDtoFromComputer(computerServiceImpl.readById(Long.valueOf(id)));
 
                             if (computer.isPresent()) {
                                 request.getSession().setAttribute("computer", computer.get());
-                                int numberOfCompanies = ComputerServiceImpl.INSTANCE.sizeOfTable("");
-                                List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0,
+                                int numberOfCompanies = computerServiceImpl.sizeOfTable("");
+                                List<Company> companies = companyServiceImpl.readAllWithOffsetAndLimit(0,
                                         numberOfCompanies, "");
                                 List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
                                 request.getSession().setAttribute("companies", companiesDto);
@@ -118,8 +138,8 @@ public class CdbServlet extends HttpServlet {
                     }
                     break;
                 case "add":
-                    int numberOfCompanies = CompanyServiceImpl.INSTANCE.sizeOfTable("");
-                    List<Company> companies = CompanyServiceImpl.INSTANCE.readAllWithOffsetAndLimit(0, numberOfCompanies, "");
+                    int numberOfCompanies = companyServiceImpl.sizeOfTable("");
+                    List<Company> companies = companyServiceImpl.readAllWithOffsetAndLimit(0, numberOfCompanies, "");
                     List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
                     request.getSession().setAttribute("companies", companiesDto);
                     pageToForward = "/addComputer.jsp";
@@ -128,7 +148,7 @@ public class CdbServlet extends HttpServlet {
                 case "filter":
                     if (request.getParameter("search") != null) {
                         LoggerFactory.getLogger("servlet").info("Filter on " + request.getParameter("search"));
-                        pager.setFilter(request.getParameter("search"));
+                        pagerComputer.setFilter(request.getParameter("search"));
                     }
                     break;
                 default:
@@ -137,12 +157,12 @@ public class CdbServlet extends HttpServlet {
             }
         }
         if (pageToForward.equals("/dashboard.jsp")) {
-            List<ComputerDto> list = ComputerDtoMapper.mapComputersDtoFromComputers(pager.getCurrentPage());
+            List<ComputerDto> list = ComputerDtoMapper.mapComputersDtoFromComputers(pagerComputer.getCurrentPage());
             request.getSession().setAttribute("computers", list);
-            request.getSession().setAttribute("totalComputers", pager.getMax());
-            request.getSession().setAttribute("currentIndexPage", pager.getCurrentPageIndex());
-            request.getSession().setAttribute("maxIndexPage", pager.getNbPages());
-            request.getSession().setAttribute("filter", pager.getFilter());
+            request.getSession().setAttribute("totalComputers", pagerComputer.getMax());
+            request.getSession().setAttribute("currentIndexPage", pagerComputer.getCurrentPageIndex());
+            request.getSession().setAttribute("maxIndexPage", pagerComputer.getNbPages());
+            request.getSession().setAttribute("filter", pagerComputer.getFilter());
         }
         RequestDispatcher rd = getServletContext().getRequestDispatcher(pageToForward);
         rd.forward(request, response);
@@ -167,13 +187,13 @@ public class CdbServlet extends HttpServlet {
                 case "edit":
                     computerDto = mapComputerDtoByRequestWithId(request);
                     computer = ComputerDtoMapper.mapComputerFromComputerDto(computerDto);
-                    ComputerServiceImpl.INSTANCE.update(computer);
+                    computerServiceImpl.update(computer);
                     response.sendRedirect("database");
                     break;
                 case "add":
                     computerDto = mapComputerDtoByRequestWithoutId(request);
                     computer = ComputerDtoMapper.mapComputerFromComputerDto(computerDto);
-                    ComputerServiceImpl.INSTANCE.create(computer);
+                    computerServiceImpl.create(computer);
                     response.sendRedirect("database");
                     break;
                 case "delete":
@@ -185,7 +205,7 @@ public class CdbServlet extends HttpServlet {
                             try {
                                 long id = Long.parseLong(s);
                                 Computer c = new Computer.ComputerBuilder(id, "").build();
-                                ComputerServiceImpl.INSTANCE.delete(Optional.of(c));
+                                computerServiceImpl.delete(Optional.of(c));
                                 
                             } catch ( NumberFormatException numberFormatException){
                                 
@@ -296,4 +316,7 @@ public class CdbServlet extends HttpServlet {
         return Optional.of(computerDto);
     }
 
+
+
+    
 }

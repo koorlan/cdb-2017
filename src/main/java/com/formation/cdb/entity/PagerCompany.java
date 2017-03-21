@@ -2,6 +2,10 @@ package com.formation.cdb.entity;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
@@ -11,21 +15,27 @@ import com.formation.cdb.service.impl.CompanyServiceImpl;
 /**
  * The Class PagerCompany.
  */
+@Component
 public class PagerCompany extends Pager<Company> {
 
+    @Autowired
+    private CompanyServiceImpl service;
+    
     /**
      * Constructor of PagerCompany.
      * Dedicated Pager for Companies (Page Companies).
      */
     public PagerCompany() {
-        super();
-
-        CompanyServiceImpl service;
-        service = CompanyServiceImpl.INSTANCE;
-        max = service.sizeOfTable(filter);
-        nbPages = max / pageSize;
+        super();        
     }
 
+    
+    @PostConstruct
+    public void init(){
+        max = service.sizeOfTable(filter);
+        nbPages = (int) Math.ceil((double)max / pageSize);
+    }
+    
     /* (non-Javadoc)
      * @see com.formation.cdb.entity.Pager#getPage(int)
      */
@@ -36,8 +46,6 @@ public class PagerCompany extends Pager<Company> {
         int limit;
 
         index = (page > nbPages) ? nbPages : page;
-        CompanyServiceImpl service;
-        service = CompanyServiceImpl.INSTANCE;
 
         offset = index * pageSize;
         limit = pageSize;
@@ -49,8 +57,6 @@ public class PagerCompany extends Pager<Company> {
      */
     @Override
     public void setFilter(String filter){
-        CompanyServiceImpl service;
-        service = CompanyServiceImpl.INSTANCE;
         max = service.sizeOfTable(filter);
         nbPages = max / pageSize;
         this.filter = filter;
@@ -61,8 +67,6 @@ public class PagerCompany extends Pager<Company> {
      */
     @Override
     public int getMax() {
-        CompanyServiceImpl service;
-        service = CompanyServiceImpl.INSTANCE;
         max = service.sizeOfTable(filter);
         return max;
     }

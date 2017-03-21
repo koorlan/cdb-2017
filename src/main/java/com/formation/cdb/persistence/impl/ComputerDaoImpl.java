@@ -12,8 +12,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.inject.Named;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.connection.ConnectionManager;
@@ -28,10 +31,8 @@ import com.formation.cdb.mapper.impl.ComputerRowMapper;
 /**
  * The Enum ComputerDaoImpl.
  */
-public enum ComputerDaoImpl implements Dao<Computer> {
-
-    /** The instance. */
-    INSTANCE;
+@Repository
+public class ComputerDaoImpl implements Dao<Computer> {
 
     /** The insert. */
     String INSERT;
@@ -53,7 +54,7 @@ public enum ComputerDaoImpl implements Dao<Computer> {
     /**
      * Private constructor for Singleton Implementation.
      */
-    ComputerDaoImpl() {
+    public ComputerDaoImpl() {
         //construct queries from configuration file;
         String filename = "config.properties";
         Properties prop = new Properties();

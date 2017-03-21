@@ -7,6 +7,7 @@ import java.util.Scanner;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.formation.cdb.entity.PagerCompany;
 import com.formation.cdb.entity.PagerComputer;
@@ -33,6 +34,13 @@ public class ClientConsole {
     /** The logger. */
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
+    @Autowired
+    private CompanyServiceImpl companyService;
+    
+    @Autowired
+    private ComputerServiceImpl service;
+    
+    
     /**
      * Constructor of ClientConsole.
      */
@@ -210,7 +218,6 @@ public class ClientConsole {
         long id;
         Computer c;
 
-        service = ComputerServiceImpl.INSTANCE;
         System.out.println("Please enter computer id:");
         id = scanner.nextLong();
         scanner.nextLine(); //Consume Enter
@@ -225,7 +232,7 @@ public class ClientConsole {
         long id;
         Company c;
 
-        service = CompanyServiceImpl.INSTANCE;
+
         System.out.println("Please enter company id:");
         id = scanner.nextLong();
         scanner.nextLine(); //Consume Enter
@@ -243,8 +250,6 @@ public class ClientConsole {
         String dateIntroducedString;
         String dateDiscontinuedString;
         String companyIdString;
-
-        service = ComputerServiceImpl.INSTANCE;
 
         System.out.println("Please enter computer name [Required]:");
         name = scanner.nextLine();
@@ -266,7 +271,7 @@ public class ClientConsole {
             companyId = Long.parseLong(companyIdString);
         }
 
-        Optional<Company> company = CompanyServiceImpl.INSTANCE.readById(companyId);
+        Optional<Company> company = serviceCompany.readById(companyId);
         Computer computer = new Computer.ComputerBuilder(1,name).withIntroduced(introduced).withDiscontinued(discontinued).withCompany(company.orElse(null)).build();
                 
                 
@@ -284,8 +289,6 @@ public class ClientConsole {
         ComputerServiceImpl service;
         long id;
         String answer;
-
-        service = ComputerServiceImpl.INSTANCE;
 
         System.out.println("Please enter the computer id you want to deleted");
         id = scanner.nextLong();
@@ -326,7 +329,6 @@ public class ClientConsole {
         long newIdCompany = 0;
         Company newCompany = null;
 
-        service = ComputerServiceImpl.INSTANCE;
         System.out.println("Please enter the computer id you want to update");
         idString = scanner.nextLine();
         idString = idString.trim();
@@ -408,7 +410,7 @@ public class ClientConsole {
             if (!newIdCompanyString.isEmpty()) {
                 newIdCompany = Long.parseLong(newIdCompanyString);
             }
-            Optional<Company> optionalCompany = CompanyServiceImpl.INSTANCE.readById(newIdCompany);
+            Optional<Company> optionalCompany = companyService.readById(newIdCompany);
             newCompany = optionalCompany.get();
 
             System.out.println("Company :" + newCompany + " (y/n)");

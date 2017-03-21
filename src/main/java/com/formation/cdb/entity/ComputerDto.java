@@ -1,11 +1,12 @@
 package com.formation.cdb.entity;
 
+import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ComputerDto.
  */
-public class ComputerDto {
+public class ComputerDto implements Serializable {
 
     /** The id. */
     private final long id;

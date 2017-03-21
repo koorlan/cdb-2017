@@ -54,13 +54,15 @@ function validateIntroducedBeforeDiscontinued (date1,date2) {
 	 introduced = new Date(date1).toISOString();
 	 discontinued = new Date(date2).toISOString();
 	} catch (e) {
-		
+		return false;
 	}
 	
 	if( introduced  >= discontinued ) {
 		$('#alert-date-danger').show();
+		return false;
 	} else {
 		$('#alert-date-danger').hide();
+		return true;
 	}
 	
 }
@@ -68,9 +70,13 @@ function validateIntroducedBeforeDiscontinued (date1,date2) {
 function validateForm () {
 	
 	validate = validateName($('#computerName').val());
+	console.log(validate);
 	validate &= validateDate($('#introduced').val());
+	console.log(validate);
 	validate &= validateDate($('#discontinued').val());
+	console.log(validate);
 	validate &= validateIntroducedBeforeDiscontinued($('#introduced').val(), $('#discontinued').val());
+	console.log(validate);
 	return validate === 1;
 }
 

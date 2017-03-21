@@ -2,6 +2,14 @@ package com.formation.cdb.entity;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
+
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 
@@ -9,20 +17,27 @@ import com.formation.cdb.service.impl.ComputerServiceImpl;
 /**
  * The Class PagerComputer.
  */
+@Component
 public class PagerComputer extends Pager<Computer> {
 
+    @Autowired
+    private ComputerServiceImpl computerService;
+    
     /**
      * Constructor of PagerComputer. Dedicated Pager for Companies
      * (Page Computer).
      */
     public PagerComputer() {
         super();
-        ComputerServiceImpl service;
-        service = ComputerServiceImpl.INSTANCE;
-        max = service.sizeOfTable(filter);
+
+    }
+    
+    @PostConstruct
+    public void init(){
+        max = computerService.sizeOfTable(filter);
         nbPages = (int) Math.ceil((double)max / pageSize);
     }
-
+    
     /* (non-Javadoc)
      * @see com.formation.cdb.entity.Pager#getPage(int)
      */
@@ -33,12 +48,10 @@ public class PagerComputer extends Pager<Computer> {
         int limit;
 
         index = (page -1 > nbPages) ? nbPages : page -1;
-        ComputerServiceImpl service;
-        service = ComputerServiceImpl.INSTANCE;
 
         offset = index * pageSize;
         limit = pageSize;
-        return service.readAllWithOffsetAndLimit(offset, limit, filter);
+        return computerService.readAllWithOffsetAndLimit(offset, limit, filter);
     }
 
     /* (non-Javadoc)
@@ -46,9 +59,7 @@ public class PagerComputer extends Pager<Computer> {
      */
     @Override
     public void setFilter(String filter){
-        ComputerServiceImpl service;
-        service = ComputerServiceImpl.INSTANCE;
-        max = service.sizeOfTable(filter);
+        max = computerService.sizeOfTable(filter);
         nbPages = (int) Math.ceil((double)max / pageSize) ;
         page = 1;
         this.filter = filter;
@@ -59,9 +70,7 @@ public class PagerComputer extends Pager<Computer> {
      */
     @Override
     public int getMax() {
-        ComputerServiceImpl service;
-        service = ComputerServiceImpl.INSTANCE;
-        max = service.sizeOfTable(filter);
+        max = computerService.sizeOfTable(filter);
         return max;
     }
 }

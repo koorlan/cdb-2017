@@ -118,7 +118,7 @@ public abstract class Pager<T> {
      * @param pageSize the new page size
      */
     public void setPageSize(int pageSize) {
-        page = (int) Math.floor( (double) ((page - 1) * this.pageSize) / pageSize);
+        page = (int) Math.floor((double) ((page - 1) * this.pageSize) / pageSize);
         page++;
         this.pageSize = pageSize;
         nbPages = (int) Math.ceil((double) max / pageSize);

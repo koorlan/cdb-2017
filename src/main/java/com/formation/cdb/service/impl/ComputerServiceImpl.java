@@ -3,7 +3,14 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 import com.formation.cdb.service.CDBService;
 
@@ -11,14 +18,17 @@ import com.formation.cdb.service.CDBService;
 /**
  * The Enum ComputerServiceImpl.
  */
-public enum ComputerServiceImpl implements CDBService<Computer> {
 
-    /** The instance. */
-    INSTANCE;
+@Service
+public class ComputerServiceImpl implements CDBService<Computer> {
+
+    @Autowired
+    private ComputerDaoImpl computerDaoImpl;
+    
     /**
      * Private constructor for singleton implementation.
      */
-    ComputerServiceImpl() {
+    public ComputerServiceImpl() {
     }
 
     /* (non-Javadoc)
@@ -26,7 +36,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
      */
     @Override
     public void create(Optional<Computer> e) {
-         ComputerDaoImpl.INSTANCE.create(e);
+        computerDaoImpl.create(e);
          return;
     }
 
@@ -35,7 +45,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
      */
     @Override
     public Optional<Computer> readById(long id) {
-        return ComputerDaoImpl.INSTANCE.readById(id);
+        return computerDaoImpl.readById(id);
     }
 
     /* (non-Javadoc)
@@ -43,7 +53,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
      */
     @Override
     public void update(Optional<Computer> e) {
-        ComputerDaoImpl.INSTANCE.update(e);
+        computerDaoImpl.update(e);
     }
 
     /* (non-Javadoc)
@@ -51,7 +61,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
      */
     @Override
     public void delete(Optional<Computer> e) {
-        ComputerDaoImpl.INSTANCE.delete(e);
+        computerDaoImpl.delete(e);
         return;
     }
 
@@ -60,7 +70,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
      */
     @Override
     public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        return ComputerDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit, filter+'%');
+        return computerDaoImpl.readAllWithOffsetAndLimit(offset, limit, filter+'%');
     }
 
     /* (non-Javadoc)
@@ -68,7 +78,7 @@ public enum ComputerServiceImpl implements CDBService<Computer> {
      */
     @Override
     public int sizeOfTable(String filter) {
-        return ComputerDaoImpl.INSTANCE.rowCount(filter+'%');
+        return computerDaoImpl.rowCount(filter+'%');
     }
 
 }

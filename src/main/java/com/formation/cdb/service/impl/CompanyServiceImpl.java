@@ -3,8 +3,13 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
@@ -14,14 +19,18 @@ import com.formation.cdb.service.CDBService;
 /**
  * The Enum CompanyServiceImpl.
  */
-public enum CompanyServiceImpl implements CDBService<Company> {
+@Named
+public class CompanyServiceImpl implements CDBService<Company> {
     
-    /** The instance. */
-    INSTANCE;
+
+    
+    @Inject
+    private CompanyDaoImpl dao;
+    
     /**
      * Private constructor for singleton implementation.
      */
-    CompanyServiceImpl() {
+    public CompanyServiceImpl() {
     }
 
     /** The logger. */
@@ -40,7 +49,7 @@ public enum CompanyServiceImpl implements CDBService<Company> {
      */
     @Override
     public Optional<Company> readById(long id) {
-        return CompanyDaoImpl.INSTANCE.readById(id);
+        return dao.readById(id);
     }
 
     /* (non-Javadoc)
@@ -64,7 +73,7 @@ public enum CompanyServiceImpl implements CDBService<Company> {
      */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        return CompanyDaoImpl.INSTANCE.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
+        return dao.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
     }
 
     /* (non-Javadoc)
@@ -72,7 +81,7 @@ public enum CompanyServiceImpl implements CDBService<Company> {
      */
     @Override
     public int sizeOfTable(String filter) {
-        return CompanyDaoImpl.INSTANCE.rowCount('%'+filter+'%');
+        return dao.rowCount('%'+filter+'%');
     };
-
+    
 }
