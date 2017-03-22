@@ -13,6 +13,7 @@ import com.formation.cdb.entity.PagerCompany;
 import com.formation.cdb.entity.PagerComputer;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.persistence.impl.CompanyJDBCTemplate;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
@@ -46,6 +47,7 @@ public class ClientConsole {
     
     @Autowired
     private PagerCompany pagerCompany;
+
     /**
      * Constructor of ClientConsole.
      */
@@ -60,6 +62,7 @@ public class ClientConsole {
     public static void main(String[] args) {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
         ClientConsole c = new ClientConsole();
+              
         while (!c.isExit()) {
             c.showMenu();
         }
@@ -76,7 +79,7 @@ public class ClientConsole {
     /**
      * Default print. Base menu to select action to perform on CDB.
      */
-    public void showMenu() {
+    public void showMenu() {     
         String s = null;
 
         System.out.println("Welcome to the Swedish Computer Database");

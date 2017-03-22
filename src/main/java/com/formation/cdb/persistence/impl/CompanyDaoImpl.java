@@ -28,7 +28,7 @@ import com.formation.cdb.persistence.connection.ConnectionManager;
 /**
  * The Enum CompanyDaoImpl.
  */
-@Named
+@Repository
 public class CompanyDaoImpl implements Dao<Company> {
 
 

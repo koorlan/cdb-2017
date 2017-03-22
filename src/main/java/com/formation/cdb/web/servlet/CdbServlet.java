@@ -25,9 +25,12 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.ComputerDtoMapper;
+import com.formation.cdb.persistence.impl.CompanyJDBCTemplate;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
+
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -57,9 +60,11 @@ public class CdbServlet extends Servlet {
     @Autowired
     private PagerComputer pagerComputer;
     
+    @Autowired
+    private CompanyJDBCTemplate companyTemplate;
     
+    static private Logger LOGGER = LoggerFactory.getLogger(CdbServlet.class.getSimpleName());
     
-
     /**
      * Do get.
      *
@@ -72,6 +77,9 @@ public class CdbServlet extends Servlet {
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        
+       LOGGER.info(Integer.toString(companyTemplate.rowCount("")));
         
         String pageToForward = "/dashboard.jsp";
 

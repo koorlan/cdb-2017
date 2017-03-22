@@ -19,12 +19,12 @@ import com.formation.cdb.service.CDBService;
 /**
  * The Enum CompanyServiceImpl.
  */
-@Named
+@Service
 public class CompanyServiceImpl implements CDBService<Company> {
     
 
     
-    @Inject
+    @Autowired
     private CompanyDaoImpl dao;
     
     /**
