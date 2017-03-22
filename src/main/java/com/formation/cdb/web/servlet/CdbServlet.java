@@ -59,15 +59,6 @@ public class CdbServlet extends Servlet {
     
     
     
-    /**
-     * Instantiates a new cdb servlet.
-     *
-     * @see HttpServlet#HttpServlet()
-     */
-    public CdbServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
 
     /**
      * Do get.

@@ -6,6 +6,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.annotation.SessionScope;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
@@ -15,6 +16,7 @@ import com.formation.cdb.service.impl.CompanyServiceImpl;
 /**
  * The Class PagerCompany.
  */
+@SessionScope
 @Component
 public class PagerCompany extends Pager<Company> {
 

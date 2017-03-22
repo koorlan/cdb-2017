@@ -17,6 +17,7 @@ import com.formation.cdb.service.impl.ComputerServiceImpl;
 /**
  * The Class PagerComputer.
  */
+@SessionScope
 @Component
 public class PagerComputer extends Pager<Computer> {
 
