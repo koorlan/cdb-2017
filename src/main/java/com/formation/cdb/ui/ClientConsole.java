@@ -18,6 +18,7 @@ import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
 
 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ClientConsole.
@@ -35,12 +36,16 @@ public class ClientConsole {
     private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
 
     @Autowired
-    private CompanyServiceImpl companyService;
+    private CompanyServiceImpl serviceCompany;
     
     @Autowired
     private ComputerServiceImpl service;
     
+    @Autowired
+    private PagerComputer pagerComputer;
     
+    @Autowired
+    private PagerCompany pagerCompany;
     /**
      * Constructor of ClientConsole.
      */
@@ -120,32 +125,30 @@ public class ClientConsole {
      * Action, list computer by page.
      */
     public void listComputers() {
-        PagerComputer pager;
         String command;
         boolean exit;
         int index;
         int num = 0;
         String intString;
 
-        pager = new PagerComputer();
         exit = false;
-        index = pager.getCurrentPageIndex();
+        index = pagerComputer.getCurrentPageIndex();
         do {
             
-            for (Computer c : pager.getPage(index)) {
+            for (Computer c : pagerComputer.getPage(index)) {
                System.out.println(c);
             }
 
-            System.out.println(index + " of " + pager.getNbPages() + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
+            System.out.println(index + " of " + pagerComputer.getNbPages() + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
             command = scanner.nextLine();
             switch (command) {
             case "n":
-                pager.next();
-                index = pager.getCurrentPageIndex();
+                pagerComputer.next();
+                index = pagerComputer.getCurrentPageIndex();
                 break;
             case "p":
-                pager.prev();
-                index = pager.getCurrentPageIndex();
+                pagerComputer.prev();
+                index = pagerComputer.getCurrentPageIndex();
                 break;
             case "g":
                 System.out.println("enter the page number");
@@ -214,7 +217,6 @@ public class ClientConsole {
      * Show detail of a specific computer.
      */
     public void showComputer() {
-        ComputerServiceImpl service;
         long id;
         Computer c;
 
@@ -228,10 +230,9 @@ public class ClientConsole {
      * Show a company details.
      */
     public void showCompany() {
-        CompanyServiceImpl service;
+
         long id;
         Company c;
-
 
         System.out.println("Please enter company id:");
         id = scanner.nextLong();
@@ -242,7 +243,6 @@ public class ClientConsole {
      * Action to create a computer.
      */
     public void createComputer() {
-        ComputerServiceImpl service;
         String name;
         LocalDate introduced = null;
         LocalDate discontinued = null;
@@ -286,7 +286,6 @@ public class ClientConsole {
      * Action, delete a computer.
      */
     public void deleteComputer() {
-        ComputerServiceImpl service;
         long id;
         String answer;
 
@@ -314,7 +313,6 @@ public class ClientConsole {
      * Update a computer.
      */
     public void updateComputer() {
-        ComputerServiceImpl service;
         String idString;
         long id;
         String answer;
@@ -410,7 +408,7 @@ public class ClientConsole {
             if (!newIdCompanyString.isEmpty()) {
                 newIdCompany = Long.parseLong(newIdCompanyString);
             }
-            Optional<Company> optionalCompany = companyService.readById(newIdCompany);
+            Optional<Company> optionalCompany = serviceCompany.readById(newIdCompany);
             newCompany = optionalCompany.get();
 
             System.out.println("Company :" + newCompany + " (y/n)");
