@@ -11,18 +11,24 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
+import com.formation.cdb.mapper.impl.CompanyMapper;
 import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.connection.ConnectionManager;
+import com.formation.cdb.persistence.datasource.ConfiguredDatasource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,6 +38,17 @@ import com.formation.cdb.persistence.connection.ConnectionManager;
 public class CompanyDaoImpl implements Dao<Company> {
 
 
+    @Autowired
+    private ConfiguredDatasource dataSource;
+    
+    private JdbcTemplate jdbcTemplateObject;
+    
+    @PostConstruct
+    public void setDataSource() {
+       this.jdbcTemplateObject = new JdbcTemplate(dataSource);
+    }
+    
+    
     /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     
@@ -60,28 +77,14 @@ public class CompanyDaoImpl implements Dao<Company> {
 
         try {
             prop.load(input);
-            StringBuilder sb = new StringBuilder();
-            // READ_BY_ID
-            sb.append("SELECT * FROM ");
-            sb.append(prop.getProperty("db_company_table"));
-            sb.append(" WHERE ");
-            sb.append(prop.getProperty("db_company_col_id"));
-            sb.append("=?;");
-            READ_BY_ID = sb.toString();
-            // READ_ALL_LIMIT
 
-            sb = new StringBuilder();
-            sb.append("SELECT * FROM ");
-            sb.append(prop.getProperty("db_company_table"));
-            sb.append(" LIMIT ?,?;");
+            READ_BY_ID = "SELECT * FROM " + prop.getProperty("db_company_table") + " WHERE " + prop.getProperty("db_company_col_id") + "=?;";
 
-            READ_ALL_LIMIT = sb.toString();
+            READ_ALL_LIMIT = "SELECT * FROM "+prop.getProperty("db_company_table")+" LIMIT ?,?;";
+
             // ROW_COUNT
-            sb = new StringBuilder();
-            sb.append("SELECT COUNT(*) c FROM ");
-            sb.append(prop.getProperty("db_company_table") + ";");
+            ROW_COUNT  = "SELECT COUNT(*) c FROM "+prop.getProperty("db_company_table") + ";";
 
-            ROW_COUNT = sb.toString();
         } catch (IOException e) {
             LOGGER.error("Error on config file");
             throw new PersistenceException(e);
@@ -101,27 +104,7 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public Optional<Company> readById(long id) {
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return Optional.empty();
-        }
-
-        try {
-
-            PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
-            stmt.setLong(1, id);
-            Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
-            Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
-            stmt.close();
-            return company;
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
+        return Optional.of((Company) jdbcTemplateObject.queryForObject(READ_BY_ID, new BeanPropertyRowMapper<Company>(Company.class), id));
     }
 
     /* (non-Javadoc)

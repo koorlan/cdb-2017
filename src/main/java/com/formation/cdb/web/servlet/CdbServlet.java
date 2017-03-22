@@ -78,9 +78,7 @@ public class CdbServlet extends Servlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        
-       LOGGER.info(Integer.toString(companyTemplate.rowCount("")));
-        
+        LOGGER.info(companyTemplate.readById(1).toString());    
         String pageToForward = "/dashboard.jsp";
 
         if (request.getParameter("action") != null) {
