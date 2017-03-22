@@ -1,10 +1,5 @@
 package com.formation.cdb.persistence.datasource;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Properties;
-
-
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.stereotype.Component;
 
@@ -16,5 +11,4 @@ public class ConfiguredDatasource extends DriverManagerDataSource{
         this.setUsername("admincdb");
         this.setPassword("qwerty1234");
     }
-
 }

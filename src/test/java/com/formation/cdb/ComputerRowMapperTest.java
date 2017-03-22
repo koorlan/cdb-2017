@@ -90,7 +90,7 @@ public class ComputerRowMapperTest {
        Mockito.when(resultSet.getTimestamp(COL_INTRODUCED)).thenReturn(DateUtil.dateToTimestamp(LocalDate.of(2001, 10, 2))) ;
        Mockito.when(resultSet.getTimestamp(COL_DISCONTINUED)).thenReturn(DateUtil.dateToTimestamp(LocalDate.of(2010, 2, 10))) ;
        Mockito.when(resultSet.getLong(COL_COMPANY_ID)).thenReturn(2l);
-       Mockito.when(resultSet.getString("c_name")).thenReturn("company_test");
+       Mockito.when(resultSet.getString("company_name")).thenReturn("company_test");
        
        Optional<Computer> computerO = ComputerRowMapper.INSTANCE.mapObjectFromOneRow(Optional.of(resultSet));
        assertTrue(computerO.isPresent());
@@ -124,7 +124,7 @@ public class ComputerRowMapperTest {
         Mockito.when(resultSet.getTimestamp(COL_INTRODUCED)).thenReturn(DateUtil.dateToTimestamp(LocalDate.of(2001, 10, 2))) ;
         Mockito.when(resultSet.getTimestamp(COL_DISCONTINUED)).thenReturn(DateUtil.dateToTimestamp(LocalDate.of(2010, 2, 10))) ;
         Mockito.when(resultSet.getLong(COL_COMPANY_ID)).thenReturn(2l);
-        Mockito.when(resultSet.getString("c_name")).thenReturn("company_test");
+        Mockito.when(resultSet.getString("company_name")).thenReturn("company_test");
 
 
         List<Computer> computerList = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(Optional.of(resultSet));

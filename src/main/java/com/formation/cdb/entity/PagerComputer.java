@@ -7,10 +7,12 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 
 // TODO: Auto-generated Javadoc
@@ -22,7 +24,8 @@ import com.formation.cdb.service.impl.ComputerServiceImpl;
 public class PagerComputer extends Pager<Computer> {
 
     @Autowired
-    private ComputerServiceImpl computerService;
+    @Qualifier("computerServiceImpl")
+    private CDBService<Computer> computerService;
     
     /**
      * Constructor of PagerComputer. Dedicated Pager for Companies

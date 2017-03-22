@@ -25,9 +25,7 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.mapper.impl.CompanyMapper;
-import com.formation.cdb.mapper.impl.CompanyRowMapper;
 import com.formation.cdb.persistence.Dao;
-import com.formation.cdb.persistence.connection.ConnectionManager;
 import com.formation.cdb.persistence.datasource.ConfiguredDatasource;
 
 // TODO: Auto-generated Javadoc
@@ -69,7 +67,7 @@ public class CompanyDaoImpl implements Dao<Company> {
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
-        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        input = CompanyDaoImpl.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
             LOGGER.error("Sorry, unable to find " + filename);
             throw new PersistenceException("Unable to acces config file at " + filename);
@@ -104,7 +102,8 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public Optional<Company> readById(long id) {
-        return Optional.of((Company) jdbcTemplateObject.queryForObject(READ_BY_ID, new BeanPropertyRowMapper<Company>(Company.class), id));
+        Company c = (Company) jdbcTemplateObject.queryForObject(READ_BY_ID, new CompanyMapper(), id);
+        return Optional.of(c);
     }
 
     /* (non-Javadoc)
@@ -128,37 +127,7 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        
-        List<Company> companies = new ArrayList<>();
-        
-        if (offset < 0 || limit < 0) {
-            LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-            return companies;
-        }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return companies;
-        }
-
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-            stmt.setInt(1, offset);
-            stmt.setInt(2, limit);
-
-            Optional<ResultSet> rs;
-            rs = Optional.ofNullable(stmt.executeQuery());
-
-            companies = CompanyRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-            stmt.close();
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
-        
+        List<Company> companies = jdbcTemplateObject.query(READ_ALL_LIMIT, new CompanyMapper(), offset, limit);
         return companies;
     }
 
@@ -167,26 +136,7 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public int rowCount(String filter) {
-        int count = 0;
-        Optional<ResultSet> rs;
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return 0;
-        }
-
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(ROW_COUNT);
-            rs = Optional.ofNullable(stmt.executeQuery());
-            count = RowMapper.mapCountResult(rs);
-            stmt.close();
-            return count;
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
+       return jdbcTemplateObject.queryForObject(ROW_COUNT, Integer.class);
     };
 
 }

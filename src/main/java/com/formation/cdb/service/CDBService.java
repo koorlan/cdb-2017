@@ -3,6 +3,8 @@ package com.formation.cdb.service;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.transaction.annotation.Transactional;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -17,6 +19,7 @@ public interface CDBService<T> {
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
+    @Transactional
     void create(Optional<T> e);
     /**
      * CRUD , read an element.
@@ -24,6 +27,7 @@ public interface CDBService<T> {
      *            the id to fetch on the DataBase.
      * @return an object T id found , representation of the database object.
      */
+    @Transactional
     Optional<T> readById(long id);
     /**
      * CRUD , update an element on the database.
@@ -31,6 +35,7 @@ public interface CDBService<T> {
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
+    @Transactional
     void update(Optional<T> e);
     /**
      * CRUD , Delete an element on the database.
@@ -38,6 +43,7 @@ public interface CDBService<T> {
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
+    @Transactional
     void delete(Optional<T> e);
     
     /**
@@ -50,6 +56,7 @@ public interface CDBService<T> {
      * @param filter the filter
      * @return list of type T
      */
+    @Transactional
     List<T> readAllWithOffsetAndLimit(int offset, int limit, String filter);
     
     /**
@@ -58,5 +65,6 @@ public interface CDBService<T> {
      * @param filter the filter
      * @return how many rows on the table.
      */
+    @Transactional
     int sizeOfTable(String filter);
 }

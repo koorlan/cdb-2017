@@ -13,7 +13,6 @@ import com.formation.cdb.entity.PagerCompany;
 import com.formation.cdb.entity.PagerComputer;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.persistence.impl.CompanyJDBCTemplate;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.impl.ComputerServiceImpl;
 import com.formation.cdb.util.DateUtil;
