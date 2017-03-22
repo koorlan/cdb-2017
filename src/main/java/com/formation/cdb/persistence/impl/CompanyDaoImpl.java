@@ -11,27 +11,42 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
-import com.formation.cdb.mapper.impl.CompanyRowMapper;
+import com.formation.cdb.mapper.impl.CompanyMapper;
 import com.formation.cdb.persistence.Dao;
-import com.formation.cdb.persistence.connection.ConnectionManager;
+import com.formation.cdb.persistence.datasource.ConfiguredDatasource;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Enum CompanyDaoImpl.
  */
-@Named
+@Repository
 public class CompanyDaoImpl implements Dao<Company> {
 
 
+    @Autowired
+    private ConfiguredDatasource dataSource;
+    
+    private JdbcTemplate jdbcTemplateObject;
+    
+    @PostConstruct
+    public void setDataSource() {
+       this.jdbcTemplateObject = new JdbcTemplate(dataSource);
+    }
+    
+    
     /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
     
@@ -52,7 +67,7 @@ public class CompanyDaoImpl implements Dao<Company> {
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
-        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        input = CompanyDaoImpl.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
             LOGGER.error("Sorry, unable to find " + filename);
             throw new PersistenceException("Unable to acces config file at " + filename);
@@ -60,28 +75,14 @@ public class CompanyDaoImpl implements Dao<Company> {
 
         try {
             prop.load(input);
-            StringBuilder sb = new StringBuilder();
-            // READ_BY_ID
-            sb.append("SELECT * FROM ");
-            sb.append(prop.getProperty("db_company_table"));
-            sb.append(" WHERE ");
-            sb.append(prop.getProperty("db_company_col_id"));
-            sb.append("=?;");
-            READ_BY_ID = sb.toString();
-            // READ_ALL_LIMIT
 
-            sb = new StringBuilder();
-            sb.append("SELECT * FROM ");
-            sb.append(prop.getProperty("db_company_table"));
-            sb.append(" LIMIT ?,?;");
+            READ_BY_ID = "SELECT * FROM " + prop.getProperty("db_company_table") + " WHERE " + prop.getProperty("db_company_col_id") + "=?;";
 
-            READ_ALL_LIMIT = sb.toString();
+            READ_ALL_LIMIT = "SELECT * FROM "+prop.getProperty("db_company_table")+" LIMIT ?,?;";
+
             // ROW_COUNT
-            sb = new StringBuilder();
-            sb.append("SELECT COUNT(*) c FROM ");
-            sb.append(prop.getProperty("db_company_table") + ";");
+            ROW_COUNT  = "SELECT COUNT(*) c FROM "+prop.getProperty("db_company_table") + ";";
 
-            ROW_COUNT = sb.toString();
         } catch (IOException e) {
             LOGGER.error("Error on config file");
             throw new PersistenceException(e);
@@ -101,27 +102,8 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public Optional<Company> readById(long id) {
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return Optional.empty();
-        }
-
-        try {
-
-            PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
-            stmt.setLong(1, id);
-            Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
-            Optional<Company> company = CompanyRowMapper.INSTANCE.mapObjectFromOneRow(rs);
-            stmt.close();
-            return company;
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
+        Company c = (Company) jdbcTemplateObject.queryForObject(READ_BY_ID, new CompanyMapper(), id);
+        return Optional.of(c);
     }
 
     /* (non-Javadoc)
@@ -145,37 +127,7 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        
-        List<Company> companies = new ArrayList<>();
-        
-        if (offset < 0 || limit < 0) {
-            LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-            return companies;
-        }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return companies;
-        }
-
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-            stmt.setInt(1, offset);
-            stmt.setInt(2, limit);
-
-            Optional<ResultSet> rs;
-            rs = Optional.ofNullable(stmt.executeQuery());
-
-            companies = CompanyRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-            stmt.close();
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
-        
+        List<Company> companies = jdbcTemplateObject.query(READ_ALL_LIMIT, new CompanyMapper(), offset, limit);
         return companies;
     }
 
@@ -184,26 +136,7 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public int rowCount(String filter) {
-        int count = 0;
-        Optional<ResultSet> rs;
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return 0;
-        }
-
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(ROW_COUNT);
-            rs = Optional.ofNullable(stmt.executeQuery());
-            count = RowMapper.mapCountResult(rs);
-            stmt.close();
-            return count;
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
+       return jdbcTemplateObject.queryForObject(ROW_COUNT, Integer.class);
     };
 
 }

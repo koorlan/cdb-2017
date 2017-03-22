@@ -12,20 +12,23 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.persistence.Dao;
-import com.formation.cdb.persistence.connection.ConnectionManager;
+import com.formation.cdb.persistence.datasource.ConfiguredDatasource;
 import com.formation.cdb.util.DateUtil;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.mapper.RowMapper;
-import com.formation.cdb.mapper.impl.ComputerRowMapper;
+import com.formation.cdb.mapper.impl.ComputerMapper;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -34,6 +37,16 @@ import com.formation.cdb.mapper.impl.ComputerRowMapper;
 @Repository
 public class ComputerDaoImpl implements Dao<Computer> {
 
+    @Autowired
+    private ConfiguredDatasource dataSource;
+    
+    private JdbcTemplate jdbcTemplateObject;
+    
+    @PostConstruct
+    public void setDataSource() {
+       this.jdbcTemplateObject = new JdbcTemplate(dataSource);
+    }
+    
     /** The insert. */
     String INSERT;
     
@@ -59,7 +72,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
         String filename = "config.properties";
         Properties prop = new Properties();
         InputStream input = null;
-        input = ConnectionManager.class.getClassLoader().getResourceAsStream(filename);
+        input = ComputerDaoImpl.class.getClassLoader().getResourceAsStream(filename);
         if (input == null) {
             LOGGER.error("Sorry, unable to find " + filename);
             throw new PersistenceException("Unable to acces config file at " + filename);
@@ -87,7 +100,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
             sb.append(prop.getProperty("db_computer_col_discontinued") + ",");
             sb.append(prop.getProperty("db_computer_col_company_id") + ",");
             sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_name"));
-            sb.append(" AS c_name FROM ");
+            sb.append(" AS company_name FROM ");
             sb.append(prop.getProperty("db_computer_table"));
             sb.append(" LEFT JOIN ");
             sb.append(prop.getProperty("db_company_table"));
@@ -132,7 +145,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
             sb.append(prop.getProperty("db_computer_col_discontinued") + ",");
             sb.append(prop.getProperty("db_computer_col_company_id") + ",");
             sb.append(prop.getProperty("db_company_table") + '.' + prop.getProperty("db_company_col_name"));
-            sb.append(" AS c_name FROM ");
+            sb.append(" AS company_name FROM ");
             sb.append(prop.getProperty("db_computer_table"));
             sb.append(" LEFT JOIN ");
             sb.append(prop.getProperty("db_company_table"));
@@ -173,37 +186,19 @@ public class ComputerDaoImpl implements Dao<Computer> {
             LOGGER.warn("Create failed, null computer");
             return;
         }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
+        Computer c = e.get();
+        
+        if (!c.getName().isPresent()) {
+            LOGGER.warn("Create failed, empty name");
             return;
         }
-
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(INSERT);
-            stmt.setString(1, e.flatMap(Computer::getName).orElseThrow(() -> new PersistenceException("Trying to bypass validation, name is required")));
-
-            stmt.setTimestamp(2, e.flatMap(Computer::getIntroduced).map(DateUtil::dateToTimestamp).orElse(null));
-
-            stmt.setTimestamp(3, e.flatMap(Computer::getDiscontinued).map(DateUtil::dateToTimestamp).orElse(null));
-
-            if (e.get().getCompany().isPresent()) {
-                stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).orElse(Long.valueOf(Types.NULL)));
-            } else {
-               stmt.setNull(4, Types.NULL); 
-            }
-
-            stmt.execute();
-            LOGGER.info("Query sucessfully executed " + stmt.toString());
-        } catch (SQLException e1) {
-            LOGGER.info("Create failed " + e.orElse(null));
-            throw new PersistenceException(e1);
-        } finally {
-            ConnectionManager.close(connection);
+        
+        if(c.getCompany().isPresent()) {
+            jdbcTemplateObject.update(INSERT, c.getName().get(), c.getIntroduced().orElse(null), c.getDiscontinued().orElse(null),c.getCompany().get().getId());
+        } else {
+            jdbcTemplateObject.update(INSERT, c.getName().get(), c.getIntroduced().orElse(null), c.getDiscontinued().orElse(null),null);
         }
-
+        
     }
 
     /* (non-Javadoc)
@@ -211,34 +206,8 @@ public class ComputerDaoImpl implements Dao<Computer> {
      */
     @Override
     public Optional<Computer> readById(long id) {
-
-        if (id <= 0) {
-            LOGGER.warn("Id can't be negative or equal 0");
-            return Optional.empty();
-        }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return Optional.empty();
-        }
-
-        try {
-
-            PreparedStatement stmt = connection.get().prepareStatement(READ_BY_ID);
-            stmt.setInt(1, (int) id);
-            Optional<ResultSet> rs = Optional.ofNullable(stmt.executeQuery());
-            LOGGER.info("Try to read id: " + id);
-            Optional<Computer> computer = ComputerRowMapper.INSTANCE.mapObjectFromOneRow(rs);
-            LOGGER.info("Sucessfully readed: " + computer.toString());
-            return computer;
-
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
+        Computer c = jdbcTemplateObject.queryForObject(READ_BY_ID, new ComputerMapper(), id);
+        return Optional.of(c);
     }
 
     /* (non-Javadoc)
@@ -251,43 +220,19 @@ public class ComputerDaoImpl implements Dao<Computer> {
             LOGGER.warn("Create failed, null computer");
             return;
         }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return;
-        }
+        
+       Computer c = e.get();
        
-        try {
-            
-            PreparedStatement stmt = connection.get().prepareStatement(UPDATE);
-                
-            stmt.setString(1, e.flatMap(Computer::getName).orElseThrow(() -> new PersistenceException("Trying to bypass validation, name is required")));
-
-            stmt.setTimestamp(2, e.flatMap(Computer::getIntroduced).map(DateUtil::dateToTimestamp).orElse(null));
-
-            stmt.setTimestamp(3, e.flatMap(Computer::getDiscontinued).map(DateUtil::dateToTimestamp).orElse(null));
-
-            if (e.get().getCompany().isPresent()) {
-                stmt.setLong(4, e.flatMap(Computer::getCompany).map(Company::getId).get());
-            } else {
-                stmt.setNull(4, Types.NULL);
-            }
-           
-            stmt.setLong(5, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("Trying to bypass validation, id is required")));
-
-            stmt.execute();
-            stmt.close();
-            LOGGER.info("Sucessfully updated: " + e);
-        } catch (SQLException e1) {
-            LOGGER.info("Update failed " + e.orElse(null));
-            throw new PersistenceException(e1);
-        } finally {
-            ConnectionManager.close(connection);
-           
-        }
-
+       if (!c.getName().isPresent()) {
+           LOGGER.warn("Create failed, Empty name");
+           return;
+       }
+       if ( c.getCompany().isPresent()) {
+           jdbcTemplateObject.update(UPDATE, c.getName().get(), c.getIntroduced().orElse(null), c.getDiscontinued().orElse(null), c.getCompany().get().getId(), c.getId());
+       } else {
+           jdbcTemplateObject.update(UPDATE, c.getName().get(), c.getIntroduced().orElse(null), c.getDiscontinued().orElse(null), null, c.getId());
+       }
+      
     }
 
     /* (non-Javadoc)
@@ -300,69 +245,16 @@ public class ComputerDaoImpl implements Dao<Computer> {
             LOGGER.warn("Create failed, null computer");
             return;
         }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return;
-        }
-
-
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(DELETE);
-            stmt.setLong(1, e.map(Computer::getId).orElseThrow(() -> new PersistenceException("id is less or equal zero")));
-            stmt.execute();
-            stmt.close();
-            LOGGER.info("Succesfully deleted " + e);
-        } catch (SQLException e1) {
-            LOGGER.info("Delete failed " + e.orElse(null));
-            throw new PersistenceException(e1);
-        } finally {
-            ConnectionManager.close(connection);
-        }
-
-
+            
+        jdbcTemplateObject.update(DELETE, e.get().getId());
     }
 
     /* (non-Javadoc)
      * @see com.formation.cdb.persistence.Dao#readAllWithOffsetAndLimit(int, int, java.lang.String)
      */
     @Override
-    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        
-        List<Computer> computers = new ArrayList<>();
-        
-        if (offset < 0 || limit < 0) {
-            LOGGER.warn("Offset and limit must be positive. Offset:" + offset + " Limit:" + limit);
-            return computers;
-        }
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return computers;
-        }
-        try {
-            PreparedStatement stmt = connection.get().prepareStatement(READ_ALL_LIMIT);
-            stmt.setString(1, filter);
-            stmt.setInt(2, offset);
-            stmt.setInt(3, limit);
-
-            Optional<ResultSet> rs;
-            rs = Optional.ofNullable(stmt.executeQuery());
-
-            computers = ComputerRowMapper.INSTANCE.mapListOfObjectsFromMultipleRows(rs);
-
-            stmt.close();
-
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
-        return computers;
+    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) { 
+        return jdbcTemplateObject.query(READ_ALL_LIMIT, new ComputerMapper(),filter, offset, limit);
     }
 
     /* (non-Javadoc)
@@ -370,29 +262,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
      */
     @Override
     public int rowCount(String filter) {
-        int count = 0;
-
-        Optional<Connection> connection = ConnectionManager.INSTANCE.getConnection();
-
-        if (!connection.isPresent()) {
-            LOGGER.warn("can't get a connection");
-            return 0;
-        }
-
-        try {
-            Optional<ResultSet> rs;
-            PreparedStatement stmt = connection.get().prepareStatement(ROW_COUNT);
-            stmt.setString(1, filter);
-            rs = Optional.ofNullable(stmt.executeQuery());
-            count = RowMapper.mapCountResult(rs);
-            stmt.close();
-            return count;
-        } catch (SQLException e) {
-            throw new PersistenceException(e);
-        } finally {
-            ConnectionManager.close(connection);
-        }
-
+        return jdbcTemplateObject.queryForObject(ROW_COUNT, Integer.class, filter);
     }
 
 

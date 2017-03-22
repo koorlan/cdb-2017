@@ -24,7 +24,7 @@ public class Company extends Entity {
      * the name of the company.
      */
     private final String name;
-
+    
     /**
      * Constructor of a company.
      *

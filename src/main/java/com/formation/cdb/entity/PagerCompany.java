@@ -4,11 +4,15 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
 
 
@@ -21,7 +25,8 @@ import com.formation.cdb.service.impl.CompanyServiceImpl;
 public class PagerCompany extends Pager<Company> {
 
     @Autowired
-    private CompanyServiceImpl service;
+    @Qualifier("companyServiceImpl")
+    private CDBService<Company> service;
     
     /**
      * Constructor of PagerCompany.

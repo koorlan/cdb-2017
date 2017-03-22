@@ -46,6 +46,7 @@ public class ClientConsole {
     
     @Autowired
     private PagerCompany pagerCompany;
+
     /**
      * Constructor of ClientConsole.
      */
@@ -60,6 +61,7 @@ public class ClientConsole {
     public static void main(String[] args) {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
         ClientConsole c = new ClientConsole();
+              
         while (!c.isExit()) {
             c.showMenu();
         }
@@ -76,7 +78,7 @@ public class ClientConsole {
     /**
      * Default print. Base menu to select action to perform on CDB.
      */
-    public void showMenu() {
+    public void showMenu() {     
         String s = null;
 
         System.out.println("Welcome to the Swedish Computer Database");
