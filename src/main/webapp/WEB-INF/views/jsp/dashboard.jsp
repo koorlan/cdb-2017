@@ -8,9 +8,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta charset="utf-8">
 <!-- Bootstrap -->
-<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="./css/font-awesome.css" rel="stylesheet" media="screen">
-<link href="./css/main.css" rel="stylesheet" media="screen">
+<link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
+<link href="<c:url value="/resources/css/font-awesome.css"/>" rel="stylesheet" media="screen"/>
+<link href="<c:url value="/resources/css/main.css"/>" rel="stylesheet" media="screen"/>
+
 </head>
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
@@ -116,15 +117,17 @@
          <ul id="pagination-demo" class="pagination"></ul>
 
         <div class="btn-group btn-group-sm pull-right" role="group">
-            <a class="btn btn-default " href="database?action=size&size=10">10</a>
-            <a class="btn btn-default " href="database?action=size&size=50">50</a>
-            <a class="btn btn-default " href="database?action=size&size=100">100</a>
+            <a class="btn btn-default " href="<c:url value ="/dashboard/page/${currentIndexPage}/size/10"/>">10</a>
+            <a class="btn btn-default " href="<c:url value ="/dashboard/page/${currentIndexPage}/size/50"/>">50</a>
+            <a class="btn btn-default " href="<c:url value ="/dashboard/page/${currentIndexPage}/size/100"/>">100</a>
         </div>
     </footer>
-    <script src="./js/jquery.min.js"></script>
-    <script src="./js/bootstrap.min.js"></script>
-    <script src="./js/dashboard.js"></script>
-    <script src="./js/jquery.twbsPagination.min.js"></script>
+    
+    <script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+    <script src="<c:url value="/resources/bootstrap.min.js"/>"></script>
+    <script src="<c:url value="/resources/js/dashboard.js"/>"></script>
+    <script src="<c:url value="/resources/js/jquery.twbsPagination.min.js"/>"></script>
 <script>
 
 $('#pagination-demo').twbsPagination({
@@ -133,7 +136,7 @@ $('#pagination-demo').twbsPagination({
     totalPages: ${maxIndexPage},
     visiblePages: 7,
     onPageClick: function (event, page) {
-        window.location.href = "database?action=goto&page="+page
+        window.location.href = "<c:url value="/dashboard/page/"/>" + page ;
     }
 });
 </script>

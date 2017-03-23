@@ -45,8 +45,8 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 /**
  * Servlet implementation class CdbServlet.
  */
-@Configurable
-@WebServlet(name = "CdbServlet", urlPatterns = "/database")
+//@Configurable
+//@WebServlet(name = "CdbServlet", urlPatterns = "/database")
 public class CdbServlet extends Servlet {
     
     /** The Constant serialVersionUID. */

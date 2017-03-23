@@ -58,6 +58,7 @@
 				<artifactId>tomcat7-maven-plugin</artifactId>
 				<version>${maven-tomcat.version}</version>
 				<configuration>
+					<path>/</path>
 					<url>http://localhost:8080/manager/text</url>
 					<username>admin</username>
 					<password>admin</password>
@@ -105,6 +106,12 @@
 			<artifactId>spring-jdbc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
+		
+		<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-webmvc</artifactId>
+    <version>${spring.version}</version>
+</dependency>
 
 		<dependency>
 			<groupId>org.seleniumhq.selenium</groupId>
@@ -152,13 +159,17 @@
 			<groupId>javax.servlet.jsp</groupId>
 			<artifactId>javax.servlet.jsp-api</artifactId>
 			<version>${servlet-jsp.version}</version>
+			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
-			<groupId>jstl</groupId>
-			<artifactId>jstl</artifactId>
+			 <groupId>javax.servlet</groupId>
+    <artifactId>jstl</artifactId>
 			<version>${jstl.version}</version>
 		</dependency>
+		
+
+		
 
 		<dependency>
 			<groupId>com.zaxxer</groupId>
