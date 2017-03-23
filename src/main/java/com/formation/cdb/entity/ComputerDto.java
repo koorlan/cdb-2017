@@ -2,6 +2,9 @@ package com.formation.cdb.entity;
 
 import java.io.Serializable;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ComputerDto.
@@ -9,26 +12,29 @@ import java.io.Serializable;
 public class ComputerDto implements Serializable {
 
     /** The id. */
-    private final long id;
+    private long id;
 
     /** The name. */
-    private final String name;
+    private String name;
 
     /** The introduced. */
-    private final String introduced;
+    private String introduced;
 
     /** The discontinued. */
-    private final String discontinued;
+    private String discontinued;
 
     /** The company. */
-    private final CompanyDto company;
-
+    private CompanyDto company;
+    
+    public ComputerDto(){
+    }
+    
     /**
      * Instantiates a new computer dto.
      *
      * @param builder the builder
      */
-    public ComputerDto(ComputerDtoBuilder builder) {
+    private ComputerDto(ComputerDtoBuilder builder) {
         super();
         this.id = builder.id;
         this.name = builder.name;
@@ -157,5 +163,26 @@ public class ComputerDto implements Serializable {
         }
         
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setIntroduced(String introduced) {
+        this.introduced = introduced;
+    }
+
+    public void setDiscontinued(String discontinued) {
+        this.discontinued = discontinued;
+    }
+
+    public void setCompany(CompanyDto company) {
+        this.company = company;
+    }
+    
     
 }

@@ -16,7 +16,7 @@
 <body>
     <header class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
-        <a class="navbar-brand" href="dashboard.html"> Application -
+        <a class="navbar-brand" href="<c:url value="/"/>"> Application -
             Computer Database </a>
     </div>
     </header>
@@ -117,9 +117,9 @@
          <ul id="pagination-demo" class="pagination"></ul>
 
         <div class="btn-group btn-group-sm pull-right" role="group">
-            <a class="btn btn-default " href="<c:url value ="/dashboard/page/${currentIndexPage}/size/10"/>">10</a>
-            <a class="btn btn-default " href="<c:url value ="/dashboard/page/${currentIndexPage}/size/50"/>">50</a>
-            <a class="btn btn-default " href="<c:url value ="/dashboard/page/${currentIndexPage}/size/100"/>">100</a>
+            <a class="btn btn-default " href="?size=10">10</a>
+            <a class="btn btn-default " href="?size=50">50</a>
+            <a class="btn btn-default " href="?size=100">100</a>
         </div>
     </footer>
     
@@ -136,7 +136,7 @@ $('#pagination-demo').twbsPagination({
     totalPages: ${maxIndexPage},
     visiblePages: 7,
     onPageClick: function (event, page) {
-        window.location.href = "<c:url value="/dashboard/page/"/>" + page ;
+        window.location.href = "?page=" + page ;
     }
 });
 </script>

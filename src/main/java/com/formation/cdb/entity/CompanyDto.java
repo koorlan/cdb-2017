@@ -1,5 +1,7 @@
 package com.formation.cdb.entity;
 
+import org.springframework.stereotype.Component;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class CompanyDto.
@@ -7,11 +9,14 @@ package com.formation.cdb.entity;
 public class CompanyDto {
 
     /** The id. */
-    private final long id;
+    private long id;
     
     /** The name. */
-    private final String name;
-
+    private String name;
+    
+    public CompanyDto() {
+        name = "test";
+    }
     /**
      * Instantiates a new company dto.
      *
@@ -72,5 +77,14 @@ public class CompanyDto {
             return new CompanyDto(this);
         }
     }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    
+    
 
 }
