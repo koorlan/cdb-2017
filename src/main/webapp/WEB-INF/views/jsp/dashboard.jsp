@@ -23,12 +23,11 @@
 
     <section id="main">
     <div class="container">
-        <h1 id="homeTitle">${totalComputers} Computers found test-final</h1>
+        <h1 id="homeTitle">${totalComputers} Computers found</h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
-                <form id="searchForm" action="database" method="GET" class="form-inline">
-                    <input name="action" type="hidden" value="filter" />
-                    <input type="search" id="searchbox" name="search"
+                <form id="searchForm" action="" method="GET" class="form-inline">
+                    <input type="search" id="searchbox" name="filter"
                         class="form-control" placeholder="Search name" value="${filter }"/> <input
                         type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
@@ -76,7 +75,7 @@
                     <tr>
                         <td class="editMode"><input type="checkbox" name="cb"
                             class="cb" value="${computer.id}"></td>
-                        <td><a href="database?action=edit&id=${computer.id}"
+                        <td><a href="/edit/computers/${computer.id}"
                             onclick="">${computer.name}</a></td>
                         <td>${computer.introduced}</td>
                         <td>${computer.discontinued}</td>

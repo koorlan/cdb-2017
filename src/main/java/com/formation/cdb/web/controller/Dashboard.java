@@ -33,7 +33,7 @@ public class Dashboard {
     private PagerComputer pagerComputer;
     
     
-    @GetMapping() 
+    @GetMapping
     public String getComputers ( ModelMap model,    
                                       @RequestParam("page") Optional<Integer> page,
                                       @RequestParam("filter") Optional<String> filter, 

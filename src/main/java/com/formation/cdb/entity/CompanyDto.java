@@ -15,7 +15,7 @@ public class CompanyDto {
     private String name;
     
     public CompanyDto() {
-        name = "test";
+        name = "Undefined";
     }
     /**
      * Instantiates a new company dto.
@@ -45,6 +45,17 @@ public class CompanyDto {
     public String getName() {
         return name;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    @Override
+    public String toString() {
+        return "CompanyDto [id=" + id + ", name=" + name + "]";
+    }
+    
 
     /**
      * The Class CompanyDtoBuilder.
@@ -78,13 +89,7 @@ public class CompanyDto {
         }
     }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    
+  
     
 
 }

@@ -37,6 +37,8 @@
 		<maven-jxr.version>2.3</maven-jxr.version>
 		<maven-checkstyle.version>2.17</maven-checkstyle.version>
 		<maven-javadoc.version>2.10.4</maven-javadoc.version>
+		<logback.version>1.1.3</logback.version>
+<jcl.slf4j.version>1.7.12</jcl.slf4j.version>
 	</properties>
 
 	<build>
@@ -45,6 +47,11 @@
 
 		<plugins>
 
+<plugin>
+<groupId>org.eclipse.jetty</groupId>
+<artifactId>jetty-maven-plugin</artifactId>
+<version>9.2.11.v20150529</version>
+  </plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
@@ -62,6 +69,28 @@
 					<url>http://localhost:8080/manager/text</url>
 					<username>admin</username>
 					<password>admin</password>
+					<extraDependencies>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-api</artifactId>
+                        <version>1.7.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>jul-to-slf4j</artifactId>
+                        <version>1.7.2</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-classic</artifactId>
+                        <version>1.0.7</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>ch.qos.logback</groupId>
+                        <artifactId>logback-core</artifactId>
+                        <version>1.0.7</version>
+                    </dependency>
+                </extraDependencies>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -80,13 +109,19 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-core</artifactId>
 			<version>${spring.version}</version>
-			
+			 <exclusions>
+     <exclusion>
+       <groupId>commons-logging</groupId>
+       <artifactId>commons-logging</artifactId>
+     </exclusion>
+  </exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
 			<version>${spring.version}</version>
+			
 		</dependency>
 
 		<dependency>
@@ -126,10 +161,18 @@
 			<scope>test</scope>
 		</dependency>
  <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.2.2</version>
-    </dependency>
+	<groupId>org.slf4j</groupId>
+	<artifactId>jcl-over-slf4j</artifactId>
+	<version>${jcl.slf4j.version}</version>
+</dependency>
+
+<!-- 3. logback -->
+<dependency>
+	<groupId>ch.qos.logback</groupId>
+	<artifactId>logback-classic</artifactId>
+	<version>${logback.version}</version>
+</dependency>
+
 
 		<dependency>
 			<groupId>mysql</groupId>
@@ -177,6 +220,12 @@
 			<version>${hikari-cp.version}</version>
 			<scope>compile</scope>
 		</dependency>
+		
+		<dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>1.1.0.Final</version>
+</dependency>
 
 	</dependencies>
 

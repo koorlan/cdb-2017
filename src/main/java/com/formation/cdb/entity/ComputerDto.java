@@ -2,8 +2,12 @@ package com.formation.cdb.entity;
 
 import java.io.Serializable;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.validation.annotation.Validated;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -183,6 +187,13 @@ public class ComputerDto implements Serializable {
     public void setCompany(CompanyDto company) {
         this.company = company;
     }
+
+    @Override
+    public String toString() {
+        return "ComputerDto [id=" + id + ", name=" + name + ", introduced=" + introduced + ", discontinued="
+                + discontinued + ", company=" + company + "]";
+    }
+    
     
     
 }

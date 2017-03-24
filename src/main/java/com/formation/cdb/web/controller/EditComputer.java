@@ -3,6 +3,8 @@ package com.formation.cdb.web.controller;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
+
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -44,7 +46,7 @@ public class EditComputer {
     @Qualifier("companyServiceImpl")
     private CDBService<Company> companyService;
     
-    @GetMapping()
+    @GetMapping
     public String updateComputer(ModelMap model, @PathVariable("id") long id){
         Optional<Computer> computerOptional = computerService.readById(id);
         Optional<ComputerDto> computerDtoOptional = ComputerDtoMapper.mapComputerDtoFromComputer(computerOptional);
@@ -65,18 +67,23 @@ public class EditComputer {
         return "editComputer";
     }
     
-    @PostMapping()
-    public ModelAndView updateComputer(@PathVariable("id") long id, 
-            @ModelAttribute("computerDto") @Validated ComputerDto computerDto,
+    @PostMapping
+    public String updateComputer(@PathVariable("id") long id, 
+            @ModelAttribute("computerDto") @Valid ComputerDto computerDto,
             BindingResult result) {
         
+        long companyId = computerDto.getId();
+        Optional<Company> companyOptional = companyService.readById(companyId);
+        
+        computerDto.setCompany(CompanyDtoMapper.mapCompanyDtoFromCompany(companyOptional).orElse(null));
         Optional<Computer> computerOptional = ComputerDtoMapper.mapComputerFromComputerDto(Optional.ofNullable(computerDto));
         
         if ( ! computerOptional.isPresent() ) {
-            return new ModelAndView("404");
+            return "404";
         }
 
         Computer computer = computerOptional.get();
+        LoggerFactory.getLogger("DBG").info(computer.toString());
         
 
         Company currentCompany = new Company.CompanyBuilder(computer.getCompany().get().getId(), computer.getCompany().get().getName().get()).build();
@@ -87,10 +94,9 @@ public class EditComputer {
                 .withCompany(currentCompany)
                 .build();
         
+        
         computerService.update(Optional.of(currentComputer));
-        return new ModelAndView("redirect:/dashboard/computers");
+        return "redirect:/dashboard/computers";
     }
-    
-    
 
 }
