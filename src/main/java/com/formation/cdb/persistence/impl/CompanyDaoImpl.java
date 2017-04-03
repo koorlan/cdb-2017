@@ -2,28 +2,20 @@ package com.formation.cdb.persistence.impl;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Named;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.PersistenceException;
-import com.formation.cdb.mapper.RowMapper;
 import com.formation.cdb.mapper.impl.CompanyMapper;
 import com.formation.cdb.persistence.Dao;
 import com.formation.cdb.persistence.datasource.ConfiguredDatasource;

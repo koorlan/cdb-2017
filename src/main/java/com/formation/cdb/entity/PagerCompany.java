@@ -4,16 +4,13 @@ import java.util.List;
 
 import javax.annotation.PostConstruct;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.formation.cdb.entity.impl.Company;
-import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.impl.CompanyServiceImpl;
 
 
 // TODO: Auto-generated Javadoc

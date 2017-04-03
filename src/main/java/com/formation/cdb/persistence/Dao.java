@@ -3,8 +3,6 @@ package com.formation.cdb.persistence;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.stereotype.Component;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Interface Dao.

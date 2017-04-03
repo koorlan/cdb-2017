@@ -1,12 +1,13 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
 <title>Computer Database</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 <!-- Bootstrap -->
 <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
 <link href="<c:url value="/resources/css/font-awesome.css"/>" rel="stylesheet" media="screen"/>
@@ -20,23 +21,25 @@
             Computer Database </a>
     </div>
     </header>
-
     <section id="main">
+    
+    Language : <a href="?locale=en">English</a>|<a href="?locale=fr_FR">Français</a>
+
     <div class="container">
-        <h1 id="homeTitle">${totalComputers} Computers found</h1>
+        <h1 id="homeTitle">${totalComputers} <spring:message code="cdb.dashboard.total"/></h1>
         <div id="actions" class="form-horizontal">
             <div class="pull-left">
                 <form id="searchForm" action="" method="GET" class="form-inline">
                     <input type="search" id="searchbox" name="filter"
-                        class="form-control" placeholder="Search name" value="${filter }"/> <input
+                        class="form-control" placeholder="<spring:message code="cdb.dashboard.search"/>" value="${filter }"/> <input
                         type="submit" id="searchsubmit" value="Filter by name"
                         class="btn btn-primary" />
                 </form>
             </div>
             <div class="pull-right">
-                <a class="btn btn-success" id="addComputer" href="database?action=add">Add Computer</a>
+                <a class="btn btn-success" id="addComputer" href="/add/computers"><spring:message code="cdb.dashboard.add"/></a>
                 <a class="btn btn-default" id="editComputer" href="#"
-                    onclick="$.fn.toggleEditMode();">Edit</a>
+                    onclick="$.fn.toggleEditMode();"><spring:message code="cdb.dashboard.edit"/></a>
             </div>
         </div>
     </div>
@@ -60,12 +63,12 @@
                                 class="fa fa-trash-o fa-lg"></i>
                         </a>
                     </span></th>
-                    <th>Computer name</th>
-                    <th>Introduced date</th>
+                    <th><spring:message code="cdb.computer.name"/></th>
+                    <th><spring:message code="cdb.computer.introduced"/></th>
                     <!-- Table header for Discontinued Date -->
-                    <th>Discontinued date</th>
+                    <th><spring:message code="cdb.computer.discontinued"/></th>
                     <!-- Table header for Company -->
-                    <th>Company</th>
+                    <th><spring:message code="cdb.computer.company"/></th>
 
                 </tr>
             </thead>
@@ -128,9 +131,12 @@
     <script src="<c:url value="/resources/js/dashboard.js"/>"></script>
     <script src="<c:url value="/resources/js/jquery.twbsPagination.min.js"/>"></script>
 <script>
-
 $('#pagination-demo').twbsPagination({
-    initiateStartPageClick: false,
+    first: "<spring:message code="cdb.dashboard.frist"/>",
+    prev: "<spring:message code="cdb.dashboard.prev"/>",
+    next: "<spring:message code="cdb.dashboard.next"/>",
+    last: "<spring:message code="cdb.dashboard.last"/>",	
+	initiateStartPageClick: false,
     startPage: ${currentIndexPage},
     totalPages: ${maxIndexPage},
     visiblePages: 7,

@@ -2,18 +2,14 @@ package com.formation.cdb.entity;
 
 import java.io.Serializable;
 
-import javax.validation.Valid;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.validation.annotation.Validated;
-
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ComputerDto.
  */
 public class ComputerDto implements Serializable {
+
+    private static final long serialVersionUID = 8637841810826400102L;
 
     /** The id. */
     private long id;

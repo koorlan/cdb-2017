@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -29,22 +30,22 @@
 				<div class="col-xs-8 col-xs-offset-2 box">
 					<div class="label label-default pull-right">id:
 						${computer.id}</div>
-					<h1>Edit Computer</h1>
+					<h1><spring:message code="cdb.edit.title"/></h1>
 					<form:form commandName="computer">
 						<input name="id" type="hidden" value="${computer.id}" id="id" />
 						<fieldset>
 							<div class="form-group">
-								<label for="computerName">Computer name</label> <input
+								<label for="computerName"><spring:message code="cdb.computer.name"/></label> <input
 									name="name" type="text" class="form-control" id="computerName"
 									value="${computer.name}">
 							</div>
 							<div class="form-group">
-								<label for="introduced">Introduced date</label> <input
+								<label for="introduced"><spring:message code="cdb.edit.introduced"/></label> <input
 									name="introduced" type="date" class="form-control"
 									id="introduced" value="${computer.introduced}">
 							</div>
 							<div class="form-group">
-								<label for="discontinued">Discontinued date</label> <input
+								<label for="discontinued"><spring:message code="cdb.edit.discontinued"/></label> <input
 									name="discontinued" type="date" class="form-control"
 									id="discontinued" value="${computer.discontinued}">
 							</div>
@@ -58,8 +59,8 @@
 							</div>
 						</fieldset>
 						<div class="actions pull-right">
-							<input type="submit" value="Edit" class="btn btn-primary">
-							or <a href="database" class="btn btn-default">Cancel</a>
+							<input type="submit" value="<spring:message code="cdb.form.edit"/>" class="btn btn-primary">
+							or <a href="database" class="btn btn-default"><spring:message code="cdb.form.edit"/></a>
 						</div>
 					</form:form>
 				</div>

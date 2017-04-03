@@ -9,7 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/")
 public class DefaultController {
     
-    @GetMapping(value={"", "/"})
+    @GetMapping
     public ModelAndView goToDashboard(){
         return new ModelAndView("redirect:dashboard/computers");
     }

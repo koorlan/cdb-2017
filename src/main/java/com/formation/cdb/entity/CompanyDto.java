@@ -1,12 +1,14 @@
 package com.formation.cdb.entity;
 
-import org.springframework.stereotype.Component;
+import java.io.Serializable;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class CompanyDto.
  */
-public class CompanyDto {
+public class CompanyDto implements Serializable {
+
+    private static final long serialVersionUID = -4451476994827850392L;
 
     /** The id. */
     private long id;
