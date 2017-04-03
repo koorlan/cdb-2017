@@ -6,14 +6,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.formation.cdb.entity.impl.Company;
-import com.formation.cdb.util.DateUtil;
 import org.apache.commons.lang3.StringUtils;
 
 import com.formation.cdb.entity.CompanyDto;
 import com.formation.cdb.entity.ComputerDto;
 import com.formation.cdb.entity.ComputerDto.ComputerDtoBuilder;
+import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.util.DateUtil;
 
 // TODO: Auto-generated Javadoc
 /**

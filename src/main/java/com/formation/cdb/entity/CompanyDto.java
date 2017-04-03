@@ -1,17 +1,24 @@
 package com.formation.cdb.entity;
 
+import java.io.Serializable;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class CompanyDto.
  */
-public class CompanyDto {
+public class CompanyDto implements Serializable {
+
+    private static final long serialVersionUID = -4451476994827850392L;
 
     /** The id. */
-    private final long id;
+    private long id;
     
     /** The name. */
-    private final String name;
-
+    private String name;
+    
+    public CompanyDto() {
+        name = "Undefined";
+    }
     /**
      * Instantiates a new company dto.
      *
@@ -40,6 +47,17 @@ public class CompanyDto {
     public String getName() {
         return name;
     }
+    public void setId(long id) {
+        this.id = id;
+    }
+    public void setName(String name) {
+        this.name = name;
+    }
+    @Override
+    public String toString() {
+        return "CompanyDto [id=" + id + ", name=" + name + "]";
+    }
+    
 
     /**
      * The Class CompanyDtoBuilder.
@@ -72,5 +90,8 @@ public class CompanyDto {
             return new CompanyDto(this);
         }
     }
+
+  
+    
 
 }

@@ -3,14 +3,10 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 import java.util.Optional;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 import com.formation.cdb.service.CDBService;
 

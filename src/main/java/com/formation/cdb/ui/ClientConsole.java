@@ -5,8 +5,6 @@ import java.util.Optional;
 import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.formation.cdb.entity.PagerCompany;
@@ -32,9 +30,6 @@ public class ClientConsole {
     /** The scanner. */
     private final Scanner scanner = new Scanner(System.in);
     
-    /** The logger. */
-    private Logger logger = LoggerFactory.getLogger(getClass().getSimpleName());
-
     @Autowired
     private CompanyServiceImpl serviceCompany;
     
@@ -44,8 +39,7 @@ public class ClientConsole {
     @Autowired
     private PagerComputer pagerComputer;
     
-    @Autowired
-    private PagerCompany pagerCompany;
+
 
     /**
      * Constructor of ClientConsole.
@@ -220,7 +214,6 @@ public class ClientConsole {
      */
     public void showComputer() {
         long id;
-        Computer c;
 
         System.out.println("Please enter computer id:");
         id = scanner.nextLong();
@@ -234,7 +227,6 @@ public class ClientConsole {
     public void showCompany() {
 
         long id;
-        Company c;
 
         System.out.println("Please enter company id:");
         id = scanner.nextLong();

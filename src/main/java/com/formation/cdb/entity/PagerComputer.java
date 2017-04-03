@@ -3,8 +3,6 @@ package com.formation.cdb.entity;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -13,7 +11,6 @@ import org.springframework.web.context.annotation.SessionScope;
 
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.impl.ComputerServiceImpl;
 
 // TODO: Auto-generated Javadoc
 /**

@@ -2,7 +2,6 @@ package com.formation.cdb.mapper.impl;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Optional;
 
 import org.springframework.jdbc.core.RowMapper;
 
