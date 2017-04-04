@@ -37,8 +37,8 @@
 	</c:choose>
 	<br />
               
-                  <spring:url value="/computers2" var="computerActionUrl" />
-		<form:form class="form-horizontal" method="post" modelAttribute="computerForm" action="/computers2">
+                  <spring:url value="/computers" var="computerActionUrl" />
+		<form:form class="form-horizontal" method="post" modelAttribute="computerForm" action="/computers">
 
 		<form:hidden path="id" />
 

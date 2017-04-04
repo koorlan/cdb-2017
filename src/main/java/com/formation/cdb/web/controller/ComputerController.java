@@ -33,10 +33,10 @@ import com.formation.cdb.service.CDBService;
 import com.formation.cdb.validator.ComputerFormValidator;
 
 @Controller
-@RequestMapping("/computers2")
+@RequestMapping("/computers")
 public class ComputerController {
 
-    Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
+    Logger LOGGER = LoggerFactory.getLogger(ComputerController.class);
 
     @Autowired
     @Qualifier("computerServiceImpl")
@@ -94,14 +94,14 @@ public class ComputerController {
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
             redirectAttributes.addFlashAttribute("css", "success");
             if (computer.get().isNew()) {
-                redirectAttributes.addFlashAttribute("msg", "User added successfully!");
+                redirectAttributes.addFlashAttribute("msg", "Computer added successfully!");
             } else {
-                redirectAttributes.addFlashAttribute("msg", "User updated successfully!");
+                redirectAttributes.addFlashAttribute("msg", "Computer updated successfully!");
             }
 
             computerService.saveOrUpdate(computer);
 
-            return "redirect:/computers2";
+            return "redirect:/computers";
         }
     }
 
@@ -110,7 +110,7 @@ public class ComputerController {
        //TODO
     }
 
-    @GetMapping("/{id}/update")
+    @GetMapping("/{id}/edit")
     public String showUpdateComputerForm(@PathVariable("id") long id, Model model, final RedirectAttributes redirectAttributes) {
         Optional<Computer> computer = computerService.findById(id);
         if ( computer.isPresent() ) {
