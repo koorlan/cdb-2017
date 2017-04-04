@@ -17,95 +17,105 @@
 	media="screen" />
 </head>
 <body>
-    <header class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <a class="navbar-brand" href="dashboard.html"> Application - Computer Database </a>
-        </div>
-    </header>
+	<header class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container">
+			<a class="navbar-brand" href="dashboard.html"> Application -
+				Computer Database </a>
+		</div>
+	</header>
 
-    <section id="main">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-8 col-xs-offset-2 box">                
-                    <c:choose>
-		<c:when test="${computerForm['new']}">
-			<h1><spring:message code="cdb.add.title"/></h1>
-		</c:when>
-		<c:otherwise>
-			<h1><spring:message code="cdb.edit.title"/></h1>
-		</c:otherwise>
-	</c:choose>
-	<br />
-              
-                  <spring:url value="/computers" var="computerActionUrl" />
-		<form:form class="form-horizontal" method="post" modelAttribute="computerForm" action="/computers">
+	<section id="main">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-8 col-xs-offset-2 box">
+					<c:choose>
+						<c:when test="${computerForm['new']}">
+							<h1>
+								<spring:message code="cdb.add.title" />
+							</h1>
+						</c:when>
+						<c:otherwise>
+							<h1>
+								<spring:message code="cdb.edit.title" />
+							</h1>
+						</c:otherwise>
+					</c:choose>
+					<br />
 
-		<form:hidden path="id" />
+					<spring:url value="/computers" var="computerActionUrl" />
+					<form:form class="form-horizontal" method="post"
+						modelAttribute="computerForm" action="/computers">
 
-		<spring:bind path="name">
-			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<label class="col-sm-2 control-label">Name</label>
-				<div class="col-sm-10">
-					<form:input path="name" type="text" class="form-control " id="name" placeholder="Name" />
-					<form:errors path="name" class="control-label" />
+						<form:hidden path="id" />
+
+						<spring:bind path="name">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<label class="col-sm-2 control-label">Name</label>
+								<div class="col-sm-10">
+									<form:input path="name" type="text" class="form-control "
+										id="name" placeholder="Name" />
+									<form:errors path="name" class="control-label" />
+								</div>
+							</div>
+						</spring:bind>
+
+						<spring:bind path="introduced">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<label class="col-sm-2 control-label">Introduced</label>
+								<div class="col-sm-10">
+									<form:input path="introduced" class="form-control"
+										id="introduced" placeholder="yyyy-dd-mm" />
+									<form:errors path="introduced" class="control-label" />
+								</div>
+							</div>
+						</spring:bind>
+
+						<spring:bind path="discontinued">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<label class="col-sm-2 control-label">Discontinued</label>
+								<div class="col-sm-10">
+									<form:input path="discontinued" class="form-control"
+										id="discontinued" placeholder="yyyy-dd-mm" />
+									<form:errors path="discontinued" class="control-label" />
+								</div>
+							</div>
+						</spring:bind>
+
+						<spring:bind path="company">
+							<div class="form-group ${status.error ? 'has-error' : ''}">
+								<label class="col-sm-2 control-label">Company</label>
+								<div class="col-sm-5">
+									<form:select path="company.id" class="form-control">
+										<form:option value="0" label="--Please Select" />
+										<form:options items="${companies}" itemValue="id"
+											itemLabel="name" />
+									</form:select>
+									<form:errors path="company" class="control-label" />
+								</div>
+								<div class="col-sm-5"></div>
+							</div>
+						</spring:bind>
+
+						<div class="form-group">
+							<div class="col-sm-offset-2 col-sm-10">
+								<c:choose>
+									<c:when test="${computerForm['new']}">
+										<button type="submit" class="btn-lg btn-primary pull-right">Add</button>
+									</c:when>
+									<c:otherwise>
+										<button type="submit" class="btn-lg btn-primary pull-right">Update</button>
+									</c:otherwise>
+								</c:choose>
+							</div>
+						</div>
+					</form:form>
 				</div>
-			</div>
-		</spring:bind>
-
-		<spring:bind path="introduced">
-			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<label class="col-sm-2 control-label">Introduced</label>
-				<div class="col-sm-10">
-					<form:input path="introduced" class="form-control" id="introduced" placeholder="yyyy-dd-mm" />
-					<form:errors path="introduced" class="control-label" />
-				</div>
-			</div>
-		</spring:bind>
-
-		<spring:bind path="discontinued">
-			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<label class="col-sm-2 control-label">Discontinued</label>
-				<div class="col-sm-10">
-					<form:input path="discontinued" class="form-control" id="discontinued" placeholder="yyyy-dd-mm" />
-					<form:errors path="discontinued" class="control-label" />
-				</div>
-			</div>
-		</spring:bind>
-		
-		<spring:bind path="company">
-			<div class="form-group ${status.error ? 'has-error' : ''}">
-				<label class="col-sm-2 control-label">Company</label>
-				<div class="col-sm-5">
-					<form:select path="company.id" class="form-control">
-						<form:option value="0" label="--Please Select" />
-						<form:options items="${companies}" itemValue="id" itemLabel="name" />
-					</form:select>
-					<form:errors path="company" class="control-label" />
-				</div>
-				<div class="col-sm-5"></div>
-			</div>
-		</spring:bind>
-
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-10">
-				<c:choose>
-					<c:when test="${computerForm['new']}">
-						<button type="submit" class="btn-lg btn-primary pull-right">Add</button>
-					</c:when>
-					<c:otherwise>
-						<button type="submit" class="btn-lg btn-primary pull-right">Update</button>
-					</c:otherwise>
-				</c:choose>
 			</div>
 		</div>
-	</form:form>
-                </div>
-            </div>
-        </div>
-    </section>
-    <script src="./js/jquery.min.js"></script>
+	</section>
+	<script src="./js/jquery.min.js"></script>
 	<script src="./js/bootstrap.min.js"></script>
 	<script src="./js/addComputer.js"></script>
-	
+
 </body>
 </html>

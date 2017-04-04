@@ -294,7 +294,7 @@ public class ClientConsole {
         answer = scanner.nextLine();
         switch (answer) {
             case"y":
-                service.delete(service.findById(id));
+                service.delete(service.findById(id).get().getId());
                 break;
             case "n":
             default:

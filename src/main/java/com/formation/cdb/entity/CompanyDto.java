@@ -15,7 +15,6 @@ public class CompanyDto {
     private String name;
     
     public CompanyDto() {
-        name = "Undefined";
     }
     /**
      * Instantiates a new company dto.
