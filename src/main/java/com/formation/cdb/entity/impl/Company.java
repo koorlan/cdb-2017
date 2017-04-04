@@ -19,7 +19,7 @@ public class Company extends Entity {
     /**
      * id (primary key) of a company.
      */
-    private final long id;
+    private final Long id;
     /**
      * the name of the company.
      */

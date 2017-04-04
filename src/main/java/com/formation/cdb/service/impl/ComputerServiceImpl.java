@@ -31,8 +31,16 @@ public class ComputerServiceImpl implements CDBService<Computer> {
      * @see com.formation.cdb.service.CDBService#create(java.util.Optional)
      */
     @Override
-    public void create(Optional<Computer> e) {
-        computerDaoImpl.create(e);
+    public void saveOrUpdate(Optional<Computer> c) {
+        
+        if ( c.isPresent() ) {
+            if ( findById(c.get().getId()).isPresent() ) {
+                computerDaoImpl.update(c);
+            } else {
+                computerDaoImpl.create(c);
+            }
+            
+        }
          return;
     }
 
@@ -40,24 +48,16 @@ public class ComputerServiceImpl implements CDBService<Computer> {
      * @see com.formation.cdb.service.CDBService#readById(long)
      */
     @Override
-    public Optional<Computer> readById(long id) {
+    public Optional<Computer> findById(long id) {
         return computerDaoImpl.readById(id);
-    }
-
-    /* (non-Javadoc)
-     * @see com.formation.cdb.service.CDBService#update(java.util.Optional)
-     */
-    @Override
-    public void update(Optional<Computer> e) {
-        computerDaoImpl.update(e);
     }
 
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#delete(java.util.Optional)
      */
     @Override
-    public void delete(Optional<Computer> e) {
-        computerDaoImpl.delete(e);
+    public void delete(long id) {
+        computerDaoImpl.delete(id);
         return;
     }
 
@@ -65,7 +65,7 @@ public class ComputerServiceImpl implements CDBService<Computer> {
      * @see com.formation.cdb.service.CDBService#readAllWithOffsetAndLimit(int, int, java.lang.String)
      */
     @Override
-    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+    public List<Computer> findAllWithOffsetAndLimit(int offset, int limit, String filter) {
         return computerDaoImpl.readAllWithOffsetAndLimit(offset, limit, filter+'%');
     }
 

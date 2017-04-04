@@ -110,7 +110,7 @@ public class CompanyDaoImpl implements Dao<Company> {
      * @see com.formation.cdb.persistence.Dao#delete(java.util.Optional)
      */
     @Override
-    public void delete(Optional<Company> company) {
+    public void delete(long id) {
         LOGGER.warn("Method delete is not implemented");
     }
 

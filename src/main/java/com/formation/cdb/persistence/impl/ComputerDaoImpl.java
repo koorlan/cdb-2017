@@ -11,7 +11,10 @@ import javax.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Computer;
@@ -183,12 +186,13 @@ public class ComputerDaoImpl implements Dao<Computer> {
             return;
         }
         
+
         if(c.getCompany().isPresent()) {
             jdbcTemplateObject.update(INSERT, c.getName().get(), c.getIntroduced().orElse(null), c.getDiscontinued().orElse(null),c.getCompany().get().getId());
         } else {
             jdbcTemplateObject.update(INSERT, c.getName().get(), c.getIntroduced().orElse(null), c.getDiscontinued().orElse(null),null);
         }
-        
+       
     }
 
     /* (non-Javadoc)
@@ -196,8 +200,12 @@ public class ComputerDaoImpl implements Dao<Computer> {
      */
     @Override
     public Optional<Computer> readById(long id) {
+        try {
         Computer c = jdbcTemplateObject.queryForObject(READ_BY_ID, new ComputerMapper(), id);
         return Optional.of(c);
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }         
     }
 
     /* (non-Javadoc)
@@ -229,14 +237,14 @@ public class ComputerDaoImpl implements Dao<Computer> {
      * @see com.formation.cdb.persistence.Dao#delete(java.util.Optional)
      */
     @Override
-    public void delete(Optional<Computer> e) {
+    public void delete(long id) {
 
-        if (!e.isPresent()) {
+        if (id < 0) {
             LOGGER.warn("Create failed, null computer");
             return;
         }
             
-        jdbcTemplateObject.update(DELETE, e.get().getId());
+        jdbcTemplateObject.update(DELETE, id);
     }
 
     /* (non-Javadoc)

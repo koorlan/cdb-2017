@@ -37,7 +37,7 @@ public class CompanyServiceImpl implements CDBService<Company> {
      * @see com.formation.cdb.service.CDBService#create(java.util.Optional)
      */
     @Override
-    public void create(Optional<Company> e) {
+    public void saveOrUpdate(Optional<Company> e) {
         LOGGER.warn("Create method is not implemented");
     }
 
@@ -45,23 +45,16 @@ public class CompanyServiceImpl implements CDBService<Company> {
      * @see com.formation.cdb.service.CDBService#readById(long)
      */
     @Override
-    public Optional<Company> readById(long id) {
+    public Optional<Company> findById(long id) {
         return dao.readById(id);
     }
 
-    /* (non-Javadoc)
-     * @see com.formation.cdb.service.CDBService#update(java.util.Optional)
-     */
-    @Override
-    public void update(Optional<Company> e) {
-        LOGGER.warn("Update method is not implemented");
-    }
 
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#delete(java.util.Optional)
      */
     @Override
-    public void delete(Optional<Company> e) {
+    public void delete(long id) {
         LOGGER.warn("Delete method is not implemented");
     }
 
@@ -69,7 +62,7 @@ public class CompanyServiceImpl implements CDBService<Company> {
      * @see com.formation.cdb.service.CDBService#readAllWithOffsetAndLimit(int, int, java.lang.String)
      */
     @Override
-    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+    public List<Company> findAllWithOffsetAndLimit(int offset, int limit, String filter) {
         return dao.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
     }
 

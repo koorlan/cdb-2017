@@ -52,7 +52,7 @@ public class PagerComputer extends Pager<Computer> {
 
         offset = index * pageSize;
         limit = pageSize;
-        return computerService.readAllWithOffsetAndLimit(offset, limit, filter);
+        return computerService.findAllWithOffsetAndLimit(offset, limit, filter);
     }
 
     /* (non-Javadoc)

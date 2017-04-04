@@ -11,7 +11,7 @@ public class DefaultController {
     
     @GetMapping
     public ModelAndView goToDashboard(){
-        return new ModelAndView("redirect:dashboard/computers");
+        return new ModelAndView("redirect:/computers");
     }
     
 }

@@ -40,7 +40,7 @@ public interface Dao<T> {
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
-    void delete(Optional<T> e);
+    void delete(long id);
 
     /**
      * Construct a list of T by creating T object from the database

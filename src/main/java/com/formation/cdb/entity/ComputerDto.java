@@ -41,6 +41,9 @@ public class ComputerDto  {
         this.company = builder.company;
     }
     
+    public boolean isNew(){
+        return id == 0;
+    }
     
     /**
      * Gets the id.

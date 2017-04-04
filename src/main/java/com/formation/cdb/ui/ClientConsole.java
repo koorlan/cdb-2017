@@ -218,7 +218,7 @@ public class ClientConsole {
         System.out.println("Please enter computer id:");
         id = scanner.nextLong();
         scanner.nextLine(); //Consume Enter
-        service.readById(id).ifPresent(x -> System.out.println(x));
+        service.findById(id).ifPresent(x -> System.out.println(x));
 
     };
     /**
@@ -231,7 +231,7 @@ public class ClientConsole {
         System.out.println("Please enter company id:");
         id = scanner.nextLong();
         scanner.nextLine(); //Consume Enter
-        service.readById(id).ifPresent(x -> System.out.println(x));
+        service.findById(id).ifPresent(x -> System.out.println(x));
     };
     /**
      * Action to create a computer.
@@ -265,14 +265,14 @@ public class ClientConsole {
             companyId = Long.parseLong(companyIdString);
         }
 
-        Optional<Company> company = serviceCompany.readById(companyId);
+        Optional<Company> company = serviceCompany.findById(companyId);
         Computer computer = new Computer.ComputerBuilder(1,name).withIntroduced(introduced).withDiscontinued(discontinued).withCompany(company.orElse(null)).build();
                 
                 
                 
                 //new Computer(1, name, introduced, discontinued, company.orElse(null));
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
-            service.create(Optional.ofNullable(computer));
+            service.saveOrUpdate(Optional.ofNullable(computer));
         }
     };
 
@@ -289,12 +289,12 @@ public class ClientConsole {
 
 
         System.out.println("Are you sure you want delete (y/n)");
-        service.readById(id).ifPresent(x -> System.out.println(x));
+        service.findById(id).ifPresent(x -> System.out.println(x));
 
         answer = scanner.nextLine();
         switch (answer) {
             case"y":
-                service.delete(service.readById(id));
+                service.delete(service.findById(id));
                 break;
             case "n":
             default:
@@ -329,7 +329,7 @@ public class ClientConsole {
         } else {
             return;
         }
-        Optional<Computer> optionalComputer = service.readById(id);
+        Optional<Computer> optionalComputer = service.findById(id);
         if (!optionalComputer.isPresent()) {
             return;
         }
@@ -402,7 +402,7 @@ public class ClientConsole {
             if (!newIdCompanyString.isEmpty()) {
                 newIdCompany = Long.parseLong(newIdCompanyString);
             }
-            Optional<Company> optionalCompany = serviceCompany.readById(newIdCompany);
+            Optional<Company> optionalCompany = serviceCompany.findById(newIdCompany);
             newCompany = optionalCompany.get();
 
             System.out.println("Company :" + newCompany + " (y/n)");
@@ -426,7 +426,7 @@ public class ClientConsole {
         
         computer = new Computer.ComputerBuilder(computer.getId(),newName).withIntroduced(newDateIntroduced).withDiscontinued(newDateDiscontinued).withCompany(newCompany).build();
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
-            service.update(Optional.ofNullable(computer));
+            service.saveOrUpdate(Optional.ofNullable(computer));
         }
     };
     /**

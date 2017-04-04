@@ -87,7 +87,7 @@ public class ComputerDtoMapper {
         }
 
         ComputerDto computerDto = computerDtoO.get();
-        long id = computerDto.getId();
+        Long id = computerDto.getId();
         String name = computerDto.getName();
         String introduced = computerDto.getIntroduced();
         String discontinued = computerDto.getDiscontinued();
@@ -96,10 +96,10 @@ public class ComputerDtoMapper {
         LocalDate introducedDate = null;
         LocalDate discontinuedDate = null;
 
-        if ( id <= 0) {
+        if ( id != null && id < 0) {
             return Optional.empty();
         }
-
+       
         if ( StringUtils.isBlank(name)) {
             return Optional.empty();
         }

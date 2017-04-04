@@ -44,7 +44,7 @@ public class AddComputer {
     @GetMapping
     public String addComputerGet(ModelMap model){
         int numberOfCompanies = companyService.sizeOfTable("");
-        List<Company> companies = companyService.readAllWithOffsetAndLimit(0,numberOfCompanies, "");
+        List<Company> companies = companyService.findAllWithOffsetAndLimit(0,numberOfCompanies, "");
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
         
         model.put("companies", companiesDto);
@@ -59,7 +59,7 @@ public class AddComputer {
     {
         long companyId = computerDto.getId();
         LoggerFactory.getLogger("**********DBG ADD********").info(String.valueOf(companyId));
-        Optional<Company> companyOptional = companyService.readById(companyId);
+        Optional<Company> companyOptional = companyService.findById(companyId);
         
         computerDto.setCompany(CompanyDtoMapper.mapCompanyDtoFromCompany(companyOptional).orElse(null));
         Optional<Computer> computerOptional = ComputerDtoMapper.mapComputerFromComputerDto(Optional.ofNullable(computerDto));
@@ -79,7 +79,7 @@ public class AddComputer {
                 .withCompany(currentCompany)
                 .build();
         
-        computerService.update(Optional.of(currentComputer));
+        computerService.saveOrUpdate(Optional.of(currentComputer));
         return new ModelAndView("redirect:/dashboard/computers");
     }
 

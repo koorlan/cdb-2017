@@ -25,6 +25,8 @@ import com.formation.cdb.service.CDBService;
 @RequestMapping("/dashboard/computers")
 public class Dashboard {
     
+    Logger LOGGER = LoggerFactory.getLogger(Dashboard.class);
+    
     @Autowired
     @Qualifier("computerServiceImpl")
     private CDBService<Computer> serviceComputer;
@@ -34,11 +36,13 @@ public class Dashboard {
     
     
     @GetMapping
-    public String getComputers ( ModelMap model,    
+    public String listPageComputer ( ModelMap model,    
                                       @RequestParam("page") Optional<Integer> page,
                                       @RequestParam("filter") Optional<String> filter, 
                                       @RequestParam("size") Optional<Integer> size) 
     {   
+        LOGGER.debug("listPageComputer()");
+        
         if ( page.isPresent() ) {
             pagerComputer.goTo(page.get());
         }
@@ -49,24 +53,19 @@ public class Dashboard {
             pagerComputer.setPageSize(size.get());
         }
         
-        fillModel(model);
-        return "dashboard";
-    }
-    
-    @GetMapping("/{id}")
-    public ModelAndView getComputer(@PathVariable("id") long id){
-        return new ModelAndView("redirect:/edit/computers/"+ id);
-    }
-    
-    
-    private void fillModel(ModelMap model) {
         List<Computer> computers = pagerComputer.getCurrentPage();
         List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
         model.put("computers", computersDto);
         model.put("totalComputers", pagerComputer.getMax());
         model.put("currentIndexPage", pagerComputer.getCurrentPageIndex());
         model.put("maxIndexPage", pagerComputer.getNbPages());
-        return;
-    }   
-   
+        return "dashboard";
+    }
+    
+    @GetMapping("/{id}")
+    public ModelAndView showComputer(@PathVariable("id") long id){
+        LOGGER.debug("showComputer()");
+        return new ModelAndView("redirect:/edit/computers/"+ id);
+    }
+    
 }

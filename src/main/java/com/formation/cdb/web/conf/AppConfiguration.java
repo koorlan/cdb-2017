@@ -32,7 +32,7 @@ public class AppConfiguration extends WebMvcConfigurerAdapter{
     @Bean
     public MessageSource messageSource() {
         ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
-        messageSource.setBasename("/language/cdb");
+        messageSource.setBasenames(new String[] {"/messages/language/cdb","/messages/validation"});           
         messageSource.setDefaultEncoding("UTF-8");
         return messageSource;
     }

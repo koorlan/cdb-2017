@@ -49,6 +49,10 @@ public class Computer extends Entity {
         this.discontinued = builder.discontinued;
         this.company = builder.company;
     }
+    
+    public boolean isNew() {
+        return this.id == 0;
+    }
 
     /**
      * Getter for the computer identifier.

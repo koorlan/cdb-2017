@@ -20,7 +20,7 @@ public interface CDBService<T> {
      *            Be carefull of the e.getId().
      */
     @Transactional
-    void create(Optional<T> e);
+    void saveOrUpdate(Optional<T> e);
     /**
      * CRUD , read an element.
      * @param id
@@ -28,7 +28,7 @@ public interface CDBService<T> {
      * @return an object T id found , representation of the database object.
      */
     @Transactional
-    Optional<T> readById(long id);
+    Optional<T> findById(long id);
     /**
      * CRUD , update an element on the database.
      * @param e
@@ -36,15 +36,7 @@ public interface CDBService<T> {
      *            Be carefull of the e.getId().
      */
     @Transactional
-    void update(Optional<T> e);
-    /**
-     * CRUD , Delete an element on the database.
-     * @param e
-     *            a T entity representation of the new element to insert.
-     *            Be carefull of the e.getId().
-     */
-    @Transactional
-    void delete(Optional<T> e);
+    void delete(long id);
     
     /**
      * Construct a list of T by creating T object from the database
@@ -57,7 +49,7 @@ public interface CDBService<T> {
      * @return list of type T
      */
     @Transactional
-    List<T> readAllWithOffsetAndLimit(int offset, int limit, String filter);
+    List<T> findAllWithOffsetAndLimit(int offset, int limit, String filter);
     
     /**
      * COUNT(*).

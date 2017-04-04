@@ -39,7 +39,7 @@ public class EditComputer {
     
     @GetMapping
     public String updateComputer(ModelMap model, @PathVariable("id") long id){
-        Optional<Computer> computerOptional = computerService.readById(id);
+        Optional<Computer> computerOptional = computerService.findById(id);
         Optional<ComputerDto> computerDtoOptional = ComputerDtoMapper.mapComputerDtoFromComputer(computerOptional);
         
         if( !computerDtoOptional.isPresent() ) {
@@ -50,7 +50,7 @@ public class EditComputer {
         model.put("computerDto", computerDto);
         
         int numberOfCompanies = companyService.sizeOfTable("");
-        List<Company> companies = companyService.readAllWithOffsetAndLimit(0,numberOfCompanies, "");
+        List<Company> companies = companyService.findAllWithOffsetAndLimit(0,numberOfCompanies, "");
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
         
         model.put("companies", companiesDto);
@@ -66,7 +66,7 @@ public class EditComputer {
         long companyId = computerDto.getId();
 
         LoggerFactory.getLogger("**********DBG EDIT********").info(String.valueOf(companyId));
-        Optional<Company> companyOptional = companyService.readById(companyId);
+        Optional<Company> companyOptional = companyService.findById(companyId);
         
         computerDto.setCompany(CompanyDtoMapper.mapCompanyDtoFromCompany(companyOptional).orElse(null));
         Optional<Computer> computerOptional = ComputerDtoMapper.mapComputerFromComputerDto(Optional.ofNullable(computerDto));
@@ -88,7 +88,7 @@ public class EditComputer {
                 .build();
         
         
-        computerService.update(Optional.of(currentComputer));
+        computerService.saveOrUpdate(Optional.of(currentComputer));
         return "redirect:/dashboard/computers";
     }
 

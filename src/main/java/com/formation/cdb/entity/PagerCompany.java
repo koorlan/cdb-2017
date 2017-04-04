@@ -53,7 +53,7 @@ public class PagerCompany extends Pager<Company> {
 
         offset = index * pageSize;
         limit = pageSize;
-        return service.readAllWithOffsetAndLimit(offset-1, limit, filter);
+        return service.findAllWithOffsetAndLimit(offset-1, limit, filter);
     }
 
     /* (non-Javadoc)
