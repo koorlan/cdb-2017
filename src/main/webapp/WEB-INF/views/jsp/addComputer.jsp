@@ -28,7 +28,7 @@
             <div class="row">
                 <div class="col-xs-8 col-xs-offset-2 box">
                     <h1><spring:message code="cdb.add.title"/></h1>
-                    <form:form commandName="computer">
+                    <form:form modelAttribute="computerDto">
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName"><spring:message code="cdb.computer.name"/></label> <input

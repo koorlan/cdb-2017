@@ -6,9 +6,7 @@ import java.io.Serializable;
 /**
  * The Class CompanyDto.
  */
-public class CompanyDto implements Serializable {
-
-    private static final long serialVersionUID = -4451476994827850392L;
+public class CompanyDto {
 
     /** The id. */
     private long id;

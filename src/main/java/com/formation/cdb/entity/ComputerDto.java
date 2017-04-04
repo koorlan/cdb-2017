@@ -7,9 +7,7 @@ import java.io.Serializable;
 /**
  * The Class ComputerDto.
  */
-public class ComputerDto implements Serializable {
-
-    private static final long serialVersionUID = 8637841810826400102L;
+public class ComputerDto  {
 
     /** The id. */
     private long id;

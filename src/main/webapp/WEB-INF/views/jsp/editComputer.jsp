@@ -31,23 +31,23 @@
 					<div class="label label-default pull-right">id:
 						${computer.id}</div>
 					<h1><spring:message code="cdb.edit.title"/></h1>
-					<form:form commandName="computer">
-						<input name="id" type="hidden" value="${computer.id}" id="id" />
+					<form:form commandName="computerDto">
+						<input name="id" type="hidden" value="${computerDto.id}" id="id" />
 						<fieldset>
 							<div class="form-group">
 								<label for="computerName"><spring:message code="cdb.computer.name"/></label> <input
 									name="name" type="text" class="form-control" id="computerName"
-									value="${computer.name}">
+									value="${computerDto.name}">
 							</div>
 							<div class="form-group">
-								<label for="introduced"><spring:message code="cdb.edit.introduced"/></label> <input
+								<label for="introduced"><spring:message code="cdb.computer.introduced"/></label> <input
 									name="introduced" type="date" class="form-control"
-									id="introduced" value="${computer.introduced}">
+									id="introduced" value="${computerDto.introduced}">
 							</div>
 							<div class="form-group">
-								<label for="discontinued"><spring:message code="cdb.edit.discontinued"/></label> <input
+								<label for="discontinued"><spring:message code="cdb.computer.discontinued"/></label> <input
 									name="discontinued" type="date" class="form-control"
-									id="discontinued" value="${computer.discontinued}">
+									id="discontinued" value="${computerDto.discontinued}">
 							</div>
 
 							<div class="form-group">

@@ -47,7 +47,7 @@ public class EditComputer {
         }
         
         ComputerDto computerDto = computerDtoOptional.get();  
-        model.put("computer", computerDto);
+        model.put("computerDto", computerDto);
         
         int numberOfCompanies = companyService.sizeOfTable("");
         List<Company> companies = companyService.readAllWithOffsetAndLimit(0,numberOfCompanies, "");
@@ -59,11 +59,13 @@ public class EditComputer {
     }
     
     @PostMapping
-    public String updateComputer(@PathVariable("id") long id, 
+    public String updateComputer(
             @ModelAttribute("computerDto") @Valid ComputerDto computerDto,
             BindingResult result) {
         
         long companyId = computerDto.getId();
+
+        LoggerFactory.getLogger("**********DBG EDIT********").info(String.valueOf(companyId));
         Optional<Company> companyOptional = companyService.readById(companyId);
         
         computerDto.setCompany(CompanyDtoMapper.mapCompanyDtoFromCompany(companyOptional).orElse(null));
@@ -79,7 +81,7 @@ public class EditComputer {
 
         Company currentCompany = new Company.CompanyBuilder(computer.getCompany().get().getId(), computer.getCompany().get().getName().get()).build();
         
-        Computer currentComputer = new Computer.ComputerBuilder(id, computer.getName().get())
+        Computer currentComputer = new Computer.ComputerBuilder(computer.getId(), computer.getName().get())
                 .withIntroduced(computer.getIntroduced().orElse(null))
                 .withDiscontinued(computer.getDiscontinued().orElse(null))
                 .withCompany(currentCompany)

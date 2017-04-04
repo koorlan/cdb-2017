@@ -5,12 +5,16 @@ import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -45,7 +49,7 @@ public class AddComputer {
         
         model.put("companies", companiesDto);
         
-        model.put("computer", new ComputerDto());
+        model.put("computerDto", new ComputerDto());
         
         return "addComputer";
     }
@@ -54,6 +58,7 @@ public class AddComputer {
     public ModelAndView addComputerPost(@ModelAttribute("computerDto") @Valid ComputerDto computerDto,BindingResult result )
     {
         long companyId = computerDto.getId();
+        LoggerFactory.getLogger("**********DBG ADD********").info(String.valueOf(companyId));
         Optional<Company> companyOptional = companyService.readById(companyId);
         
         computerDto.setCompany(CompanyDtoMapper.mapCompanyDtoFromCompany(companyOptional).orElse(null));
@@ -77,6 +82,5 @@ public class AddComputer {
         computerService.update(Optional.of(currentComputer));
         return new ModelAndView("redirect:/dashboard/computers");
     }
-    
 
 }
