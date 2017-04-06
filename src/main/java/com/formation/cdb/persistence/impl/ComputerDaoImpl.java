@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.exception.PersistenceException;
 import com.formation.cdb.persistence.Dao;
 
 // TODO: Auto-generated Javadoc
@@ -39,8 +40,8 @@ public class ComputerDaoImpl implements Dao<Computer> {
     public void create(Optional<Computer> e) {
 
         if (!e.isPresent()) {
-            LOGGER.warn("Create failed, null computer");
-            return;
+            LOGGER.error("Create failed, null computer " + e);
+            throw new PersistenceException("Create failed, null computer " + e);
         }
 
         Computer c = e.get();
@@ -55,6 +56,11 @@ public class ComputerDaoImpl implements Dao<Computer> {
     @Override
     public Optional<Computer> readById(long id) {
 
+        if ( id <= 0) {
+            LOGGER.error("Read by id failed, invalid id provided " + id);
+            throw new PersistenceException("Read by id failed, invalid id provided " + id );
+        }
+        
         TypedQuery<Computer> query = sessionFactory.getCurrentSession().createNamedQuery("Computer.findById",
                 Computer.class);
         query.setParameter("id", id);
