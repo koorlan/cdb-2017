@@ -1,4 +1,4 @@
-package com.formation.cdb.entity;
+package com.formation.cdb.service.pager;
 
 import java.util.List;
 

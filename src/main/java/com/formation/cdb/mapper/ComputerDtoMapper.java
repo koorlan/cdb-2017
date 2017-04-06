@@ -8,11 +8,11 @@ import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.formation.cdb.entity.CompanyDto;
-import com.formation.cdb.entity.ComputerDto;
-import com.formation.cdb.entity.ComputerDto.ComputerDtoBuilder;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.persistence.CompanyDto;
+import com.formation.cdb.persistence.ComputerDto;
+import com.formation.cdb.persistence.ComputerDto.ComputerDtoBuilder;
 import com.formation.cdb.util.DateUtil;
 
 // TODO: Auto-generated Javadoc

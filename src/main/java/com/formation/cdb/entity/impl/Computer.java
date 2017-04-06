@@ -7,7 +7,17 @@ package com.formation.cdb.entity.impl;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import com.formation.cdb.entity.Entity;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+import com.formation.cdb.entity.Model;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -15,28 +25,51 @@ import com.formation.cdb.entity.Entity;
  * @author excilys
  * @version 0.0.1
  */
-public class Computer extends Entity {
+@Entity
+@Table(name = "computer")
+@NamedQueries({
+    @NamedQuery(name="Computer.findById",
+                query="SELECT c FROM Computer c LEFT JOIN c.company WHERE c.id = :id"),
+    @NamedQuery(name="Computer.findAllwithFilter",
+                query="SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter"),
+    @NamedQuery(name="Computer.countWithFilter",
+            query="SELECT count(id) FROM Computer c WHERE name LIKE :filter"),
+    @NamedQuery(name="Computer.update",
+            query="UPDATE Computer c set c.name = :name, c.introduced = :introduced, c.discontinued = :discontinued, c.company = :company WHERE c.id = :id"),
+    @NamedQuery(name="Computer.deleteById",
+                query = "DELETE from Computer c WHERE c.id = :id")
+}) 
+public class Computer extends Model {
     /**
      * id of the computer in the database.
      */
-    private final long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
     /**
      * Name of a computer in the database.
      */
-    private final String name;
+
+    private String name;
     /**
      * The data when the computer have been introduced.
      */
-    private final LocalDate introduced;
+
+    private LocalDate introduced;
     /**
      * The date when the computer have been discontinued of the marker.
      */
-    private final LocalDate discontinued;
+
+    private LocalDate discontinued;
     /**
      * The company object known as the manufacturer of the computer.
      */
-    private final Company company;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
+    public Computer(){}
+    
     /**
      * Constructor of computer.
      *
@@ -68,7 +101,7 @@ public class Computer extends Entity {
      * @return the name
      */
     public final Optional<String> getName() {
-        return Optional.ofNullable(name);
+        return Optional.of(name);
     }
 
     /**

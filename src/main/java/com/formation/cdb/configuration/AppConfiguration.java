@@ -1,24 +1,19 @@
-package com.formation.cdb.web.conf;
+package com.formation.cdb.configuration;
 
 
-import java.util.HashSet;
 import java.util.Locale;
-import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
-import org.springframework.core.convert.ConversionService;
-import org.springframework.format.Formatter;
-import org.springframework.format.FormatterRegistry;
-import org.springframework.format.support.FormattingConversionServiceFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
@@ -26,7 +21,8 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 @Configuration
 @EnableWebMvc
-@ComponentScan("com.formation.cdb")
+@ComponentScan({ "com.formation.cdb.web","com.formation.cdb.validator", "com.formation.cdb.configuration" })
+@PropertySource(value = { "classpath:application.properties" })
 @EnableTransactionManagement
 public class AppConfiguration extends WebMvcConfigurerAdapter{
     @Bean
@@ -51,5 +47,12 @@ public class AppConfiguration extends WebMvcConfigurerAdapter{
         interceptor.setParamName("locale");
         registry.addInterceptor(interceptor);
     } 
-   
+    
+    @Override
+    public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
+    
+
+
 }

@@ -1,7 +1,4 @@
-package com.formation.cdb.entity;
-
-import java.io.Serializable;
-
+package com.formation.cdb.persistence;
 
 // TODO: Auto-generated Javadoc
 /**

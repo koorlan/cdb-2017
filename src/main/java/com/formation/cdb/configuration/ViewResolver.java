@@ -1,4 +1,4 @@
-package com.formation.cdb.web.conf;
+package com.formation.cdb.configuration;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;

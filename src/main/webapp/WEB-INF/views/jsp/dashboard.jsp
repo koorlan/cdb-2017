@@ -15,17 +15,22 @@
 	rel="stylesheet" media="screen" />
 <link href="<c:url value="/resources/css/main.css"/>" rel="stylesheet"
 	media="screen" />
-
+<link href="<c:url value="/resources/css/flag.min.css"/>" rel="stylesheet"
+	media="screen" />
 </head>
 <body>
 	<header class="navbar navbar-inverse navbar-fixed-top">
 	<div class="container">
 		<a class="navbar-brand" href="<c:url value="/"/>"> Application -
 			Computer Database </a>
+			      
+     <a class="align-middle" href="?locale=en"><i class="us flag"></i></a>
+     <a  class="align-middle" href="?locale=fr_FR"><i class="fr flag"></i></a>
 	</div>
+	
+
 	</header>
-	<section id="main"> Language : <a href="?locale=en">English</a>|<a
-		href="?locale=fr_FR">Français</a>
+	<section id="main"> 
 	<div class="container">
 
 		<c:if test="${not empty msg}">
@@ -108,29 +113,7 @@
 
 	<footer class="navbar-fixed-bottom">
 	<div class="container text-center">
-		<%-- <ul class="pagination">
-            <li><a href="database?action=prev" aria-label="Previous"> <span
-                    aria-hidden="true">&laquo;</span>
-                    <c:forEach var="i" begin="1" end="3" varStatus="loop">
-                         <c:choose>
-                            <c:when test="${currentIndexPage-loop.end+i > 0}">
-                                <li><a href="database?action=goto&page=${currentIndexPage-loop.end+i}">${currentIndexPage-loop.end+i}</a></li>
-                            </c:when>
-                        </c:choose>
 
-                    </c:forEach>
-                     <c:forEach var="i" begin="1" end="3">
-                         <c:choose>
-                            <c:when test="${currentIndexPage + i < maxIndexPage}">
-                                <li><a href="database?action=goto&page=${currentIndexPage+i}">${currentIndexPage+i}</a></li>
-                            </c:when>
-                        </c:choose>
-                    </c:forEach>
-
-                    <li><a href="database?action=next" aria-label="Next"> <span
-                            aria-hidden="true">&raquo;</span></a></li>
-        </ul>
-         --%>
 		<ul id="pagination-demo" class="pagination"></ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">

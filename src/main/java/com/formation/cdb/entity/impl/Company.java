@@ -6,25 +6,43 @@ package com.formation.cdb.entity.impl;
 
 import java.util.Optional;
 
-import com.formation.cdb.entity.Entity;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 
-// TODO: Auto-generated Javadoc
+import com.formation.cdb.entity.Model;
+
+
 /**
  * Company class is a representation of what a company look like on database.
  *
  * @author korlan
  * @version 0.0.1
  */
-public class Company extends Entity {
+@Entity
+@Table(name = "company")
+@NamedQueries({
+    @NamedQuery(name="Company.findAllwithFilter",
+                query="SELECT c FROM Company c WHERE c.name LIKE :filter"),
+    @NamedQuery(name="Company.countWithFilter",
+    query="SELECT count(id) FROM Company c WHERE name LIKE :filter")
+}) 
+public class Company extends Model {
     /**
      * id (primary key) of a company.
      */
-    private final Long id;
+    @Id
+    private Long id;
     /**
      * the name of the company.
      */
-    private final String name;
     
+    private String name;
+    
+    
+    public Company(){};
     /**
      * Constructor of a company.
      *
@@ -40,7 +58,7 @@ public class Company extends Entity {
      * @return An @Optional of the @Company name
      */
     public Optional<String> getName() {
-        return Optional.ofNullable(name);
+        return Optional.of(name);
     }
 
     /**

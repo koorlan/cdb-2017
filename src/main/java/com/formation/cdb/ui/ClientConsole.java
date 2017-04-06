@@ -6,13 +6,16 @@ import java.util.Scanner;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.formation.cdb.entity.PagerCompany;
-import com.formation.cdb.entity.PagerComputer;
+import com.formation.cdb.configuration.HibernateConfiguration;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.service.impl.CompanyServiceImpl;
-import com.formation.cdb.service.impl.ComputerServiceImpl;
+import com.formation.cdb.service.CDBService;
+import com.formation.cdb.service.pager.PagerCompany;
+import com.formation.cdb.service.pager.PagerComputer;
 import com.formation.cdb.util.DateUtil;
 
 
@@ -31,20 +34,25 @@ public class ClientConsole {
     private final Scanner scanner = new Scanner(System.in);
     
     @Autowired
-    private CompanyServiceImpl serviceCompany;
-    
+    @Qualifier("computerServiceImpl")
+    private CDBService<Computer> service;
+
     @Autowired
-    private ComputerServiceImpl service;
+    @Qualifier("companyServiceImpl")
+    private CDBService<Company> serviceCompany;
     
     @Autowired
     private PagerComputer pagerComputer;
     
+    private ApplicationContext ctx;
 
 
     /**
      * Constructor of ClientConsole.
      */
     public ClientConsole() {
+        ctx = new AnnotationConfigApplicationContext(new Class[] { HibernateConfiguration.class  });
+        ctx.getAutowireCapableBeanFactory().autowireBean(this);
         exit = false;
     }
 
@@ -55,7 +63,7 @@ public class ClientConsole {
     public static void main(String[] args) {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
         ClientConsole c = new ClientConsole();
-              
+
         while (!c.isExit()) {
             c.showMenu();
         }

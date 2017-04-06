@@ -1,27 +1,19 @@
 package com.formation.cdb.persistence.impl;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
 
-import javax.annotation.PostConstruct;
+import javax.persistence.TypedQuery;
 
+import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
-import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.exception.PersistenceException;
-import com.formation.cdb.mapper.impl.CompanyMapper;
-import com.formation.cdb.mapper.impl.ComputerMapper;
 import com.formation.cdb.persistence.Dao;
-import com.formation.cdb.persistence.datasource.ConfiguredDatasource;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -31,56 +23,16 @@ import com.formation.cdb.persistence.datasource.ConfiguredDatasource;
 public class CompanyDaoImpl implements Dao<Company> {
 
     @Autowired
-    private ConfiguredDatasource dataSource;
-
-    private JdbcTemplate jdbcTemplateObject;
-
-    @PostConstruct
-    public void setDataSource() {
-        this.jdbcTemplateObject = new JdbcTemplate(dataSource);
-    }
+    private SessionFactory sessionFactory;
 
     /** The logger. */
     private final Logger LOGGER = LoggerFactory.getLogger(getClass());
 
-    /** The read by id. */
-    String READ_BY_ID;
-
-    /** The read all limit. */
-    String READ_ALL_LIMIT;
-
-    /** The row count. */
-    String ROW_COUNT;
-
     /**
      * Private constructor for Singleton Implementation.
      */
-    public CompanyDaoImpl() {
-        // construct queries from configuration file;
-        String filename = "config.properties";
-        Properties prop = new Properties();
-        InputStream input = null;
-        input = CompanyDaoImpl.class.getClassLoader().getResourceAsStream(filename);
-        if (input == null) {
-            LOGGER.error("Sorry, unable to find " + filename);
-            throw new PersistenceException("Unable to acces config file at " + filename);
-        }
-
-        try {
-            prop.load(input);
-
-            READ_BY_ID = "SELECT * FROM " + prop.getProperty("db_company_table") + " WHERE "
-                    + prop.getProperty("db_company_col_id") + "=?;";
-
-            READ_ALL_LIMIT = "SELECT * FROM " + prop.getProperty("db_company_table") + " LIMIT ?,?;";
-
-            // ROW_COUNT
-            ROW_COUNT = "SELECT COUNT(*) c FROM " + prop.getProperty("db_company_table") + ";";
-
-        } catch (IOException e) {
-            LOGGER.error("Error on config file");
-            throw new PersistenceException(e);
-        }
+    public CompanyDaoImpl(SessionFactory sessionFactory) {
+        this.sessionFactory = sessionFactory;
     }
 
     /*
@@ -100,13 +52,14 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public Optional<Company> readById(long id) {
-        try {
-            Company c = (Company) jdbcTemplateObject.queryForObject(READ_BY_ID, new CompanyMapper(), id);
-            return Optional.of(c);
-        } catch (EmptyResultDataAccessException e) {
+        if (id <= 0) {
             return Optional.empty();
         }
 
+        Query query = sessionFactory.getCurrentSession().createQuery("Select c from Company c where id = :id");
+        query.setParameter("id", id);
+        Company company = (Company) query.getSingleResult();
+        return Optional.of(company);
     }
 
     /*
@@ -137,8 +90,15 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        List<Company> companies = jdbcTemplateObject.query(READ_ALL_LIMIT, new CompanyMapper(), offset, limit);
-        return companies;
+        TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilter",
+                Company.class);
+        query.setParameter("filter", filter);
+        query.setFirstResult(offset);
+        query.setMaxResults(limit);
+
+        List<Company> results = query.getResultList();
+
+        return results;
     }
 
     /*
@@ -148,7 +108,19 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public int rowCount(String filter) {
-        return jdbcTemplateObject.queryForObject(ROW_COUNT, Integer.class);
+
+        TypedQuery<Long> query = sessionFactory.getCurrentSession().createNamedQuery("Company.countWithFilter",
+                Long.class);
+        query.setParameter("filter", filter);
+
+        List<Long> results = query.getResultList();
+
+        long foundCount = 0;
+        if (!results.isEmpty()) {
+            // ignores multiple results
+            foundCount = results.get(0);
+        }
+        return (int) foundCount;
     };
 
 }

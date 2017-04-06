@@ -4,7 +4,7 @@ package com.formation.cdb.entity;
 /**
  * The Class Entity.
  */
-public abstract class Entity {
+public abstract class Model {
 
     /**
      * Return the string representation of an entity.

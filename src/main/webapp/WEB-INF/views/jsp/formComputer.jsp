@@ -113,9 +113,9 @@
 			</div>
 		</div>
 	</section>
-	<script src="./js/jquery.min.js"></script>
-	<script src="./js/bootstrap.min.js"></script>
-	<script src="./js/addComputer.js"></script>
+	<script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
+	<script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+	<script src="<c:url value="/resources/js/addComputer.js"/>"></script>
 
 </body>
 </html>
