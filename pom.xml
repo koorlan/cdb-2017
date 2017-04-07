@@ -105,6 +105,7 @@
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
         </dependency>
+
         <!-- Test -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>

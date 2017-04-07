@@ -14,6 +14,7 @@
     <url>http://cdb-1.cdb.7912ff99.cont.dockerapp.io:32789/cdb/database</url>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+           <spring.security.version>4.2.2.RELEASE</spring.security.version>
     </properties>
 
     <dependencies>
@@ -33,7 +34,6 @@
             <artifactId>cdb-binding</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
-
     </dependencies>
 
 </project>

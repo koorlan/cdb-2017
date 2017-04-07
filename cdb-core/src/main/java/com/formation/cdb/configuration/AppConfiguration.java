@@ -7,6 +7,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -23,6 +24,7 @@ import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 @EnableWebMvc
 @ComponentScan({ "com.formation.cdb.web","com.formation.cdb.validator", "com.formation.cdb.configuration" })
 @PropertySource(value = { "classpath:application.properties" })
+@Import({ HibernateConfiguration.class, SecurityConfig.class })
 @EnableTransactionManagement
 public class AppConfiguration extends WebMvcConfigurerAdapter{
     @Bean
