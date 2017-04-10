@@ -3,8 +3,11 @@ package com.formation.cdb.persistence.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
+import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
@@ -13,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.persistence.Dao;
 
 // TODO: Auto-generated Javadoc
@@ -22,7 +26,6 @@ import com.formation.cdb.persistence.Dao;
 @Repository
 public class CompanyDaoImpl implements Dao<Company> {
 
-    @Autowired
     private SessionFactory sessionFactory;
 
     /** The logger. */
@@ -41,8 +44,9 @@ public class CompanyDaoImpl implements Dao<Company> {
      * @see com.formation.cdb.persistence.Dao#create(java.util.Optional)
      */
     @Override
-    public void create(Optional<Company> company) {
+    public Company create(Company company) {
         LOGGER.warn("Method Create is not implemented");
+        throw new DAOException(ERROR_DAO, new NoSuchMethodException("Method Create is not implemented "));
     }
 
     /*
@@ -52,14 +56,19 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public Optional<Company> readById(long id) {
-        if (id <= 0) {
-            return Optional.empty();
+        if (id < 0) {
+            LOGGER.error("Read by id failed, invalid id provided " + id);
+            throw new DAOException(ERROR_DAO,
+                    new IllegalArgumentException("Read by id failed, invalid id provided " + id));
         }
-
-        Query query = sessionFactory.getCurrentSession().createQuery("Select c from Company c where id = :id");
-        query.setParameter("id", id);
-        Company company = (Company) query.getSingleResult();
-        return Optional.of(company);
+        try {
+            Query query = sessionFactory.getCurrentSession().createQuery("Select c from Company c where id = :id");
+            query.setParameter("id", id);
+            Company company = (Company) query.getSingleResult();
+            return Optional.of(company);
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
+        }
     }
 
     /*
@@ -68,8 +77,9 @@ public class CompanyDaoImpl implements Dao<Company> {
      * @see com.formation.cdb.persistence.Dao#update(java.util.Optional)
      */
     @Override
-    public void update(Optional<Company> company) {
-        LOGGER.warn("Method update is not implemented");
+    public Company update(Company company) {
+        LOGGER.warn("Method Update is not implemented");
+        throw new DAOException(ERROR_DAO, new NoSuchMethodException("Method Update is not implemented "));
     }
 
     /*
@@ -79,7 +89,8 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public void delete(long id) {
-        LOGGER.warn("Method delete is not implemented");
+        LOGGER.warn("Method Create is not implemented");
+        throw new DAOException(ERROR_DAO, new NoSuchMethodException("Method Delete is not implemented "));
     }
 
     /*
@@ -90,15 +101,23 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilter",
-                Company.class);
-        query.setParameter("filter", filter);
-        query.setFirstResult(offset);
-        query.setMaxResults(limit);
+        if (offset < 0 || limit < 0) {
+            LOGGER.error("readAllWithOffsetAndLimit, offset(" + offset + ") limit(" + limit + ") can't be negative");
+            throw new DAOException(ERROR_DAO, new IllegalArgumentException("limit and offset can't be negative"));
+        }
 
-        List<Company> results = query.getResultList();
+        try {
+            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilter",
+                    Company.class);
+            query.setParameter("filter", filter);
+            query.setFirstResult(offset);
+            query.setMaxResults(limit);
+            List<Company> results = query.getResultList();
 
-        return results;
+            return results;
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
+        }
     }
 
     /*
@@ -108,19 +127,22 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public int rowCount(String filter) {
+        try {
+            TypedQuery<Long> query = sessionFactory.getCurrentSession().createNamedQuery("Company.countWithFilter",
+                    Long.class);
+            query.setParameter("filter", filter);
 
-        TypedQuery<Long> query = sessionFactory.getCurrentSession().createNamedQuery("Company.countWithFilter",
-                Long.class);
-        query.setParameter("filter", filter);
+            List<Long> results = query.getResultList();
 
-        List<Long> results = query.getResultList();
-
-        long foundCount = 0;
-        if (!results.isEmpty()) {
-            // ignores multiple results
-            foundCount = results.get(0);
+            long foundCount = 0;
+            if (!results.isEmpty()) {
+                // ignores multiple results
+                foundCount = results.get(0);
+            }
+            return (int) foundCount;
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
         }
-        return (int) foundCount;
     };
 
 }

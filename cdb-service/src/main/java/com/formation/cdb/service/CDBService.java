@@ -20,7 +20,7 @@ public interface CDBService<T> {
      *            Be carefull of the e.getId().
      */
     @Transactional
-    void saveOrUpdate(Optional<T> e);
+    Optional<T> saveOrUpdate(T e);
     /**
      * CRUD , read an element.
      * @param id

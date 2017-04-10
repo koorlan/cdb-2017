@@ -10,13 +10,16 @@ import java.util.Optional;
  * @param <T> the generic type
  */
 public interface Dao<T> {
+    
+    String ERROR_DAO = "There were an error on dao layer";
+    
     /**
      * CRUD , create an element.
      * @param e
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
-    void create(Optional<T> e);
+    T create(T e);
 
     /**
      * CRUD , read an element.
@@ -32,7 +35,7 @@ public interface Dao<T> {
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
-    void update(Optional<T> e);
+    T update(T e);
 
     /**
      * CRUD , Delete an element on the database.

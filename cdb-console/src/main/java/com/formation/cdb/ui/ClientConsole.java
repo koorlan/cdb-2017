@@ -10,9 +10,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import com.formation.cdb.configuration.HibernateConfiguration;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.persistence.HibernateConfiguration;
 import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.pager.PagerCompany;
 import com.formation.cdb.service.pager.PagerComputer;
@@ -280,7 +280,7 @@ public class ClientConsole {
                 
                 //new Computer(1, name, introduced, discontinued, company.orElse(null));
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
-            service.saveOrUpdate(Optional.ofNullable(computer));
+            service.saveOrUpdate(computer);
         }
     };
 
@@ -434,7 +434,7 @@ public class ClientConsole {
         
         computer = new Computer.ComputerBuilder(computer.getId(),newName).withIntroduced(newDateIntroduced).withDiscontinued(newDateDiscontinued).withCompany(newCompany).build();
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
-            service.saveOrUpdate(Optional.ofNullable(computer));
+            service.saveOrUpdate(computer);
         }
     };
     /**

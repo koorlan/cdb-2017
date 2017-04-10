@@ -14,10 +14,10 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
+import com.formation.cdb.dto.CompanyDto;
+import com.formation.cdb.dto.ComputerDto;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.mapper.CompanyDtoMapper;
-import com.formation.cdb.persistence.CompanyDto;
-import com.formation.cdb.persistence.ComputerDto;
 import com.formation.cdb.service.CDBService;
 import com.formation.cdb.util.DateUtil;
 

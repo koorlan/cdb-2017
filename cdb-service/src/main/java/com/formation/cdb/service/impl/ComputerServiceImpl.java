@@ -3,10 +3,13 @@ package com.formation.cdb.service.impl;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.persistence.impl.ComputerDaoImpl;
 import com.formation.cdb.service.CDBService;
 
@@ -18,30 +21,35 @@ import com.formation.cdb.service.CDBService;
 @Service
 public class ComputerServiceImpl implements CDBService<Computer> {
 
-    @Autowired
-    private ComputerDaoImpl computerDaoImpl;
+    
+    Logger LOGGER = LoggerFactory.getLogger(ComputerServiceImpl.class);
+    
+    ComputerDaoImpl computerDaoImpl;
     
     /**
      * Private constructor for singleton implementation.
      */
-    public ComputerServiceImpl() {
+    public ComputerServiceImpl(ComputerDaoImpl computerDaoImpl) {
+        this.computerDaoImpl = computerDaoImpl;
     }
 
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#create(java.util.Optional)
      */
     @Override
-    public void saveOrUpdate(Optional<Computer> c) {
+    public Optional<Computer> saveOrUpdate(Computer c) {
         
-        if ( c.isPresent() ) {
-            if ( findById(c.get().getId()).isPresent() ) {
+        if ( c == null ) {
+            throw new ServiceException("Can't create a null computer");
+        }
+        
+            if ( findById(c.getId()).isPresent() ) {
                 computerDaoImpl.update(c);
             } else {
                 computerDaoImpl.create(c);
             }
             
-        }
-         return;
+         return Optional.of(c);
     }
 
     /* (non-Javadoc)

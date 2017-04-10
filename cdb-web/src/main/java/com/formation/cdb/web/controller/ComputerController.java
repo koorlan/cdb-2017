@@ -28,12 +28,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.formation.cdb.dto.CompanyDto;
+import com.formation.cdb.dto.ComputerDto;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.ComputerDtoMapper;
-import com.formation.cdb.persistence.CompanyDto;
-import com.formation.cdb.persistence.ComputerDto;
 import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.pager.PagerComputer;
 import com.formation.cdb.validator.ComputerFormValidator;
@@ -104,8 +104,8 @@ public class ComputerController {
             } else {
                 redirectAttributes.addFlashAttribute("msg", "Computer updated successfully!");
             }
-
-            computerService.saveOrUpdate(computer);
+            
+            computer.ifPresent(c -> computerService.saveOrUpdate(c));
 
             return "redirect:/computers";
         }

@@ -37,7 +37,7 @@ public class CompanyServiceImpl implements CDBService<Company> {
      * @see com.formation.cdb.service.CDBService#create(java.util.Optional)
      */
     @Override
-    public void saveOrUpdate(Optional<Company> e) {
+    public void saveOrUpdate(Company e) {
         LOGGER.warn("Create method is not implemented");
     }
 

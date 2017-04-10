@@ -3,6 +3,7 @@ package com.formation.cdb.persistence.impl;
 import java.util.List;
 import java.util.Optional;
 
+import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.SessionFactory;
@@ -12,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.exception.PersistenceException;
+import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.persistence.Dao;
 
 // TODO: Auto-generated Javadoc
@@ -37,15 +38,20 @@ public class ComputerDaoImpl implements Dao<Computer> {
      * @see com.formation.cdb.persistence.Dao#create(java.util.Optional)
      */
     @Override
-    public void create(Optional<Computer> e) {
+    public Computer create(Computer e) {
 
-        if (!e.isPresent()) {
-            LOGGER.error("Create failed, null computer " + e);
-            throw new PersistenceException("Create failed, null computer " + e);
+        if (e == null) {
+            LOGGER.error("Create failed, null computer ");
+            throw new DAOException(ERROR_DAO, new NullPointerException("computer can't be null"));
+        }
+        try {
+            sessionFactory.getCurrentSession().saveOrUpdate(e);
+            return e;
+        } catch (IllegalStateException | IllegalArgumentException
+                | DAOException | PersistenceException ex) {
+            throw new DAOException(ERROR_DAO, ex);
         }
 
-        Computer c = e.get();
-        sessionFactory.getCurrentSession().saveOrUpdate(c);
     }
 
     /*
@@ -56,23 +62,29 @@ public class ComputerDaoImpl implements Dao<Computer> {
     @Override
     public Optional<Computer> readById(long id) {
 
-        if ( id < 0) {
+        if (id < 0) {
             LOGGER.error("Read by id failed, invalid id provided " + id);
-            throw new PersistenceException("Read by id failed, invalid id provided " + id );
+            throw new DAOException(ERROR_DAO,
+                    new IllegalArgumentException("Read by id failed, invalid id provided " + id));
         }
 
         TypedQuery<Computer> query = sessionFactory.getCurrentSession().createNamedQuery("Computer.findById",
                 Computer.class);
         query.setParameter("id", id);
+        try {
+            List<Computer> results = query.getResultList();
 
-        List<Computer> results = query.getResultList();
-
-        Computer foundEntity = null;
-        if (!results.isEmpty()) {
-            // ignores multiple results
-            foundEntity = results.get(0);
+            Computer foundEntity = null;
+            if (!results.isEmpty()) {
+                // ignores multiple results
+                foundEntity = results.get(0);
+            }
+            return Optional.ofNullable(foundEntity);
+        } catch (IllegalStateException | IllegalArgumentException
+                | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
         }
-        return Optional.ofNullable(foundEntity);
+
     }
 
     /*
@@ -81,27 +93,8 @@ public class ComputerDaoImpl implements Dao<Computer> {
      * @see com.formation.cdb.persistence.Dao#update(java.util.Optional)
      */
     @Override
-    public void update(Optional<Computer> e) {
-
-        if (!e.isPresent()) {
-            LOGGER.warn("Update failed, null computer");
-            return;
-        }
-
-        Computer c = e.get();
-        Query query = sessionFactory.getCurrentSession().createNamedQuery("Computer.update");
-
-        query.setParameter("id", c.getId());
-        query.setParameter("name", c.getName().orElse(""));
-        query.setParameter("introduced", c.getIntroduced().orElse(null));
-        query.setParameter("discontinued", c.getDiscontinued().orElse(null));
-        query.setParameter("company", c.getCompany().orElse(null));
-
-        int rowsAffected = query.executeUpdate();
-        if (!(rowsAffected > 0)) {
-            LOGGER.info("No rows was affected by the update : " + c);
-        }
-        return;
+    public Computer update(Computer e) {
+        return this.create(e);
     }
 
     /*
@@ -113,15 +106,20 @@ public class ComputerDaoImpl implements Dao<Computer> {
     public void delete(long id) {
 
         if (id < 0) {
-            LOGGER.warn("Create failed, null computer");
-            return;
+            LOGGER.warn("Delete failed id: " + id);
+            throw new DAOException(ERROR_DAO,
+                    new IllegalArgumentException("id must be grater or equals than zero"));
         }
-        Query query = sessionFactory.getCurrentSession().createNamedQuery("Computer.deleteById");
-        query.setParameter("id", id);
-
-        int rowsAffected = query.executeUpdate();
-        if (!(rowsAffected > 0)) {
-            LOGGER.info("No rows was affected by the delete : " + id);
+        try {
+            Query query = sessionFactory.getCurrentSession().createNamedQuery("Computer.deleteById");
+            query.setParameter("id", id);
+            int rowsAffected = query.executeUpdate();
+            if (!(rowsAffected > 0)) {
+                LOGGER.info("No rows was affected by the delete : " + id);
+            }
+        } catch (IllegalStateException | IllegalArgumentException
+                | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
         }
         return;
     }
@@ -135,14 +133,27 @@ public class ComputerDaoImpl implements Dao<Computer> {
     @Override
     public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
 
-        TypedQuery<Computer> query = sessionFactory.getCurrentSession().createNamedQuery("Computer.findAllwithFilter",
-                Computer.class);
-        query.setParameter("filter", filter);
-        query.setFirstResult(offset);
-        query.setMaxResults(limit);
-        List<Computer> results = query.getResultList();
+        if (offset < 0 || limit < 0) {
+            LOGGER.error("readAllWithOffsetAndLimit, offset(" + offset + ") limit(" + limit + ") can't be negative");
+            throw new DAOException(ERROR_DAO,
+                    new IllegalArgumentException("limit and offset can't be negative"));
+        }
 
-        return results;
+        try {
+            TypedQuery<Computer> query = sessionFactory.getCurrentSession()
+                    .createNamedQuery("Computer.findAllwithFilter", Computer.class);
+            query.setParameter("filter", filter);
+            query.setFirstResult(offset);
+            query.setMaxResults(limit);
+            LOGGER.debug(query.unwrap(Query.class).getQueryString());
+
+            List<Computer> results = query.getResultList();
+            return results;
+        } catch (IllegalStateException | IllegalArgumentException
+                | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
+        }
+
     }
 
     /*
@@ -152,19 +163,23 @@ public class ComputerDaoImpl implements Dao<Computer> {
      */
     @Override
     public int rowCount(String filter) {
+        try {
+            TypedQuery<Long> query = sessionFactory.getCurrentSession().createNamedQuery("Computer.countWithFilter",
+                    Long.class);
+            query.setParameter("filter", filter);
 
-        TypedQuery<Long> query = sessionFactory.getCurrentSession().createNamedQuery("Computer.countWithFilter",
-                Long.class);
-        query.setParameter("filter", filter);
+            List<Long> results = query.getResultList();
 
-        List<Long> results = query.getResultList();
-
-        long foundCount = 0;
-        if (!results.isEmpty()) {
-            // ignores multiple results
-            foundCount = results.get(0);
+            long foundCount = 0;
+            if (!results.isEmpty()) {
+                // ignores multiple results
+                foundCount = results.get(0);
+            }
+            return (int) foundCount;
+        } catch (IllegalStateException | IllegalArgumentException
+                | DAOException | PersistenceException e) {
+            throw new DAOException(ERROR_DAO, e);
         }
-        return (int) foundCount;
     }
 
 }
