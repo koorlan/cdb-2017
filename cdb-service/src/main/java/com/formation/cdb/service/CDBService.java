@@ -1,5 +1,6 @@
 package com.formation.cdb.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,13 +14,16 @@ import org.springframework.transaction.annotation.Transactional;
  * @param <T> the generic type
  */
 public interface CDBService<T> {
+    
+    static final String ERROR_SERVICE = "There were and error on the service";
+    
     /**
      * CRUD , create an element.
      * @param e
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
-    @Transactional
+
     Optional<T> saveOrUpdate(T e);
     /**
      * CRUD , read an element.
@@ -27,7 +31,7 @@ public interface CDBService<T> {
      *            the id to fetch on the DataBase.
      * @return an object T id found , representation of the database object.
      */
-    @Transactional
+    
     Optional<T> findById(long id);
     /**
      * CRUD , update an element on the database.
@@ -35,8 +39,10 @@ public interface CDBService<T> {
      *            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
      */
-    @Transactional
+    
     void delete(long id);
+    
+    void deleteMultiple(ArrayList<Long> ids );
     
     /**
      * Construct a list of T by creating T object from the database
@@ -48,7 +54,7 @@ public interface CDBService<T> {
      * @param filter the filter
      * @return list of type T
      */
-    @Transactional
+    
     List<T> findAllWithOffsetAndLimit(int offset, int limit, String filter);
     
     /**
@@ -57,6 +63,6 @@ public interface CDBService<T> {
      * @param filter the filter
      * @return how many rows on the table.
      */
-    @Transactional
+    
     int sizeOfTable(String filter);
 }

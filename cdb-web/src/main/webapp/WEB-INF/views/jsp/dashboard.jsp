@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://www.springframework.org/tags" prefix="spring"%>
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -65,10 +66,10 @@
 		</div>
 	</div>
 
-	<form id="deleteForm" action="/computers/delete" method="POST">
-		<input type="hidden" name="action" value="delete"> <input
-			type="hidden" name="selection" value="">
-	</form>
+<form:form id="deleteForm" method = "POST" action = "/computers/delete" modelAttribute="deleteForm">
+	<form:input path="computers" type="hidden"  />
+</form:form>
+
 
 	<div class="container" style="margin-top: 10px;">
 		<table class="table table-striped table-bordered">

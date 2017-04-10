@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.persistence.Dao;
 
@@ -62,10 +63,17 @@ public class CompanyDaoImpl implements Dao<Company> {
                     new IllegalArgumentException("Read by id failed, invalid id provided " + id));
         }
         try {
-            Query query = sessionFactory.getCurrentSession().createQuery("Select c from Company c where id = :id");
+            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findById",
+                    Company.class);
             query.setParameter("id", id);
-            Company company = (Company) query.getSingleResult();
-            return Optional.of(company);
+                List<Company> results = query.getResultList();
+
+                Company foundEntity = null;
+                if (!results.isEmpty()) {
+                    // ignores multiple results
+                    foundEntity = results.get(0);
+                }
+                return Optional.ofNullable(foundEntity);           
         } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
             throw new DAOException(ERROR_DAO, e);
         }

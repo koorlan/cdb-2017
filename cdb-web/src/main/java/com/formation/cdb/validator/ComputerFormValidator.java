@@ -32,7 +32,7 @@ public class ComputerFormValidator implements Validator {
 
     @Override
     public boolean supports(Class<?> clazz) {
-        return ComputerDto.class.isAssignableFrom(clazz);
+        return ComputerDto.class.equals(clazz);
     }
 
     @Override

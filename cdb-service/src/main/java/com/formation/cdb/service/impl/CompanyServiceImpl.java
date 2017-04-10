@@ -1,5 +1,6 @@
 package com.formation.cdb.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,8 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.exception.DAOException;
+import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.service.CDBService;
 
@@ -19,15 +23,14 @@ import com.formation.cdb.service.CDBService;
 @Service
 public class CompanyServiceImpl implements CDBService<Company> {
     
-
     
-    @Autowired
-    private CompanyDaoImpl dao;
+    private CompanyDaoImpl companyDaoImpl;
     
     /**
      * Private constructor for singleton implementation.
      */
-    public CompanyServiceImpl() {
+    public CompanyServiceImpl(CompanyDaoImpl companyDaoImpl) {
+        this.companyDaoImpl = companyDaoImpl;
     }
 
     /** The logger. */
@@ -36,42 +39,58 @@ public class CompanyServiceImpl implements CDBService<Company> {
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#create(java.util.Optional)
      */
+    @Transactional
     @Override
-    public void saveOrUpdate(Company e) {
-        LOGGER.warn("Create method is not implemented");
+    public Optional<Company> saveOrUpdate(Company e) {
+        LOGGER.warn("Method saveOrUpdate is not implemented");
+        throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method saveOrUpdate is not implemented"));
     }
 
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#readById(long)
      */
+    @Transactional
     @Override
     public Optional<Company> findById(long id) {
-        return dao.readById(id);
+        return companyDaoImpl.readById(id);
     }
 
 
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#delete(java.util.Optional)
      */
+    @Transactional
     @Override
     public void delete(long id) {
-        LOGGER.warn("Delete method is not implemented");
+        LOGGER.warn("Method delete is not implemented");
+        throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method delete is not implemented"));
     }
 
+    @Transactional
+    @Override
+    public void deleteMultiple(ArrayList<Long> ids) {
+        LOGGER.warn("Method delete is not implemented");
+        throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method delete is not implemented"));
+    };
+    
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#readAllWithOffsetAndLimit(int, int, java.lang.String)
      */
+    @Transactional
     @Override
     public List<Company> findAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        return dao.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
+        return companyDaoImpl.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
     }
 
     /* (non-Javadoc)
      * @see com.formation.cdb.service.CDBService#sizeOfTable(java.lang.String)
      */
+    @Transactional
     @Override
     public int sizeOfTable(String filter) {
-        return dao.rowCount('%'+filter+'%');
-    };
+        return companyDaoImpl.rowCount('%'+filter+'%');
+    }
+
+
     
 }

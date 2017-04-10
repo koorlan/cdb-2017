@@ -27,7 +27,9 @@ import com.formation.cdb.entity.Model;
     @NamedQuery(name="Company.findAllwithFilter",
                 query="SELECT c FROM Company c WHERE c.name LIKE :filter"),
     @NamedQuery(name="Company.countWithFilter",
-    query="SELECT count(id) FROM Company c WHERE name LIKE :filter")
+    query="SELECT count(id) FROM Company c WHERE name LIKE :filter"),
+    @NamedQuery(name="Company.findById",
+    query = "Select c from Company c where id = :id")
 }) 
 public class Company extends Model {
     /**

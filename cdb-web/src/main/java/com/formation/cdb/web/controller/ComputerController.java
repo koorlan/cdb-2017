@@ -1,5 +1,7 @@
 package com.formation.cdb.web.controller;
 
+import java.net.ConnectException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,11 +34,14 @@ import com.formation.cdb.dto.CompanyDto;
 import com.formation.cdb.dto.ComputerDto;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
+import com.formation.cdb.exception.DAOException;
+import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.pager.PagerComputer;
 import com.formation.cdb.validator.ComputerFormValidator;
+
 
 @Controller
 @RequestMapping("/computers")
@@ -44,25 +49,28 @@ public class ComputerController {
 
     Logger LOGGER = LoggerFactory.getLogger(ComputerController.class);
 
-    @Autowired
-    @Qualifier("computerServiceImpl")
     private CDBService<Computer> computerService;
 
-    @Autowired
-    @Qualifier("companyServiceImpl")
     private CDBService<Company> companyService;
 
-    @Autowired
     private PagerComputer pagerComputer;
-
-    @Autowired
-    private ComputerFormValidator computerFormValidator;
     
-    @InitBinder
+    private ComputerFormValidator computerFormValidator;
+
+    public ComputerController(CDBService<Computer> computerService, CDBService<Company> companyService,
+            PagerComputer pagerComputer, ComputerFormValidator computerFormValidator) {
+        super();
+        this.computerService = computerService;
+        this.companyService = companyService;
+        this.pagerComputer = pagerComputer;
+        this.computerFormValidator = computerFormValidator;
+    }
+
+    @InitBinder("computerDto")
     private void initBinder(WebDataBinder binder) {
         binder.setValidator(computerFormValidator);
     }
-    
+
     @GetMapping
     public String showComputers(ModelMap model, @RequestParam("page") Optional<Integer> page,
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
@@ -84,7 +92,9 @@ public class ComputerController {
         model.put("totalComputers", pagerComputer.getMax());
         model.put("currentIndexPage", pagerComputer.getCurrentPageIndex());
         model.put("maxIndexPage", pagerComputer.getNbPages());
-
+        
+        model.put("deleteForm", new ComputerListWrapper());
+        
         return "dashboard";
     }
 
@@ -104,7 +114,7 @@ public class ComputerController {
             } else {
                 redirectAttributes.addFlashAttribute("msg", "Computer updated successfully!");
             }
-            
+
             computer.ifPresent(c -> computerService.saveOrUpdate(c));
 
             return "redirect:/computers";
@@ -113,50 +123,58 @@ public class ComputerController {
 
     @GetMapping("/{id}")
     public void showComputer() {
-       //TODO
+        // TODO
     }
 
     @GetMapping("/{id}/edit")
-    public String showUpdateComputerForm(@PathVariable("id") long id, Model model, final RedirectAttributes redirectAttributes) {
-        Optional<Computer> computer = computerService.findById(id);
-        if ( computer.isPresent() ) {
-            
-            Optional<ComputerDto> computerDto = ComputerDtoMapper.mapComputerDtoFromComputer(computer);
-            
-            if( computerDto.isPresent() ) {
-                model.addAttribute("computerForm", computerDto.get());              
-                populateDefaultModel(model);           
-                return "formComputer";   
+    public String showUpdateComputerForm(@PathVariable("id") long id, Model model,
+            final RedirectAttributes redirectAttributes) {
+        try {
+            Optional<Computer> computer = computerService.findById(id);
+            if (computer.isPresent()) {
+
+                Optional<ComputerDto> computerDto = ComputerDtoMapper.mapComputerDtoFromComputer(computer);
+
+                if (computerDto.isPresent()) {
+                    model.addAttribute("computerForm", computerDto.get());
+                    populateDefaultModel(model);
+                    return "formComputer";
+                } else {
+                    redirectAttributes.addFlashAttribute("css", "danger");
+                    redirectAttributes.addFlashAttribute("msg", "Error while mapping computer.");
+                    return "redirect:/computers";
+                }
             } else {
-                redirectAttributes.addFlashAttribute("css", "danger");
-                redirectAttributes.addFlashAttribute("msg", "Error while mapping computer.");
-                return "redirect:/computers2";
+                return "404";
             }
-        } else {
-            return "404";
+        } catch ( DAOException | ServiceException ex) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", ex.getMessage());
         }
+        return "redirect:/computers";
     }
 
     @PostMapping("/delete")
-    public String deleteComputer(@PathVariable("id") long id, final RedirectAttributes redirectAttributes) {
+    public String deleteComputer(@ModelAttribute("deleteForm") ComputerListWrapper computerListWrapper,
+            BindingResult result, Model model, final RedirectAttributes redirectAttributes) {
 
-        LOGGER.debug("deleteComputer() : {}", id);
+        LOGGER.debug("deleteComputer() : {}", computerListWrapper.getComputers());
 
-        //TODO Catch error form dao    
-        computerService.delete(id);
-        
+        // TODO Catch error form dao
+        computerService.deleteMultiple(computerListWrapper.getComputers());
+
         redirectAttributes.addFlashAttribute("css", "success");
-        redirectAttributes.addFlashAttribute("msg", "User is deleted!");
-        
-        return "redirect:/users";
+        redirectAttributes.addFlashAttribute("msg", "Computer(s) deleted!");
 
-    }
+        return "redirect:/computers";
+
+    } 
 
     @GetMapping("/add")
     public String showAddComputerForm(Model model) {
-        ComputerDto computerDto =  new ComputerDto();
+        ComputerDto computerDto = new ComputerDto();
         computerDto.setName("name");
-        
+
         model.addAttribute("computerForm", computerDto);
         populateDefaultModel(model);
         return "formComputer";
@@ -168,4 +186,5 @@ public class ComputerController {
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
         model.addAttribute("companies", companiesDto);
     }
+    
 }
