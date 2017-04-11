@@ -2,8 +2,7 @@ package com.formation.cdb.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
+import com.formation.cdb.dto.CompanyDto;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -104,11 +103,9 @@ public class ComputerDto  {
         private final String name;
         
         /** The introduced. */
-        @DateTimeFormat(iso = ISO.DATE)
         private LocalDate introduced;
         
         /** The discontinued. */
-        @DateTimeFormat(iso = ISO.DATE)
         private LocalDate discontinued;
         
         /** The company. */

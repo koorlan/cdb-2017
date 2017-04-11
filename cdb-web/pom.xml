@@ -1,44 +1,63 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-       <groupId>com.formation</groupId>
-       <artifactId>cdb</artifactId>
-       <version>3.1.3-SNAPSHOT</version>
-     </parent>
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.formation</groupId>
+		<artifactId>cdb</artifactId>
+		<version>3.1.3-SNAPSHOT</version>
+	</parent>
 
-    <groupId>com.formation</groupId>
-    <artifactId>cdb-web</artifactId>
-    <version>3.1.3-SNAPSHOT</version>
-    <packaging>war</packaging>
-    <url>http://cdb-1.cdb.7912ff99.cont.dockerapp.io:32789/cdb/database</url>
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-           <spring.security.version>4.2.2.RELEASE</spring.security.version>
-    </properties>
+	<groupId>com.formation</groupId>
+	<artifactId>cdb-web</artifactId>
+	<version>3.1.3-SNAPSHOT</version>
+	<packaging>war</packaging>
+	<url>http://cdb-1.cdb.7912ff99.cont.dockerapp.io:32789/cdb/database</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <dependencies>
+	</properties>
 
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-core</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-service</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-binding</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-         <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-persistence</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-    </dependencies>
+	<dependencies>
+
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>cdb-service</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>${project.parent.groupId}</groupId>
+			<artifactId>cdb-binding</artifactId>
+			<version>${project.parent.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet.jsp</groupId>
+			<artifactId>javax.servlet.jsp-api</artifactId>
+
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+		</dependency>
+	</dependencies>
 
 </project>

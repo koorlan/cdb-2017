@@ -17,25 +17,9 @@
     </properties>
 
     <dependencies>
-
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-core</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
         <dependency>
             <groupId>${project.parent.groupId}</groupId>
             <artifactId>cdb-service</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-binding</artifactId>
-            <version>${project.parent.version}</version>
-        </dependency>
-		  <dependency>
-            <groupId>${project.parent.groupId}</groupId>
-            <artifactId>cdb-persistence</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>

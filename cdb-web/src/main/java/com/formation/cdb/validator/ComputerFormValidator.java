@@ -1,10 +1,8 @@
 package com.formation.cdb.validator;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +17,6 @@ import com.formation.cdb.dto.ComputerDto;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.util.DateUtil;
 
 @Component
 public class ComputerFormValidator implements Validator {
@@ -41,8 +38,7 @@ public class ComputerFormValidator implements Validator {
         LOGGER.debug(computer.toString());
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty.computerForm.name");
 
-        LocalDate introduced = null;
-        LocalDate discontinued = null;
+
        /* if ( StringUtils.isNotBlank(computer.getIntroduced()) ) {
             try {
                 introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(computer.getIntroduced());
