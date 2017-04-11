@@ -43,7 +43,7 @@ public class ComputerFormValidator implements Validator {
 
         LocalDate introduced = null;
         LocalDate discontinued = null;
-        if ( StringUtils.isNotBlank(computer.getIntroduced()) ) {
+       /* if ( StringUtils.isNotBlank(computer.getIntroduced()) ) {
             try {
                 introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(computer.getIntroduced());
             } catch (DateTimeParseException e) {
@@ -57,9 +57,9 @@ public class ComputerFormValidator implements Validator {
             } catch (DateTimeParseException e) {
                 errors.rejectValue("discontinued", "BadFormat.computerForm.date");
             }
-        }
+        } */
         
-        if (introduced != null && discontinued != null && discontinued.isBefore(introduced)) {
+        if (computer.getIntroduced() != null && computer.getDiscontinued() != null && computer.getDiscontinued().isBefore(computer.getIntroduced())) {
             LOGGER.debug("discontinued is before introduced " + computer);
             errors.rejectValue("discontinued", "NotBeforeIntroduced.computerForm.discontinued");
         }

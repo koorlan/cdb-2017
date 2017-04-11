@@ -2,8 +2,6 @@ package com.formation.cdb.web.controller;
 
 import java.util.ArrayList;
 
-import com.formation.cdb.entity.impl.Computer;
-
 public class ComputerListWrapper {
     private ArrayList<Long> computers;
 

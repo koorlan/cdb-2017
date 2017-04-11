@@ -48,8 +48,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
         try {
             sessionFactory.getCurrentSession().saveOrUpdate(e);
             return e;
-        } catch (IllegalStateException | IllegalArgumentException
-                | DAOException | PersistenceException ex) {
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException ex) {
             throw new DAOException(ERROR_DAO, ex);
         }
 
@@ -81,8 +80,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
                 foundEntity = results.get(0);
             }
             return Optional.ofNullable(foundEntity);
-        } catch (IllegalStateException | IllegalArgumentException
-                | DAOException | PersistenceException e) {
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
             throw new DAOException(ERROR_DAO, e);
         }
 
@@ -95,7 +93,30 @@ public class ComputerDaoImpl implements Dao<Computer> {
      */
     @Override
     public Computer update(Computer e) {
-        return this.create(e);
+
+
+        if (e == null) {
+            LOGGER.error("Create failed, null computer ");
+            throw new DAOException(ERROR_DAO, new NullPointerException("computer can't be null"));
+        }
+        try {
+            Query query = sessionFactory.getCurrentSession().createNamedQuery("Computer.update");
+
+            query.setParameter("id", e.getId());
+            query.setParameter("name", e.getName().orElse(""));
+            query.setParameter("introduced", e.getIntroduced().orElse(null));
+            query.setParameter("discontinued", e.getDiscontinued().orElse(null));
+            query.setParameter("company", e.getCompany().orElse(null));
+
+            int rowsAffected = query.executeUpdate();
+            if (!(rowsAffected > 0)) {
+                LOGGER.info("No rows was affected by the update : " + e);
+            }
+            return e;
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException ex) {
+            throw new DAOException(ERROR_DAO, ex);
+        }
+
     }
 
     /*
@@ -108,8 +129,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
 
         if (id < 0) {
             LOGGER.warn("Delete failed id: " + id);
-            throw new DAOException(ERROR_DAO,
-                    new IllegalArgumentException("id must be grater or equals than zero"));
+            throw new DAOException(ERROR_DAO, new IllegalArgumentException("id must be grater or equals than zero"));
         }
         try {
             Query query = sessionFactory.getCurrentSession().createNamedQuery("Computer.deleteById");
@@ -118,8 +138,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
             if (!(rowsAffected > 0)) {
                 LOGGER.info("No rows was affected by the delete : " + id);
             }
-        } catch (IllegalStateException | IllegalArgumentException
-                | DAOException | PersistenceException e) {
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
             throw new DAOException(ERROR_DAO, e);
         }
         return;
@@ -136,8 +155,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
 
         if (offset < 0 || limit < 0) {
             LOGGER.error("readAllWithOffsetAndLimit, offset(" + offset + ") limit(" + limit + ") can't be negative");
-            throw new DAOException(ERROR_DAO,
-                    new IllegalArgumentException("limit and offset can't be negative"));
+            throw new DAOException(ERROR_DAO, new IllegalArgumentException("limit and offset can't be negative"));
         }
 
         try {
@@ -150,8 +168,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
 
             List<Computer> results = query.getResultList();
             return results;
-        } catch (IllegalStateException | IllegalArgumentException
-                | DAOException | PersistenceException e) {
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
             throw new DAOException(ERROR_DAO, e);
         }
 
@@ -177,8 +194,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
                 foundCount = results.get(0);
             }
             return (int) foundCount;
-        } catch (IllegalStateException | IllegalArgumentException
-                | DAOException | PersistenceException e) {
+        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
             throw new DAOException(ERROR_DAO, e);
         }
     }

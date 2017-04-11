@@ -1,5 +1,10 @@
 package com.formation.cdb.dto;
 
+import java.time.LocalDate;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ComputerDto.
@@ -13,10 +18,10 @@ public class ComputerDto  {
     private String name;
 
     /** The introduced. */
-    private String introduced;
+    private LocalDate introduced;
 
     /** The discontinued. */
-    private String discontinued;
+    private LocalDate discontinued;
 
     /** The company. */
     private CompanyDto company;
@@ -65,7 +70,7 @@ public class ComputerDto  {
      *
      * @return the introduced
      */
-    public String getIntroduced() {
+    public LocalDate getIntroduced() {
         return introduced;
     }
 
@@ -74,7 +79,7 @@ public class ComputerDto  {
      *
      * @return the discontinued
      */
-    public String getDiscontinued() {
+    public LocalDate getDiscontinued() {
         return discontinued;
     }
 
@@ -99,10 +104,12 @@ public class ComputerDto  {
         private final String name;
         
         /** The introduced. */
-        private String introduced;
+        @DateTimeFormat(iso = ISO.DATE)
+        private LocalDate introduced;
         
         /** The discontinued. */
-        private String discontinued;
+        @DateTimeFormat(iso = ISO.DATE)
+        private LocalDate discontinued;
         
         /** The company. */
         private CompanyDto company;
@@ -124,7 +131,7 @@ public class ComputerDto  {
          * @param introduced the introduced
          * @return the computer dto builder
          */
-        public ComputerDtoBuilder withIntroduced(String introduced) {
+        public ComputerDtoBuilder withIntroduced(LocalDate introduced) {
             this.introduced = introduced;
             return this;
         }
@@ -135,7 +142,7 @@ public class ComputerDto  {
          * @param discontinued the discontinued
          * @return the computer dto builder
          */
-        public ComputerDtoBuilder withDiscontinued(String discontinued) {
+        public ComputerDtoBuilder withDiscontinued(LocalDate discontinued) {
             this.discontinued = discontinued;
             return this;
         }
@@ -170,11 +177,11 @@ public class ComputerDto  {
         this.name = name;
     }
 
-    public void setIntroduced(String introduced) {
+    public void setIntroduced(LocalDate introduced) {
         this.introduced = introduced;
     }
 
-    public void setDiscontinued(String discontinued) {
+    public void setDiscontinued(LocalDate discontinued) {
         this.discontinued = discontinued;
     }
 

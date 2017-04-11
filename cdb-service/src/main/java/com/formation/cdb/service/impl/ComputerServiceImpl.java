@@ -52,8 +52,8 @@ public class ComputerServiceImpl implements CDBService<Computer> {
             } else {
                 computerDaoImpl.create(c);
             }
-            
-         return Optional.of(c);
+         //TODO hibernate same object.   
+         return Optional.empty();
     }
 
     /* (non-Javadoc)

@@ -58,11 +58,11 @@ public class ComputerDtoMapper {
         ComputerDtoBuilder computerDtoBuilder = new ComputerDtoBuilder(computer.get().getId(), computer.get().getName().get());
         
         if ( computer.get().getIntroduced().isPresent() ) {     
-            computerDtoBuilder.withIntroduced(computer.get().getIntroduced().get().toString());
+            computerDtoBuilder.withIntroduced(computer.get().getIntroduced().get());
         }
         
         if ( computer.get().getDiscontinued().isPresent() ) {     
-            computerDtoBuilder.withDiscontinued(computer.get().getDiscontinued().get().toString());
+            computerDtoBuilder.withDiscontinued(computer.get().getDiscontinued().get());
         }
         
         if ( computer.get().getCompany().isPresent() ) {
@@ -89,8 +89,8 @@ public class ComputerDtoMapper {
         ComputerDto computerDto = computerDtoO.get();
         Long id = computerDto.getId();
         String name = computerDto.getName();
-        String introduced = computerDto.getIntroduced();
-        String discontinued = computerDto.getDiscontinued();
+        LocalDate introduced = computerDto.getIntroduced();
+        LocalDate discontinued = computerDto.getDiscontinued();
         CompanyDto companyDto = computerDto.getCompany();
 
         LocalDate introducedDate = null;
@@ -104,21 +104,7 @@ public class ComputerDtoMapper {
             return Optional.empty();
         }
 
-        if ( StringUtils.isNotBlank(introduced)) {
-            try {
-                introducedDate = DateUtil.stringToDateDashSeparatedYYYYMMDD(introduced);
-            } catch (DateTimeParseException e) {
-                return Optional.empty();
-            }
-        }
-
-        if ( StringUtils.isNotBlank(discontinued)) {
-            try {
-                discontinuedDate = DateUtil.stringToDateDashSeparatedYYYYMMDD(discontinued);
-            } catch (DateTimeParseException e) {
-                return Optional.empty();
-            }
-        }
+        
 
         Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.ofNullable(companyDto));
 
