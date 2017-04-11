@@ -1,0 +1,29 @@
+cdb:
+  image: 'tomcat:7-jre8'
+  ports:
+    - '8080'
+  volumes:
+    - '/prod:/usr/local/tomcat/webapps'
+jenkins:
+  expose:
+    - '50000'
+  image: 'korlan/jenkins:latest'
+  ports:
+    - '8080'
+  volumes:
+    - '/var/run/docker.sock:/var/run/docker.sock'
+    - '/usr/bin/docker:/usr/bin/docker'
+    - '/prod:/prod'
+    - '/test:/var/jenkins_home/workspace/cdb'
+maven-test:
+  command: mvn clean package
+  image: 'maven:3.3.9-jdk-8'
+  links:
+    - 'mysql-test:mysql'
+  volumes:
+    - '/test:/usr/src/mymaven'
+  working_dir: /usr/src/mymaven
+mysql-prod:
+  image: 'korlan/mysql:latest'
+mysql-test:
+  image: 'korlan/mysql:latest'
