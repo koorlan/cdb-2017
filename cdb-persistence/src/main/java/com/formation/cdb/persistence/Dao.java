@@ -11,13 +11,15 @@ import java.util.Optional;
  */
 public interface Dao<T> {
     
+    /** The error dao. */
     String ERROR_DAO = "There were an error on dao layer";
     
     /**
      * CRUD , create an element.
-     * @param e
-     *            a T entity representation of the new element to insert.
+     *
+     * @param e            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
+     * @return the t
      */
     T create(T e);
 
@@ -31,17 +33,17 @@ public interface Dao<T> {
 
     /**
      * CRUD , update an element on the database.
-     * @param e
-     *            a T entity representation of the new element to insert.
+     *
+     * @param e            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
+     * @return the t
      */
     T update(T e);
 
     /**
      * CRUD , Delete an element on the database.
-     * @param e
-     *            a T entity representation of the new element to insert.
-     *            Be carefull of the e.getId().
+     *
+     * @param id the id
      */
     void delete(long id);
 

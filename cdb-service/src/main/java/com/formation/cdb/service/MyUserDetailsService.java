@@ -20,12 +20,20 @@ import com.formation.cdb.persistence.UserDao;
 
 
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class MyUserDetailsService.
+ */
 @Service("userDetailsService")
 public class MyUserDetailsService implements UserDetailsService {
 
+    /** The user dao. */
     @Autowired
     private UserDao userDao;
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.core.userdetails.UserDetailsService#loadUserByUsername(java.lang.String)
+     */
     @Transactional(readOnly=true)
     @Override
     public UserDetails loadUserByUsername(final String username) throws UsernameNotFoundException {
@@ -38,11 +46,24 @@ public class MyUserDetailsService implements UserDetailsService {
     }
 
     // Converts com.mkyong.users.model.User user to
+    /**
+     * Builds the user for authentication.
+     *
+     * @param user the user
+     * @param authorities the authorities
+     * @return the user
+     */
     // org.springframework.security.core.userdetails.User
     private User buildUserForAuthentication(com.formation.cdb.entity.impl.User user, List<GrantedAuthority> authorities) {
         return new User(user.getUsername(), user.getPassword(), user.isEnabled(), true, true, true, authorities);
     }
 
+    /**
+     * Builds the user authority.
+     *
+     * @param userRoles the user roles
+     * @return the list
+     */
     private List<GrantedAuthority> buildUserAuthority(Set<UserRole> userRoles) {
 
         Set<GrantedAuthority> setAuths = new HashSet<GrantedAuthority>();

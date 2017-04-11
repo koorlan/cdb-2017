@@ -15,13 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface CDBService<T> {
     
+    /** The Constant ERROR_SERVICE. */
     static final String ERROR_SERVICE = "There were and error on the service";
     
     /**
      * CRUD , create an element.
-     * @param e
-     *            a T entity representation of the new element to insert.
+     *
+     * @param e            a T entity representation of the new element to insert.
      *            Be carefull of the e.getId().
+     * @return the optional
      */
 
     Optional<T> saveOrUpdate(T e);
@@ -33,15 +35,20 @@ public interface CDBService<T> {
      */
     
     Optional<T> findById(long id);
+    
     /**
      * CRUD , update an element on the database.
-     * @param e
-     *            a T entity representation of the new element to insert.
-     *            Be carefull of the e.getId().
+     *
+     * @param id the id
      */
     
     void delete(long id);
     
+    /**
+     * Delete multiple.
+     *
+     * @param ids the ids
+     */
     void deleteMultiple(ArrayList<Long> ids );
     
     /**

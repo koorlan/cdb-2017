@@ -57,12 +57,12 @@ public class Computer extends Model {
     /**
      * The data when the computer have been introduced.
      */
-    @DateTimeFormat(iso = ISO.DATE)
+
     private LocalDate introduced;
     /**
      * The date when the computer have been discontinued of the marker.
      */
-    @DateTimeFormat(iso = ISO.DATE)
+
     private LocalDate discontinued;
     /**
      * The company object known as the manufacturer of the computer.

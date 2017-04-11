@@ -33,17 +33,21 @@ public class ClientConsole {
     /** The scanner. */
     private final Scanner scanner = new Scanner(System.in);
     
+    /** The service. */
     @Autowired
     @Qualifier("computerServiceImpl")
     private CDBService<Computer> service;
 
+    /** The service company. */
     @Autowired
     @Qualifier("companyServiceImpl")
     private CDBService<Company> serviceCompany;
     
+    /** The pager computer. */
     @Autowired
     private PagerComputer pagerComputer;
     
+    /** The ctx. */
     private ApplicationContext ctx;
 
 
