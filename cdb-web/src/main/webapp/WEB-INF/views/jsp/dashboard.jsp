@@ -25,7 +25,7 @@
 		<a class="navbar-brand" href="<c:url value="/"/>"> Application -
 			Computer Database </a>
 			      
-     <a class="align-middle" href="?locale=en"><i class="us flag"></i></a>
+     <a class="align-middle" href="?locale=en_US"><i class="us flag"></i></a>
      <a  class="align-middle" href="?locale=fr_FR"><i class="fr flag"></i></a>
 	</div>
 	

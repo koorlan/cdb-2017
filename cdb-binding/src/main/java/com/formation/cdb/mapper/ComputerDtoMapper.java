@@ -93,8 +93,6 @@ public class ComputerDtoMapper {
         LocalDate discontinued = computerDto.getDiscontinued();
         CompanyDto companyDto = computerDto.getCompany();
 
-        LocalDate introducedDate = null;
-        LocalDate discontinuedDate = null;
 
         if ( id != null && id < 0) {
             return Optional.empty();
@@ -109,8 +107,8 @@ public class ComputerDtoMapper {
         Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.ofNullable(companyDto));
 
         Computer computer = new Computer.ComputerBuilder(id, name)
-                .withIntroduced(introducedDate)
-                .withDiscontinued(discontinuedDate)
+                .withIntroduced(introduced)
+                .withDiscontinued(discontinued)
                 .withCompany(company.orElse(null))
                 .build();
         return Optional.of(computer);

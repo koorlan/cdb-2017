@@ -71,7 +71,9 @@ public class ComputerFormValidator implements Validator {
         } else {
             // TODO not here, prefer formatter..
             Optional<Company> company = companyService.findById(computer.getCompany().getId());
+            LOGGER.debug("Company fetch from database : " + company);
             Optional<CompanyDto> companyDto = CompanyDtoMapper.mapCompanyDtoFromCompany(company);
+            LOGGER.debug("CompanyDto after mapping : " + companyDto);
             if (companyDto.isPresent()) {
                 computer.setCompany(companyDto.get());
             }
