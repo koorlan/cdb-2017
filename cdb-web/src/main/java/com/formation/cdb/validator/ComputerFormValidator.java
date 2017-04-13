@@ -37,23 +37,6 @@ public class ComputerFormValidator implements Validator {
         ComputerDto computer = (ComputerDto) target;
         LOGGER.debug(computer.toString());
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty.computerForm.name");
-
-
-       /* if ( StringUtils.isNotBlank(computer.getIntroduced()) ) {
-            try {
-                introduced = DateUtil.stringToDateDashSeparatedYYYYMMDD(computer.getIntroduced());
-            } catch (DateTimeParseException e) {
-                errors.rejectValue("introduced", "BadFormat.computerForm.date");
-            }
-        }
-        
-        if ( StringUtils.isNotBlank(computer.getDiscontinued()) ) {
-            try {
-                discontinued = DateUtil.stringToDateDashSeparatedYYYYMMDD(computer.getDiscontinued());
-            } catch (DateTimeParseException e) {
-                errors.rejectValue("discontinued", "BadFormat.computerForm.date");
-            }
-        } */
         
         if (computer.getIntroduced() != null && computer.getDiscontinued() != null && computer.getDiscontinued().isBefore(computer.getIntroduced())) {
             LOGGER.debug("discontinued is before introduced " + computer);
@@ -65,7 +48,7 @@ public class ComputerFormValidator implements Validator {
             LOGGER.debug("Company is null or bad id" + computer.getCompany());
             errors.rejectValue("company", "InvalidId.computerForm.company");
         } else {
-            // TODO not here, prefer formatter..
+
             Optional<Company> company = companyService.findById(computer.getCompany().getId());
             LOGGER.debug("Company fetch from database : " + company);
             Optional<CompanyDto> companyDto = CompanyDtoMapper.mapCompanyDtoFromCompany(company);

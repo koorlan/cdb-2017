@@ -23,8 +23,6 @@ public class ComputerDto  {
 
     /** The introduced. */    
 
-    @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate introduced;
 
     /** The discontinued. */

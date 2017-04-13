@@ -121,10 +121,6 @@ public class ComputerController {
         }
     }
 
-    @GetMapping("/{id}")
-    public void showComputer() {
-        // TODO
-    }
 
     @GetMapping("/{id}/edit")
     public String showUpdateComputerForm(@PathVariable("id") long id, Model model,
