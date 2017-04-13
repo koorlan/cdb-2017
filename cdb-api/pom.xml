@@ -8,9 +8,7 @@
 		<artifactId>cdb</artifactId>
 		<version>3.1.3-SNAPSHOT</version>
 	</parent>
-	<groupId>com.formation</groupId>
 	<artifactId>cdb-api</artifactId>
-	<version>3.1.3-SNAPSHOT</version>
 	<packaging>war</packaging>
 	<name>cdb-api</name>
 	<url>http://maven.apache.org</url>
