@@ -2,8 +2,12 @@ package com.formation.cdb.dto;
 
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
+import com.formation.cdb.dto.CompanyDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -17,7 +21,10 @@ public class ComputerDto  {
     /** The name. */
     private String name;
 
-    /** The introduced. */
+    /** The introduced. */    
+
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate introduced;
 
     /** The discontinued. */
@@ -43,6 +50,7 @@ public class ComputerDto  {
         this.company = builder.company;
     }
     
+    @JsonIgnore
     public boolean isNew(){
         return id == 0;
     }
@@ -104,11 +112,9 @@ public class ComputerDto  {
         private final String name;
         
         /** The introduced. */
-        @DateTimeFormat(iso = ISO.DATE)
         private LocalDate introduced;
         
         /** The discontinued. */
-        @DateTimeFormat(iso = ISO.DATE)
         private LocalDate discontinued;
         
         /** The company. */

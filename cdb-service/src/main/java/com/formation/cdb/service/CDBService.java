@@ -49,7 +49,7 @@ public interface CDBService<T> {
      *
      * @param ids the ids
      */
-    void deleteMultiple(ArrayList<Long> ids );
+    void deleteMultiple(List<Long> ids );
     
     /**
      * Construct a list of T by creating T object from the database

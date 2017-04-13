@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.SessionScope;
 
 import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.service.CDBService;
 
 
@@ -23,20 +24,20 @@ public class PagerCompany extends Pager<Company> {
 
     @Autowired
     @Qualifier("companyServiceImpl")
-    private CDBService<Company> service;
+    private CDBService<Company> companyService;
     
     /**
-     * Constructor of PagerCompany.
-     * Dedicated Pager for Companies (Page Companies).
+     * Constructor of PagerCompany. Dedicated Pager for Companies
+     * (Page Company).
      */
     public PagerCompany() {
-        super();        
-    }
+        super();
 
+    }
     
     @PostConstruct
     public void init(){
-        max = service.sizeOfTable(filter);
+        max = companyService.sizeOfTable(filter);
         nbPages = (int) Math.ceil((double)max / pageSize);
     }
     
@@ -49,11 +50,11 @@ public class PagerCompany extends Pager<Company> {
         int offset;
         int limit;
 
-        index = (page > nbPages) ? nbPages : page;
+        index = (page -1 > nbPages) ? nbPages : page -1;
 
         offset = index * pageSize;
         limit = pageSize;
-        return service.findAllWithOffsetAndLimit(offset-1, limit, filter);
+        return companyService.findAllWithOffsetAndLimit(offset, limit, filter);
     }
 
     /* (non-Javadoc)
@@ -61,8 +62,9 @@ public class PagerCompany extends Pager<Company> {
      */
     @Override
     public void setFilter(String filter){
-        max = service.sizeOfTable(filter);
-        nbPages = max / pageSize;
+        max = companyService.sizeOfTable(filter);
+        nbPages = (int) Math.ceil((double)max / pageSize) ;
+        page = 1;
         this.filter = filter;
     }
 
@@ -71,7 +73,7 @@ public class PagerCompany extends Pager<Company> {
      */
     @Override
     public int getMax() {
-        max = service.sizeOfTable(filter);
+        max = companyService.sizeOfTable(filter);
         return max;
     }
 }

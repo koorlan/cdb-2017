@@ -1,18 +1,12 @@
 package com.formation.cdb.web.controller;
 
-import java.net.ConnectException;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletRequest;
-
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.LockedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -25,9 +19,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.formation.cdb.dto.CompanyDto;
@@ -36,6 +28,7 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.exception.ServiceException;
+import com.formation.cdb.formatter.USLocalDateFormatter;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.CDBService;
@@ -66,9 +59,15 @@ public class ComputerController {
         this.computerFormValidator = computerFormValidator;
     }
 
-    @InitBinder("computerDto")
-    private void initBinder(WebDataBinder binder) {
+    @InitBinder("computerForm")
+    private void initBinderComputerForm(WebDataBinder binder) {
         binder.setValidator(computerFormValidator);
+
+    }
+
+    @ModelAttribute("dateFormat")
+    public String localeFormat(Locale locale) {
+        return StringUtils.lowerCase(USLocalDateFormatter.getPattern(locale));
     }
 
     @GetMapping
@@ -101,13 +100,14 @@ public class ComputerController {
     @PostMapping
     public String saveOrUpdateComputer(@ModelAttribute("computerForm") @Validated ComputerDto computerDto,
             BindingResult result, Model model, final RedirectAttributes redirectAttributes) {
-        LOGGER.debug("saveOrUpdateComputer() : {}", computerDto);
+        LOGGER.debug("saveOrUpdateComputer() : DTO:" + computerDto);
 
         if (result.hasErrors()) {
             populateDefaultModel(model);
             return "formComputer";
         } else {
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
+            LOGGER.debug("saveOrUpdateComputer() : Computer after mapping:" + computer);
             redirectAttributes.addFlashAttribute("css", "success");
             if (computer.get().isNew()) {
                 redirectAttributes.addFlashAttribute("msg", "Computer added successfully!");

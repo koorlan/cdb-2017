@@ -75,7 +75,7 @@ public class CompanyDtoMapper {
         if ( id <= 0) {
             return Optional.empty();
         }
-
+        
         if ( StringUtils.isBlank(name)) {
             return Optional.empty();
         }

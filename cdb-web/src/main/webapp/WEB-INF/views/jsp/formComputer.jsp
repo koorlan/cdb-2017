@@ -64,7 +64,7 @@
 								<label class="col-sm-2 control-label">Introduced</label>
 								<div class="col-sm-10">
 									<form:input path="introduced" class="form-control"
-										id="introduced" placeholder="yyyy-dd-mm" />
+										id="introduced" placeholder="${dateFormat}" />
 									<form:errors path="introduced" class="control-label" />
 								</div>
 							</div>
@@ -75,7 +75,7 @@
 								<label class="col-sm-2 control-label">Discontinued</label>
 								<div class="col-sm-10">
 									<form:input path="discontinued" class="form-control"
-										id="discontinued" placeholder="yyyy-dd-mm" />
+										id="discontinued" placeholder="${dateFormat}" />
 									<form:errors path="discontinued" class="control-label" />
 								</div>
 							</div>

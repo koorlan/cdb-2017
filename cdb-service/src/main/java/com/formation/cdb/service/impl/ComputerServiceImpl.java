@@ -77,7 +77,7 @@ public class ComputerServiceImpl implements CDBService<Computer> {
     
     @Transactional
     @Override
-    public void deleteMultiple(ArrayList<Long> ids ){
+    public void deleteMultiple(List<Long> ids ){
         for (long id: ids){
             delete(id);
         }

@@ -4,19 +4,14 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.PersistenceException;
-import javax.persistence.TransactionRequiredException;
 import javax.persistence.TypedQuery;
 
-import org.hibernate.HibernateException;
 import org.hibernate.SessionFactory;
-import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.formation.cdb.entity.impl.Company;
-import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.persistence.Dao;
 

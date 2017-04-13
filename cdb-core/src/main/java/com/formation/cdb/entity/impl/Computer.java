@@ -17,9 +17,6 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.format.annotation.DateTimeFormat.ISO;
-
 import com.formation.cdb.entity.Model;
 
 // TODO: Auto-generated Javadoc
@@ -57,12 +54,10 @@ public class Computer extends Model {
     /**
      * The data when the computer have been introduced.
      */
-
     private LocalDate introduced;
     /**
      * The date when the computer have been discontinued of the marker.
      */
-
     private LocalDate discontinued;
     /**
      * The company object known as the manufacturer of the computer.
