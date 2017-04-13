@@ -3,6 +3,11 @@ package com.formation.cdb.dto;
 import java.time.LocalDate;
 
 import com.formation.cdb.dto.CompanyDto;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -17,6 +22,9 @@ public class ComputerDto  {
     private String name;
 
     /** The introduced. */    
+
+    @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate introduced;
 
     /** The discontinued. */
@@ -42,6 +50,7 @@ public class ComputerDto  {
         this.company = builder.company;
     }
     
+    @JsonIgnore
     public boolean isNew(){
         return id == 0;
     }

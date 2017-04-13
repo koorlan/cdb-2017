@@ -7,17 +7,18 @@
 	<packaging>pom</packaging>
 	<name>cdb</name>
 	<url>http://cdb-1.cdb.7912ff99.cont.dockerapp.io:32789/cdb/database</url>
-		<modules>
+	<modules>
 		<module>cdb-binding</module>
 		<module>cdb-console</module>
 		<module>cdb-core</module>
 		<module>cdb-persistence</module>
 		<module>cdb-service</module>
 		<module>cdb-web</module>
+		<module>cdb-api</module>
 	</modules>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		
+
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<maven-war.version>2.6</maven-war.version>
@@ -25,28 +26,28 @@
 		<maven-sonar.version>3.2</maven-sonar.version>
 		<maven-checkstyle.version>2.17</maven-checkstyle.version>
 		<maven-javadoc.version>2.10.4</maven-javadoc.version>
-		
+
 		<checkstyle.config.location>config/checkstyle/checkstyle.xml</checkstyle.config.location>
-		
+
 		<!-- Test -->
 		<junit.version>4.12</junit.version>
 		<mockito.version>1.10.19</mockito.version>
 		<selenium.version>3.3.1</selenium.version>
-		
+
 		<!-- Database -->
 		<hibernate.version>5.2.9.Final</hibernate.version>
-		<persistence.version>1.0.0.Final</persistence.version>		
+		<persistence.version>1.0.0.Final</persistence.version>
 		<mysql.version>5.1.40</mysql.version>
-		
+
 		<!-- Util -->
 		<commons-lang3.version>3.5</commons-lang3.version>
-		
+
 		<!-- Servlet -->
 		<servlet-api.version>3.1.0</servlet-api.version>
 		<servlet-jsp.version>2.3.1</servlet-jsp.version>
 		<jstl.version>1.2</jstl.version>
-		
-		
+
+
 		<!-- Spring -->
 		<spring.version>4.3.7.RELEASE</spring.version>
 		<spring.security.version>4.2.2.RELEASE</spring.security.version>
@@ -55,6 +56,8 @@
 		<!-- Log -->
 		<logback.version>1.1.3</logback.version>
 		<jcl.slf4j.version>1.7.12</jcl.slf4j.version>
+
+		<jackson.version>2.8.8</jackson.version>
 	</properties>
 	<build>
 		<finalName>cdb</finalName>
@@ -129,13 +132,13 @@
 				<artifactId>spring-security-config</artifactId>
 				<version>${spring.security.version}</version>
 			</dependency>
-			
-<dependency>
+
+			<dependency>
 				<groupId>org.springframework.security</groupId>
 				<artifactId>spring-security-core</artifactId>
 				<version>${spring.security.version}</version>
 			</dependency>
-			
+
 			<!-- Test -->
 			<dependency>
 				<groupId>org.seleniumhq.selenium</groupId>
@@ -208,6 +211,27 @@
 				<artifactId>hibernate-jpa-2.1-api</artifactId>
 				<version>${persistence.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.datatype</groupId>
+				<artifactId>jackson-datatype-jsr310</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+
 		</dependencies>
 	</dependencyManagement>
 	<reporting>

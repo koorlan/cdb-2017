@@ -68,7 +68,7 @@ public class CompanyServiceImpl implements CDBService<Company> {
 
     @Transactional
     @Override
-    public void deleteMultiple(ArrayList<Long> ids) {
+    public void deleteMultiple(List<Long> ids) {
         LOGGER.warn("Method delete is not implemented");
         throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method delete is not implemented"));
     };
