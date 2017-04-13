@@ -8,11 +8,11 @@
 	<name>cdb</name>
 	<url>http://cdb-1.cdb.7912ff99.cont.dockerapp.io:32789/cdb/database</url>
 	<modules>
-		<module>cdb-binding</module>
-		<module>cdb-console</module>
 		<module>cdb-core</module>
+		<module>cdb-binding</module>
 		<module>cdb-persistence</module>
 		<module>cdb-service</module>
+		<module>cdb-console</module>
 		<module>cdb-web</module>
 		<module>cdb-api</module>
 	</modules>
