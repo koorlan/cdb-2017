@@ -3,6 +3,7 @@ package com.formation.cdb.api;
 import java.util.List;
 import java.util.Optional;
 
+import com.formation.cdb.dto.ComputersApiDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,7 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.formation.cdb.dto.ComputerDto;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
@@ -94,16 +92,26 @@ public class ComputerController {
     }
 
     @GetMapping
-    public @ResponseBody List<ComputerDto> viewList(@RequestParam("page") Optional<Integer> page,
+    public @ResponseBody ResponseEntity<?> viewList(@RequestParam("page") Optional<Integer> page,
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showComputers()");
+        try {
+            int numberOfComputers = computerService.sizeOfTable(filter.orElse(""));
+            Pager pager = new Pager(filter, size, page, numberOfComputers);
 
-        int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
-        Pager pager = new Pager(filter,size, page, numberOfComputers);
-        
-        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
-        List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
+            List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
+            List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
 
-        return computersDto;
+            ComputersApiDto wrapper = new ComputersApiDto();
+            wrapper.setComputers(computersDto);
+
+            int totalComputer = computerService.sizeOfTable(pager.getFilter());
+            wrapper.setTotal(totalComputer);
+            return new ResponseEntity<>(wrapper, HttpStatus.OK);
+        } catch (DAOException | ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
+
 }

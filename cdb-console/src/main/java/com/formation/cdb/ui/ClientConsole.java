@@ -1,58 +1,61 @@
 package com.formation.cdb.ui;
 
+import java.text.ParseException;
 import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
+import com.formation.cdb.mapper.CompanyDtoMapper;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import com.formation.cdb.dto.*;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.persistence.HibernateConfiguration;
-import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.pager.Pager;
 import com.formation.cdb.util.DateUtil;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 // TODO: Auto-generated Javadoc
+
 /**
  * The Class ClientConsole.
  */
 public class ClientConsole {
 
-    /** The exit. */
-    // TODO Refactor all..Ugly Impl.
+    private static final String BASE_URL = "http://127.0.0.1:8080";
+    private static final String BASE_COMPUTER = "/computers";
+    private static final String BASE_COMPANY = "/companies";
+
+    /**
+     * The exit.
+     */
     private boolean exit;
 
-    /** The scanner. */
+    /**
+     * The scanner.
+     */
     private final Scanner scanner = new Scanner(System.in);
 
     private RestTemplate restTemplate = new RestTemplate();
 
+    private Pager pagerComputer = new Pager(Optional.of(new String("")), Optional.of(new Integer(10)), Optional.of(new Integer(1)), 0);
+    private Pager pagerCompany = new Pager(Optional.of(new String("")), Optional.of(new Integer(10)), Optional.of(new Integer(1)), 0);
+
     /**
      * Constructor of ClientConsole.
      */
-    public ClientConsole() {
+    private ClientConsole() {
         exit = false;
     }
 
     /**
      * Main Loop.
-     * 
-     * @param args
-     *            arguments of cdb. No need.
+     *
+     * @param args arguments of cdb. No need.
      */
     public static void main(String[] args) {
         System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
@@ -65,7 +68,7 @@ public class ClientConsole {
 
     /**
      * Simple test to see if we have to close the program.
-     * 
+     *
      * @return true or false.
      */
     public boolean isExit() {
@@ -91,96 +94,141 @@ public class ClientConsole {
 
         s = scanner.nextLine();
         switch (s) {
-        case "a":
-            listComputers();
-            break;
-        case "z":
-            listCompanies();
-            break;
-        case "e":
-            showComputer();
-            break;
-        case "r":
-            showCompany();
-            break;
-        case "c":
-            createComputer();
-            break;
-        case "d":
-            deleteComputer();
-            break;
-        case "u":
-            updateComputer();
-            break;
-        case "x":
-            closeClientConsole();
-            break;
-        default:
-            System.out.print("Not a valid input please retry.");
-            break;
+            case "a":
+                listComputers();
+                break;
+            case "z":
+                listCompanies();
+                break;
+            case "e":
+                showComputer();
+                break;
+            case "r":
+                showCompany();
+                break;
+            case "c":
+                createComputer();
+                break;
+            case "d":
+                deleteComputer();
+                break;
+            case "u":
+                updateComputer();
+                break;
+            case "x":
+                closeClientConsole();
+                break;
+            default:
+                System.out.print("Not a valid input please retry.");
+                break;
         }
     }
 
     /**
      * Action, list computer by page.
      */
-    public void listComputers() {
-        ComputerDto[] array = restTemplate.getForObject("http://127.0.0.1:8080/computers", ComputerDto[].class);
-        List<ComputerDto> list = Arrays.asList(array);
-        for (ComputerDto computerDto : list) {
-            Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
-            computer.ifPresent(c -> System.out.println(c));
-        }
-        return;
-    };
+    private void listComputers() {
+        String command;
+        boolean exit;
+        int num = 0;
+        String intString;
+
+        exit = false;
+        do {
+
+            String url = BASE_URL + BASE_COMPUTER + "?page=" + pagerComputer.getCurrentPageIndex() + "&size=" + pagerComputer.getPageSize() + "&filter=" + pagerComputer.getFilter();
+            ComputersApiDto computers = restTemplate.getForObject(url, ComputersApiDto.class);
+
+            pagerComputer.setMax(computers.getTotal());
+
+            for (ComputerDto computerDto : computers.getComputers()) {
+                Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
+                computer.ifPresent(System.out::println);
+            }
+
+
+            System.out.println(pagerComputer.getCurrentPageIndex() + " of " + pagerComputer.getNbPages() + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
+            command = scanner.nextLine();
+            switch (command) {
+                case "n":
+                    pagerComputer.next();
+
+                    break;
+                case "p":
+                    pagerComputer.prev();
+
+                    break;
+                case "g":
+                    System.out.println("enter the page number");
+                    intString = scanner.nextLine();
+                    intString = intString.trim();
+                    try {
+                        num = Integer.parseInt(intString);
+                        pagerComputer.goTo(num);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid");
+                    }
+                    break;
+                case "x":
+                    exit = true;
+                    break;
+            }
+
+        } while (!exit);
+    }
 
     /**
      * Action, list all companie with page.
      */
     public void listCompanies() {
-        Pager pager;
         String command;
         boolean exit;
-        int index;
         int num = 0;
         String intString;
 
-        pager = null;// new Pager();
         exit = false;
-        index = pager.getCurrentPageIndex();
         do {
-            //for (Company c : pager.getPage(index)) {
-            //    System.out.println(c);
-            //}
 
-            System.out.println(index + " of " + pager.getNbPages()
-                    + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
+            String url = BASE_URL + BASE_COMPANY + "?page=" + pagerCompany.getCurrentPageIndex() + "&size=" + pagerCompany.getPageSize() + "&filter=" + pagerCompany.getFilter();
+            CompaniesApiDto companies = restTemplate.getForObject(url, CompaniesApiDto.class);
+
+            pagerCompany.setMax(companies.getTotal());
+
+            for (CompanyDto companyDto : companies.getCompanies()) {
+                Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
+                company.ifPresent(System.out::println);
+            }
+
+
+            System.out.println(pagerCompany.getCurrentPageIndex() + " of " + pagerCompany.getNbPages() + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");
             command = scanner.nextLine();
             switch (command) {
-            case "n":
-                pager.next();
-                index = pager.getCurrentPageIndex();
-                break;
-            case "p":
-                pager.prev();
-                index = pager.getCurrentPageIndex();
-                break;
-            case "g":
-                System.out.println("enter the page number");
-                intString = scanner.nextLine();
-                intString = intString.trim();
-                if (intString.isEmpty()) {
-                    num = Integer.parseInt(intString);
-                }
-                index = num;
-                break;
-            case "x":
-                exit = true;
-                break;
+                case "n":
+                    pagerCompany.next();
+
+                    break;
+                case "p":
+                    pagerCompany.prev();
+
+                    break;
+                case "g":
+                    System.out.println("enter the page number");
+                    intString = scanner.nextLine();
+                    intString = intString.trim();
+                    try {
+                        num = Integer.parseInt(intString);
+                        pagerCompany.goTo(num);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Invalid");
+                    }
+                    break;
+                case "x":
+                    exit = true;
+                    break;
             }
 
         } while (!exit);
-    };
+    }
 
     /**
      * Show detail of a specific computer.
@@ -201,7 +249,9 @@ public class ClientConsole {
 
         return;
 
-    };
+    }
+
+    ;
 
     /**
      * Show a company details.
@@ -222,7 +272,9 @@ public class ClientConsole {
             System.out.println("Error : " + err.getMessage());
         }
 
-    };
+    }
+
+    ;
 
     /**
      * Action to create a computer.
@@ -265,7 +317,9 @@ public class ClientConsole {
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
             // service.saveOrUpdate(computer);
         }
-    };
+    }
+
+    ;
 
     /**
      * Action, delete a computer.
@@ -283,15 +337,17 @@ public class ClientConsole {
 
         answer = scanner.nextLine();
         switch (answer) {
-        case "y":
-            // service.delete(service.findById(id).get().getId());
-            break;
-        case "n":
-        default:
-            break;
+            case "y":
+                // service.delete(service.findById(id).get().getId());
+                break;
+            case "n":
+            default:
+                break;
         }
 
-    };
+    }
+
+    ;
 
     /**
      * Update a computer.
@@ -329,89 +385,89 @@ public class ClientConsole {
         answer = null;
         answer = scanner.nextLine();
         switch (answer) {
-        case "e": // edit
-            System.out.println("Enter new name");
-            newName = scanner.nextLine();
-            newName = newName.trim();
-            if (StringUtils.isBlank(newName)) {
-                return;
-            }
-            break;
-        default:
-            break;
+            case "e": // edit
+                System.out.println("Enter new name");
+                newName = scanner.nextLine();
+                newName = newName.trim();
+                if (StringUtils.isBlank(newName)) {
+                    return;
+                }
+                break;
+            default:
+                break;
         }
 
         System.out.println("Date Introduced: [" + computer.getIntroduced() + "] (e/d)");
         answer = null;
         answer = scanner.nextLine();
         switch (answer) {
-        case "e": // edit
-            System.out.println("Enter new date introduced (DD-MM-YYYY)");
-            newDateIntroducedString = scanner.nextLine();
-            newDateIntroducedString = newDateIntroducedString.trim();
-            if (!newDateIntroducedString.isEmpty()) {
-                newDateIntroduced = DateUtil.stringToDate(newDateIntroducedString);
-            }
+            case "e": // edit
+                System.out.println("Enter new date introduced (DD-MM-YYYY)");
+                newDateIntroducedString = scanner.nextLine();
+                newDateIntroducedString = newDateIntroducedString.trim();
+                if (!newDateIntroducedString.isEmpty()) {
+                    newDateIntroduced = DateUtil.stringToDate(newDateIntroducedString);
+                }
 
-            break;
-        case "d": // delete
-            newDateIntroduced = null;
-            break;
-        default:
-            break;
+                break;
+            case "d": // delete
+                newDateIntroduced = null;
+                break;
+            default:
+                break;
         }
 
         System.out.println("Date Discontinued: [" + computer.getDiscontinued() + "] (e/d)");
         answer = null;
         answer = scanner.nextLine();
         switch (answer) {
-        case "e": // edit
-            System.out.println("Enter new date discontinued (DD-MM-YYYY)");
-            newDateDiscontinuedString = scanner.nextLine();
-            newDateDiscontinuedString = newDateDiscontinuedString.trim();
-            if (!newDateDiscontinuedString.isEmpty()) {
-                newDateDiscontinued = DateUtil.stringToDate(newDateDiscontinuedString);
-            }
+            case "e": // edit
+                System.out.println("Enter new date discontinued (DD-MM-YYYY)");
+                newDateDiscontinuedString = scanner.nextLine();
+                newDateDiscontinuedString = newDateDiscontinuedString.trim();
+                if (!newDateDiscontinuedString.isEmpty()) {
+                    newDateDiscontinued = DateUtil.stringToDate(newDateDiscontinuedString);
+                }
 
-            break;
-        case "d": // delete
-            newDateDiscontinued = null;
-            break;
-        default:
-            break;
+                break;
+            case "d": // delete
+                newDateDiscontinued = null;
+                break;
+            default:
+                break;
         }
 
         System.out.println("Compagny (id): [" + computer.getCompany() + "] (e/d)");
         answer = null;
         answer = scanner.nextLine();
         switch (answer) {
-        case "e": // edit
-            System.out.println("Enter new company id");
-            newIdCompanyString = scanner.nextLine();
-            newIdCompanyString = newIdCompanyString.trim();
-            if (!newIdCompanyString.isEmpty()) {
-                newIdCompany = Long.parseLong(newIdCompanyString);
-            }
-            Optional<Company> optionalCompany = null;// serviceCompany.findById(newIdCompany);
-            newCompany = optionalCompany.get();
+            case "e": // edit
+                System.out.println("Enter new company id");
+                newIdCompanyString = scanner.nextLine();
+                newIdCompanyString = newIdCompanyString.trim();
+                if (!newIdCompanyString.isEmpty()) {
+                    newIdCompany = Long.parseLong(newIdCompanyString);
+                }
+                Optional<Company> optionalCompany = null;// serviceCompany.findById(newIdCompany);
+                newCompany = optionalCompany.get();
 
-            System.out.println("Company :" + newCompany + " (y/n)");
-            answer = null;
-            answer = scanner.nextLine();
-            switch (answer) {
-            case "n":
+                System.out.println("Company :" + newCompany + " (y/n)");
+                answer = null;
+                answer = scanner.nextLine();
+                switch (answer) {
+                    case "n":
+                        newCompany = null;
+                        break;
+                    default:
+                        break;
+                }
+
+                break;
+            case "d": // delete
                 newCompany = null;
                 break;
             default:
                 break;
-            }
-
-            break;
-        case "d": // delete
-            newCompany = null;
-            break;
-        default:
-            break;
         }
 
         computer = new Computer.ComputerBuilder(computer.getId(), newName).withIntroduced(newDateIntroduced)
@@ -419,7 +475,9 @@ public class ClientConsole {
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
             // service.saveOrUpdate(computer);
         }
-    };
+    }
+
+    ;
 
     /**
      * Quit the program.
