@@ -7,6 +7,7 @@ package com.formation.cdb.entity.impl;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
