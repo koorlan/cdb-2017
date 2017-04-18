@@ -80,6 +80,7 @@ public class ComputerController {
         }
         if (filter.isPresent()) {
             pagerComputer.setFilter(filter.get());
+            model.put("filter",filter.get()); 
         }
         if (size.isPresent()) {
             pagerComputer.setPageSize(size.get());
@@ -91,7 +92,6 @@ public class ComputerController {
         model.put("totalComputers", pagerComputer.getMax());
         model.put("currentIndexPage", pagerComputer.getCurrentPageIndex());
         model.put("maxIndexPage", pagerComputer.getNbPages());
-        
         model.put("deleteForm", new ComputerListWrapper());
         
         return "dashboard";

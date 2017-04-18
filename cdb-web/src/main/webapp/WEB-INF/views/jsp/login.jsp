@@ -1,78 +1,77 @@
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page session="true"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page session="true" %>
 <html>
 <head>
-<title>Login Page</title>
-<style>
-.error {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #a94442;
-	background-color: #f2dede;
-	border-color: #ebccd1;
-}
+    <title>Login Page</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <!-- Bootstrap -->
+    <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/css/mdb.min.css" rel="stylesheet">
 
-.msg {
-	padding: 15px;
-	margin-bottom: 20px;
-	border: 1px solid transparent;
-	border-radius: 4px;
-	color: #31708f;
-	background-color: #d9edf7;
-	border-color: #bce8f1;
-}
-
-#login-box {
-	width: 300px;
-	padding: 20px;
-	margin: 100px auto;
-	background: #fff;
-	-webkit-border-radius: 2px;
-	-moz-border-radius: 2px;
-	border: 1px solid #000;
-}
-</style>
+    <link href="<c:url value="/resources/css/font-awesome.css"/>" rel="stylesheet" media="screen"/>
 </head>
+
 <body onload='document.loginForm.username.focus();'>
 
-	<h1>CDB Authentification</h1>
+<nav class="navbar navbar-toggleable-md navbar-dark fixed-top scrolling-navbar bg-primary ">
+    <div class="container">
+        <a class="navbar-brand" href="<c:url value="/"/>"> <strong>Retour</strong></a>
+    </div>
+</nav>
+<section id="main">
+    <div class="container text-center">
 
-	<div id="login-box">
+        <h1>CDB Authentification</h1>
 
-		<h3>Login with Username and Password</h3>
+        <div id="login-box">
 
-		<c:if test="${not empty error}">
-			<div class="error">${error}</div>
-		</c:if>
-		<c:if test="${not empty msg}">
-			<div class="msg">${msg}</div>
-		</c:if>
+            <h3>Login with Username and Password</h3>
 
-		<form name='loginForm'
-			action="<c:url value='/login' />" method='POST'>
+            <c:if test="${not empty error}">
+                <div class="error">${error}</div>
+            </c:if>
+            <c:if test="${not empty msg}">
+                <div class="msg">${msg}</div>
+            </c:if>
+            <div class="card col-md-6 col-md-offset-3">
+                <div class="card-block center-block">
 
-			<table>
-				<tr>
-					<td>User:</td>
-					<td><input type='text' name='username'></td>
-				</tr>
-				<tr>
-					<td>Password:</td>
-					<td><input type='password' name='password' /></td>
-				</tr>
-				<tr>
-					<td colspan='2'><input name="submit" type="submit"
-						value="submit" /></td>
-				</tr>
-			</table>
+                    <form name='loginForm'
+                          action="<c:url value='/login' />" method='POST'>
 
-			<input type="hidden" name="${_csrf.parameterName}"
-				value="${_csrf.token}" />
+                        <div class="md-form mt-1">
+                            <input id="username" type='text' name='username' class="form-control">
+                            <label for="username" class="">User</label>
+                        </div>
 
-		</form>
-	</div>
+                        <div class="md-form">
+
+                            <input id="password" type='password' name='password' class="form-control">
+                            <label for="password" class="">Password</label>
+                        </div>
+
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit" value="submit">Login</button>
+                        </div>
+
+                        <input type="hidden" name="${_csrf.parameterName}"
+                               value="${_csrf.token}"/>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
+<script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
+<script src="<c:url value="/resources/bootstrap.min.js"/>"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/js/mdb.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 </body>
 </html>
