@@ -145,7 +145,7 @@ public class ClientConsole {
         int num = 0;
         String intString;
 
-        pager = new Pager();
+        pager = null;// new Pager();
         exit = false;
         index = pager.getCurrentPageIndex();
         do {
