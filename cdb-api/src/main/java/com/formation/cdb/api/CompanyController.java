@@ -7,9 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,8 +32,8 @@ import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
-import com.formation.cdb.service.pager.PagerCompany;
-import com.formation.cdb.service.pager.PagerComputer;
+import com.formation.cdb.service.pager.Pager;
+
 
 @RestController
 @RequestMapping("/companies")
@@ -41,17 +44,11 @@ public class CompanyController {
 
     private CDBService<Company> companyService;
 
-    private PagerComputer pagerComputer;
-  
-    private PagerCompany pagerCompany;
 
-    public CompanyController(CDBService<Computer> computerService, CDBService<Company> companyService,
-            PagerComputer pagerComputer, PagerCompany pagerCompany) {
+    public CompanyController(CDBService<Computer> computerService, CDBService<Company> companyService) {
         super();
         this.computerService = computerService;
         this.companyService = companyService;
-        this.pagerComputer = pagerComputer;
-        this.pagerCompany = pagerCompany;
     }
 
     @GetMapping("/{id}")
@@ -65,7 +62,7 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}")
     public @ResponseBody ResponseEntity<?> update(@PathVariable("id") long id, @RequestBody CompanyDto companyDto) {
         try {
             Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
@@ -76,8 +73,8 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("/add")
-    public @ResponseBody ResponseEntity<?> showCompany(@RequestBody CompanyDto companyDto) {
+    @PostMapping("")
+    public @ResponseBody ResponseEntity<?> createCompany(@RequestBody CompanyDto companyDto) {
         try {
             Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
             company.ifPresent(c -> companyService.saveOrUpdate(c));
@@ -87,10 +84,20 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("/delete")
-    public @ResponseBody ResponseEntity<?> delete(@RequestBody List<Long> ids) {
+    @DeleteMapping("")
+    public @ResponseBody ResponseEntity<?> deleteMultiple(@RequestBody List<Long> ids) {
         try {
             companyService.deleteMultiple(ids);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (DAOException | ServiceException e) {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+    }
+    
+    @DeleteMapping("/{id}")
+    public @ResponseBody ResponseEntity<?> delete(@PathVariable("id") long id) {
+        try {
+            companyService.delete(id);
             return new ResponseEntity<Void>(HttpStatus.OK);
         } catch (DAOException | ServiceException e) {
             return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
@@ -102,17 +109,10 @@ public class CompanyController {
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showCompanys()");
 
-        if (page.isPresent()) {
-            pagerCompany.goTo(page.get());
-        }
-        if (filter.isPresent()) {
-            pagerCompany.setFilter(filter.get());
-        }
-        if (size.isPresent()) {
-            pagerCompany.setPageSize(size.get());
-        }
-
-        List<Company> companies = pagerCompany.getCurrentPage();
+        int numberOfCompanies = companyService.sizeOfTable(filter.orElse("")); 
+        Pager pager = new Pager(filter,size, page, numberOfCompanies);
+       
+        List<Company> companies = companyService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
 
         return companiesDto;

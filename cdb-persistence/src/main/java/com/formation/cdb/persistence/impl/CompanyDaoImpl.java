@@ -7,6 +7,7 @@ import javax.persistence.PersistenceException;
 import javax.persistence.TypedQuery;
 
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -41,8 +42,18 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public Company create(Company company) {
-        LOGGER.warn("Method Create is not implemented");
-        throw new DAOException(ERROR_DAO, new NoSuchMethodException("Method Create is not implemented "));
+      if (company == null) {
+        LOGGER.error("Create failed, null company ");
+        throw new DAOException(ERROR_DAO, new NullPointerException("company can't be null"));
+      }
+      try {
+          
+          sessionFactory.getCurrentSession().saveOrUpdate(company);
+          LOGGER.info("Create success, company ");
+          return company;
+      } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException ex) {
+          throw new DAOException(ERROR_DAO, ex);
+      }
     }
 
     /*
@@ -92,8 +103,21 @@ public class CompanyDaoImpl implements Dao<Company> {
      */
     @Override
     public void delete(long id) {
-        LOGGER.warn("Method Create is not implemented");
-        throw new DAOException(ERROR_DAO, new NoSuchMethodException("Method Delete is not implemented "));
+      if (id < 0) {
+        LOGGER.warn("Delete failed id: " + id);
+        throw new DAOException(ERROR_DAO, new IllegalArgumentException("id must be grater or equals than zero"));
+      }
+      try {
+          Query query = sessionFactory.getCurrentSession().createNamedQuery("Company.deleteById");
+          query.setParameter("id", id);
+          int rowsAffected = query.executeUpdate();
+          if (!(rowsAffected > 0)) {
+              LOGGER.info("No rows was affected by the delete : " + id);
+          }
+      } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
+          throw new DAOException(ERROR_DAO, e);
+      }
+      return;
     }
 
     /*
@@ -103,16 +127,17 @@ public class CompanyDaoImpl implements Dao<Company> {
      * int, java.lang.String)
      */
     @Override
-    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter, String orderBy, boolean asc) {
         if (offset < 0 || limit < 0) {
             LOGGER.error("readAllWithOffsetAndLimit, offset(" + offset + ") limit(" + limit + ") can't be negative");
             throw new DAOException(ERROR_DAO, new IllegalArgumentException("limit and offset can't be negative"));
         }
 
         try {
-            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilter",
+            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilterByName",
                     Company.class);
             query.setParameter("filter", filter);
+            //query.setParameter(":asc", asc);
             query.setFirstResult(offset);
             query.setMaxResults(limit);
             List<Company> results = query.getResultList();
@@ -147,5 +172,8 @@ public class CompanyDaoImpl implements Dao<Company> {
             throw new DAOException(ERROR_DAO, e);
         }
     };
+    
+    
+    
 
 }

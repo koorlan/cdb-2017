@@ -24,12 +24,15 @@ import com.formation.cdb.entity.Model;
 @Entity
 @Table(name = "company")
 @NamedQueries({
-    @NamedQuery(name="Company.findAllwithFilter",
-                query="SELECT c FROM Company c WHERE c.name LIKE :filter"),
+    @NamedQuery(name="Company.findAllwithFilterByNameASC",
+                query="SELECT c FROM Company c WHERE c.name LIKE :filter ORDER BY c.name ASC"),
+    @NamedQuery(name="Company.findAllwithFilterByNameDESC",
+                query="SELECT c FROM Company c WHERE c.name LIKE :filter ORDER BY c.name DESC"),
     @NamedQuery(name="Company.countWithFilter",
     query="SELECT count(id) FROM Company c WHERE name LIKE :filter"),
     @NamedQuery(name="Company.findById",
-    query = "Select c from Company c where id = :id")
+    query = "Select c from Company c where id = :id"),
+    @NamedQuery(name="Company.deleteById", query="DELETE FROM Company c WHERE id = :id")
 }) 
 public class Company extends Model {
     /**

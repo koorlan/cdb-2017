@@ -8,9 +8,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,7 +29,7 @@ import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.pager.PagerComputer;
+import com.formation.cdb.service.pager.Pager;
 
 
 @RestController
@@ -38,16 +41,13 @@ public class ComputerController {
 
     private CDBService<Company> companyService;
 
-    private PagerComputer pagerComputer;
     
 
 
-    public ComputerController(@Qualifier("computerServiceImpl") CDBService<Computer> computerService,@Qualifier("companyServiceImpl")  CDBService<Company> companyService,
-            PagerComputer pagerComputer) {
+    public ComputerController(@Qualifier("computerServiceImpl") CDBService<Computer> computerService,@Qualifier("companyServiceImpl")  CDBService<Company> companyService) {
         super();
         this.computerService = computerService;
         this.companyService = companyService;
-        this.pagerComputer = pagerComputer;
     }
 
     @GetMapping("/{id}")
@@ -61,7 +61,7 @@ public class ComputerController {
         }
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{id}")
     public @ResponseBody ResponseEntity<?> update(@PathVariable("id") long id, @RequestBody ComputerDto computerDto) {
         try {
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
@@ -72,7 +72,7 @@ public class ComputerController {
         }
     }
 
-    @PostMapping("/add")
+    @PostMapping("")
     public @ResponseBody ResponseEntity<?> showComputer(@RequestBody ComputerDto computerDto) {
         try {
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
@@ -83,7 +83,7 @@ public class ComputerController {
         }
     }
 
-    @PostMapping("/delete")
+    @DeleteMapping("")
     public @ResponseBody ResponseEntity<?> delete(@RequestBody List<Long> ids) {
         try {
             computerService.deleteMultiple(ids);
@@ -98,17 +98,10 @@ public class ComputerController {
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showComputers()");
 
-        if (page.isPresent()) {
-            pagerComputer.goTo(page.get());
-        }
-        if (filter.isPresent()) {
-            pagerComputer.setFilter(filter.get());
-        }
-        if (size.isPresent()) {
-            pagerComputer.setPageSize(size.get());
-        }
-
-        List<Computer> computers = pagerComputer.getCurrentPage();
+        int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
+        Pager pager = new Pager(filter,size, page, numberOfComputers);
+        
+        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
         List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
 
         return computersDto;

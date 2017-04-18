@@ -20,8 +20,7 @@ import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
 import com.formation.cdb.persistence.HibernateConfiguration;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.pager.PagerCompany;
-import com.formation.cdb.service.pager.PagerComputer;
+import com.formation.cdb.service.pager.Pager;
 import com.formation.cdb.util.DateUtil;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 
@@ -139,20 +138,20 @@ public class ClientConsole {
      * Action, list all companie with page.
      */
     public void listCompanies() {
-        PagerCompany pager;
+        Pager pager;
         String command;
         boolean exit;
         int index;
         int num = 0;
         String intString;
 
-        pager = new PagerCompany();
+        pager = null;// new Pager();
         exit = false;
         index = pager.getCurrentPageIndex();
         do {
-            for (Company c : pager.getPage(index)) {
-                System.out.println(c);
-            }
+            //for (Company c : pager.getPage(index)) {
+            //    System.out.println(c);
+            //}
 
             System.out.println(index + " of " + pager.getNbPages()
                     + " (g) Goto page (n) Next page (p) Previous page (x) Return to menu");

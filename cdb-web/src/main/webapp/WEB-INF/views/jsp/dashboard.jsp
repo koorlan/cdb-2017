@@ -25,7 +25,8 @@
         <a class="navbar-brand" href="<c:url value="/"/>"> <strong>Computer Database </strong></a>
 
         <form id="searchForm" action="" class="form-inline waves-effect waves-light col-lg-6">
-            <input class="form-control col-md-6" value="${filter }" name="filter" type="search" id="searchbox"
+<input type="hidden" name="size" value="${size}" />            
+<input class="form-control col-md-6" value="${filter }" name="filter" type="search" id="searchbox"
                    placeholder="<spring:message code="cdb.dashboard.search"/>">
             <button type="submit" id="searchsubmit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
                  Filter by name</button>
@@ -98,6 +99,12 @@
                                                        id="deleteSelected" onclick="$.fn.deleteSelected();"> <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
 						</a>
 					</span></th>
+					<th><spring:message code="cdb.computer.name" /></th>
+					<th><spring:message code="cdb.computer.introduced" /></th>
+					<!-- Table header for Discontinued Date -->
+					<th><spring:message code="cdb.computer.discontinued" /></th>
+					<!-- Table header for Company -->
+					<th><spring:message code="cdb.computer.company" /></th>
 
             <th><spring:message code="cdb.computer.name"/></th>
             <th><spring:message code="cdb.computer.introduced"/></th>
@@ -130,9 +137,9 @@
         <nav>
             <ul id="pagination-demo" class="pagination center-block"></ul>
             <div class="btn-group btn-group-sm  pull-right" role="group">
-                <a class="btn btn-default " href="?size=10">10</a> <a
-                    class="btn btn-default " href="?size=50">50</a> <a
-                    class="btn btn-default " href="?size=100">100</a>
+                <a class="btn btn-default " href="?size=10&filter=${filter}">10</a> <a
+                    class="btn btn-default " href="?size=50&filter=${filter}">50</a> <a
+                    class="btn btn-default " href="?size=100&filter=${filter}">100</a>
             </div>
         </nav>
     </div>
@@ -158,7 +165,7 @@
         totalPages: ${maxIndexPage},
         visiblePages: 7,
         onPageClick: function (event, page) {
-            window.location.href = "?page=" + page;
+            window.location.href = "?page=" + page + "&size=${size}&filter=${filter}";
         }
     });
 </script>

@@ -64,10 +64,10 @@ public class CompanyDtoMapper {
      * @return the optional
      */
     public static Optional<Company> mapCompanyFromCompanyDto(Optional<CompanyDto> companyDtoO) {
+      
         if (!companyDtoO.isPresent()) {
             return Optional.empty();
         }
-
         CompanyDto companyDto = companyDtoO.get();
         long id = companyDto.getId();
         String name = companyDto.getName();

@@ -32,7 +32,7 @@ import com.formation.cdb.formatter.USLocalDateFormatter;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.pager.PagerComputer;
+import com.formation.cdb.service.pager.Pager;
 import com.formation.cdb.validator.ComputerFormValidator;
 
 
@@ -45,18 +45,16 @@ public class ComputerController {
     private CDBService<Computer> computerService;
 
     private CDBService<Company> companyService;
-
-    private PagerComputer pagerComputer;
     
     private ComputerFormValidator computerFormValidator;
 
     public ComputerController(CDBService<Computer> computerService, CDBService<Company> companyService,
-            PagerComputer pagerComputer, ComputerFormValidator computerFormValidator) {
+            ComputerFormValidator computerFormValidator) {
         super();
         this.computerService = computerService;
         this.companyService = companyService;
-        this.pagerComputer = pagerComputer;
         this.computerFormValidator = computerFormValidator;
+
     }
 
     @InitBinder("computerForm")
@@ -74,26 +72,23 @@ public class ComputerController {
     public String showComputers(ModelMap model, @RequestParam("page") Optional<Integer> page,
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showComputers()");
+        
+        int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
+        Pager pager = new Pager(filter,size, page, numberOfComputers);
 
-        if (page.isPresent()) {
-            pagerComputer.goTo(page.get());
-        }
-        if (filter.isPresent()) {
-            pagerComputer.setFilter(filter.get());
-            model.put("filter",filter.get()); 
-        }
-        if (size.isPresent()) {
-            pagerComputer.setPageSize(size.get());
-        }
-
-        List<Computer> computers = pagerComputer.getCurrentPage();
+        model.put("filter", pager.getFilter());
+        model.put("size", pager.getPageSize());
+        
+        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
         List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
         model.put("computers", computersDto);
-        model.put("totalComputers", pagerComputer.getMax());
-        model.put("currentIndexPage", pagerComputer.getCurrentPageIndex());
-        model.put("maxIndexPage", pagerComputer.getNbPages());
-        model.put("deleteForm", new ComputerListWrapper());
+        model.put("totalComputers", pager.getMax());
+        model.put("currentIndexPage", pager.getCurrentPageIndex());
+        model.put("maxIndexPage", pager.getNbPages());
         
+        
+        model.put("deleteForm", new ComputerListWrapper());
+
         return "dashboard";
     }
 
@@ -143,7 +138,7 @@ public class ComputerController {
             } else {
                 return "404";
             }
-        } catch ( DAOException | ServiceException ex) {
+        } catch (DAOException | ServiceException ex) {
             redirectAttributes.addFlashAttribute("css", "danger");
             redirectAttributes.addFlashAttribute("msg", ex.getMessage());
         }
@@ -164,7 +159,7 @@ public class ComputerController {
 
         return "redirect:/computers";
 
-    } 
+    }
 
     @GetMapping("/add")
     public String showAddComputerForm(Model model) {
@@ -182,5 +177,5 @@ public class ComputerController {
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
         model.addAttribute("companies", companiesDto);
     }
-    
+
 }

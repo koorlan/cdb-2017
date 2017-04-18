@@ -1,18 +1,15 @@
 package com.formation.cdb.service.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.DAOException;
-import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.persistence.impl.CompanyDaoImpl;
 import com.formation.cdb.service.CDBService;
 
@@ -42,8 +39,7 @@ public class CompanyServiceImpl implements CDBService<Company> {
     @Transactional
     @Override
     public Optional<Company> saveOrUpdate(Company e) {
-        LOGGER.warn("Method saveOrUpdate is not implemented");
-        throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method saveOrUpdate is not implemented"));
+        return Optional.ofNullable(companyDaoImpl.create(e));
     }
 
     /* (non-Javadoc)
@@ -62,15 +58,15 @@ public class CompanyServiceImpl implements CDBService<Company> {
     @Transactional
     @Override
     public void delete(long id) {
-        LOGGER.warn("Method delete is not implemented");
-        throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method delete is not implemented"));
+      companyDaoImpl.delete(id);
     }
 
     @Transactional
     @Override
     public void deleteMultiple(List<Long> ids) {
-        LOGGER.warn("Method delete is not implemented");
-        throw new DAOException(ERROR_SERVICE, new NoSuchMethodException("Method delete is not implemented"));
+      for (long id: ids){
+        companyDaoImpl.delete(id);
+      }
     };
     
     /* (non-Javadoc)
@@ -79,7 +75,8 @@ public class CompanyServiceImpl implements CDBService<Company> {
     @Transactional
     @Override
     public List<Company> findAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        return companyDaoImpl.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%');
+        // TODO : use orderby 
+        return companyDaoImpl.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%', "name", true);
     }
 
     /* (non-Javadoc)
