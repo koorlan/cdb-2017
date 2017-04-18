@@ -150,17 +150,20 @@ public class ComputerDaoImpl implements Dao<Computer> {
      * int, java.lang.String)
      */
     @Override
-    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+    public List<Computer> readAllWithOffsetAndLimit(int offset, int limit, String filter, String orderBy, boolean asc) {
 
         if (offset < 0 || limit < 0) {
             LOGGER.error("readAllWithOffsetAndLimit, offset(" + offset + ") limit(" + limit + ") can't be negative");
             throw new DAOException(ERROR_DAO, new IllegalArgumentException("limit and offset can't be negative"));
         }
 
+        
+        String queryStr = mapperOrderByQuery(orderBy, asc);
         try {
             TypedQuery<Computer> query = sessionFactory.getCurrentSession()
-                    .createNamedQuery("Computer.findAllwithFilter", Computer.class);
+                    .createNamedQuery(queryStr, Computer.class);
             query.setParameter("filter", filter);
+            //query.setParameter(":sens", asc);
             query.setFirstResult(offset);
             query.setMaxResults(limit);
             LOGGER.debug(query.unwrap(Query.class).getQueryString());
@@ -195,6 +198,27 @@ public class ComputerDaoImpl implements Dao<Computer> {
             return (int) foundCount;
         } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException e) {
             throw new DAOException(ERROR_DAO, e);
+        }
+    }
+    
+    /**
+     * Return the NamedQuery with the orderBy given default is Ordered by name
+     * @param orderBy .
+     * @param asc true for ascending and false for descending
+     * @return
+     */
+    private String mapperOrderByQuery(String orderBy, boolean asc) {
+        switch (orderBy) {
+        case "name":
+            return (asc) ? "Computer.findAllwithFilterOrderByNameASC" : "Computer.findAllwithFilterOrderByNameDESC";
+        case "dateIntro":
+            return (asc) ? "Computer.findAllwithFilterOrderByDateIntroASC" : "Computer.findAllwithFilterOrderByDateIntroDESC";
+        case "dateFin":
+            return (asc) ? "Computer.findAllwithFilterOrderByDateDiscontinuedASC" : "Computer.findAllwithFilterOrderByDateDiscontinuedDESC";
+        case "company":
+            return (asc) ? "Computer.findAllwithFilterOrderByCompanyNameASC" : "Computer.findAllwithFilterOrderByCompanyNameDESC";
+        default:
+            return "Computer.findAllwithFilterOrderByNameASC";
         }
     }
 

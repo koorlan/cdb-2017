@@ -103,16 +103,17 @@ public class CompanyDaoImpl implements Dao<Company> {
      * int, java.lang.String)
      */
     @Override
-    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter) {
+    public List<Company> readAllWithOffsetAndLimit(int offset, int limit, String filter, String orderBy, boolean asc) {
         if (offset < 0 || limit < 0) {
             LOGGER.error("readAllWithOffsetAndLimit, offset(" + offset + ") limit(" + limit + ") can't be negative");
             throw new DAOException(ERROR_DAO, new IllegalArgumentException("limit and offset can't be negative"));
         }
 
         try {
-            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilter",
+            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilterByName",
                     Company.class);
             query.setParameter("filter", filter);
+            //query.setParameter(":asc", asc);
             query.setFirstResult(offset);
             query.setMaxResults(limit);
             List<Company> results = query.getResultList();
@@ -147,5 +148,8 @@ public class CompanyDaoImpl implements Dao<Company> {
             throw new DAOException(ERROR_DAO, e);
         }
     };
+    
+    
+    
 
 }
