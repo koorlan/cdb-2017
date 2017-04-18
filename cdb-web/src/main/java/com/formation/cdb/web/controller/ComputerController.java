@@ -74,23 +74,7 @@ public class ComputerController {
         
         int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
         Pager pager = new Pager(filter,size, page, numberOfComputers);
-     /*
-        if (filter.isPresent()) {
-            pager.setFilter(filter.get());
-        }
-        
-        int numberOfComputers = computerService.sizeOfTable(pager.getFilter());
-        pager.setMax(numberOfComputers);
-        
- 
-        if (size.isPresent()) {
-            pager.setPageSize(size.get());
-        }
-            
-        if (page.isPresent()) {
-            pager.goTo(page.get());
-        }*/
-        
+
         model.put("filter", pager.getFilter());
         model.put("size", pager.getPageSize());
         
