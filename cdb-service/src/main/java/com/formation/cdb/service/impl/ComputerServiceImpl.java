@@ -89,7 +89,8 @@ public class ComputerServiceImpl implements CDBService<Computer> {
     @Transactional
     @Override
     public List<Computer> findAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        return computerDaoImpl.readAllWithOffsetAndLimit(offset, limit, filter+'%');
+     // TODO : use orderby 
+        return computerDaoImpl.readAllWithOffsetAndLimit(offset, limit, filter+'%', "company", false);
     }
 
     /* (non-Javadoc)
