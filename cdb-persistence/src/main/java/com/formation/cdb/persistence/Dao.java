@@ -57,7 +57,7 @@ public interface Dao<T> {
      * @param filter the filter
      * @return list of type T
      */
-    List<T> readAllWithOffsetAndLimit(int offset, int limit, String filter);
+    List<T> readAllWithOffsetAndLimit(int offset, int limit, String filter, String orderBy, boolean asc);
 
     /**
      * COUNT(*).
