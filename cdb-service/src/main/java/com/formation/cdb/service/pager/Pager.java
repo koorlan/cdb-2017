@@ -1,14 +1,11 @@
 package com.formation.cdb.service.pager;
 
 import java.util.List;
+import java.util.Optional;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class Pager.
- *
- * @param <T> the generic type
- */
-public abstract class Pager<T> {
+import org.springframework.stereotype.Component;
+
+public class Pager {
 
     /** The Constant DEFAULT_PAGE_SIZE. */
     public static final int DEFAULT_PAGE_SIZE = 10;
@@ -30,12 +27,12 @@ public abstract class Pager<T> {
     /**
      * Default constructor of the un-typed Pager.
      */
-    public Pager() {
-        pageSize = DEFAULT_PAGE_SIZE;
-        max = 0;
+    public Pager(Optional<String> filter, Optional<Integer> size, Optional<Integer> page, int numberOfItems) {
+        pageSize = size.orElse(DEFAULT_PAGE_SIZE);
+        max = numberOfItems;
         nbPages = (int) Math.ceil((double) max / pageSize);
-        page = 1;
-        filter = "";
+        this.page = page.orElse(1);
+        this.filter = filter.orElse("");
     }
 
     /**
@@ -44,7 +41,15 @@ public abstract class Pager<T> {
      * @param page an int to represent which page you want to reach
      * @return A list of the type of the pager.
      */
-    public abstract List<T> getPage(int page);
+    public int getOffset(){
+        int index;
+        int offset;
+
+        index = (page -1 > nbPages) ? nbPages : page -1;
+
+        offset = index * pageSize;
+        return offset;
+    }
 
     /**
      * Increments the page index.
@@ -74,15 +79,6 @@ public abstract class Pager<T> {
         if (index <= nbPages && index >= 1) {
             page = index;
         }
-    }
-
-    /**
-     * Gets the current page.
-     *
-     * @return the current page
-     */
-    public List<T> getCurrentPage() {
-        return getPage(page);
     }
 
     /**
@@ -129,14 +125,22 @@ public abstract class Pager<T> {
      *
      * @return the max
      */
-    public abstract int getMax();
+    public void setMax(int max){
+        this.max = max;
+        nbPages = (int) Math.ceil((double)max / pageSize);
+    }
 
+    public int getMax(){
+        return this.max;
+    }
     /**
      * Sets the filter.
      *
      * @param filter the new filter
      */
-    public abstract void setFilter(String filter);
+    public void setFilter(String filter){
+        this.filter = filter;
+    }
 
     /**
      * Gets the filter.

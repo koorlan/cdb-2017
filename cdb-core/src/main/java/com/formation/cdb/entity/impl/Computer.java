@@ -23,23 +23,28 @@ import com.formation.cdb.entity.Model;
 // TODO: Auto-generated Javadoc
 /**
  * Company class is a representation of what a company look like on database.
+ * 
  * @author excilys
  * @version 0.0.1
  */
 @Entity
 @Table(name = "computer")
 @NamedQueries({
-    @NamedQuery(name="Computer.findById",
-                query="SELECT c FROM Computer c LEFT JOIN c.company WHERE c.id = :id"),
-    @NamedQuery(name="Computer.findAllwithFilter",
-                query="SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter"),
-    @NamedQuery(name="Computer.countWithFilter",
-            query="SELECT count(id) FROM Computer c WHERE name LIKE :filter"),
-    @NamedQuery(name="Computer.update",
-            query="UPDATE Computer c set c.name = :name, c.introduced = :introduced, c.discontinued = :discontinued, c.company = :company WHERE c.id = :id"),
-    @NamedQuery(name="Computer.deleteById",
-                query = "DELETE from Computer c WHERE c.id = :id")
-}) 
+        @NamedQuery(name = "Computer.findById", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.id = :id"),
+
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByNameASC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.name ASC"),
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByDateIntroASC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.introduced ASC"),
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByDateDiscontinuedASC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.discontinued ASC"),
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByCompanyNameASC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.company.name ASC"),
+
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByNameDESC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.name DESC"),
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByDateIntroDESC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.introduced DESC"),
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByDateDiscontinuedDESC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.discontinued DESC"),
+        @NamedQuery(name = "Computer.findAllwithFilterOrderByCompanyNameDESC", query = "SELECT c FROM Computer c LEFT JOIN c.company WHERE c.name LIKE :filter ORDER BY c.company.name DESC"),
+
+        @NamedQuery(name = "Computer.countWithFilter", query = "SELECT count(id) FROM Computer c WHERE name LIKE :filter"),
+        @NamedQuery(name = "Computer.update", query = "UPDATE Computer c set c.name = :name, c.introduced = :introduced, c.discontinued = :discontinued, c.company = :company WHERE c.id = :id"),
+        @NamedQuery(name = "Computer.deleteById", query = "DELETE from Computer c WHERE c.id = :id") })
 public class Computer extends Model {
     /**
      * id of the computer in the database.
@@ -67,12 +72,14 @@ public class Computer extends Model {
     @JoinColumn(name = "company_id")
     private Company company;
 
-    public Computer(){}
-    
+    public Computer() {
+    }
+
     /**
      * Constructor of computer.
      *
-     * @param builder the builder
+     * @param builder
+     *            the builder
      */
     public Computer(ComputerBuilder builder) {
         this.id = builder.id;
@@ -81,13 +88,14 @@ public class Computer extends Model {
         this.discontinued = builder.discontinued;
         this.company = builder.company;
     }
-    
+
     public boolean isNew() {
         return this.id == 0;
     }
 
     /**
      * Getter for the computer identifier.
+     * 
      * @return the id of a computer
      */
     public long getId() {
@@ -152,8 +160,10 @@ public class Computer extends Model {
         /**
          * Instantiates a new computer builder.
          *
-         * @param id the id
-         * @param name the name
+         * @param id
+         *            the id
+         * @param name
+         *            the name
          */
         public ComputerBuilder(long id, String name) {
             this.id = id;
@@ -163,7 +173,8 @@ public class Computer extends Model {
         /**
          * With introduced.
          *
-         * @param introduced the introduced
+         * @param introduced
+         *            the introduced
          * @return the computer builder
          */
         public ComputerBuilder withIntroduced(LocalDate introduced) {
@@ -174,7 +185,8 @@ public class Computer extends Model {
         /**
          * With discontinued.
          *
-         * @param discontinued the discontinued
+         * @param discontinued
+         *            the discontinued
          * @return the computer builder
          */
         public ComputerBuilder withDiscontinued(LocalDate discontinued) {
@@ -185,7 +197,8 @@ public class Computer extends Model {
         /**
          * With company.
          *
-         * @param company the company
+         * @param company
+         *            the company
          * @return the computer builder
          */
         public ComputerBuilder withCompany(Company company) {
@@ -204,7 +217,9 @@ public class Computer extends Model {
 
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.formation.cdb.entity.Entity#toString()
      */
     @Override
@@ -231,7 +246,9 @@ public class Computer extends Model {
         return sb.toString();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.formation.cdb.entity.Entity#hashCode()
      */
     @Override
@@ -246,7 +263,9 @@ public class Computer extends Model {
         return result;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.formation.cdb.entity.Entity#equals(java.lang.Object)
      */
     @Override

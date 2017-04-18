@@ -32,8 +32,8 @@ import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.impl.CompanyServiceImpl;
-import com.formation.cdb.service.pager.PagerCompany;
-import com.formation.cdb.service.pager.PagerComputer;
+import com.formation.cdb.service.pager.Pager;
+
 
 @RestController
 @RequestMapping("/companies")
@@ -44,17 +44,11 @@ public class CompanyController {
 
     private CDBService<Company> companyService;
 
-    private PagerComputer pagerComputer;
-  
-    private PagerCompany pagerCompany;
 
-    public CompanyController(CDBService<Computer> computerService, CDBService<Company> companyService,
-            PagerComputer pagerComputer, PagerCompany pagerCompany) {
+    public CompanyController(CDBService<Computer> computerService, CDBService<Company> companyService) {
         super();
         this.computerService = computerService;
         this.companyService = companyService;
-        this.pagerComputer = pagerComputer;
-        this.pagerCompany = pagerCompany;
     }
 
     @GetMapping("/{id}")
@@ -115,17 +109,10 @@ public class CompanyController {
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showCompanys()");
 
-        if (page.isPresent()) {
-            pagerCompany.goTo(page.get());
-        }
-        if (filter.isPresent()) {
-            pagerCompany.setFilter(filter.get());
-        }
-        if (size.isPresent()) {
-            pagerCompany.setPageSize(size.get());
-        }
-
-        List<Company> companies = pagerCompany.getCurrentPage();
+        int numberOfCompanies = companyService.sizeOfTable(filter.orElse("")); 
+        Pager pager = new Pager(filter,size, page, numberOfCompanies);
+       
+        List<Company> companies = companyService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
 
         return companiesDto;

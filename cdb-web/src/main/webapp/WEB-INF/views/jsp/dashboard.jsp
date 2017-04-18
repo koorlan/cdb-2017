@@ -50,6 +50,7 @@
 		<div id="actions" class="form-horizontal">
 			<div class="pull-left">
 				<form id="searchForm" action="" method="GET" class="form-inline">
+					<input type="hidden" name="size" value="${size}" />
 					<input type="search" id="searchbox" name="filter"
 						class="form-control"
 						placeholder="<spring:message code="cdb.dashboard.search"/>"
@@ -118,9 +119,9 @@
 		<ul id="pagination-demo" class="pagination"></ul>
 
 		<div class="btn-group btn-group-sm pull-right" role="group">
-			<a class="btn btn-default " href="?size=10">10</a> <a
-				class="btn btn-default " href="?size=50">50</a> <a
-				class="btn btn-default " href="?size=100">100</a>
+			<a class="btn btn-default " href="?size=10&filter=${filter}">10</a> <a
+				class="btn btn-default " href="?size=50&filter=${filter}">50</a> <a
+				class="btn btn-default " href="?size=100&filter=${filter}">100</a>
 		</div>
 	</footer>
 
@@ -141,7 +142,7 @@ $('#pagination-demo').twbsPagination({
     totalPages: ${maxIndexPage},
     visiblePages: 7,
     onPageClick: function (event, page) {
-        window.location.href = "?page=" + page ;
+        window.location.href = "?page=" + page + "&size=${size}&filter=${filter}" ;
     }
 });
 </script>

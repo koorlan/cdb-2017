@@ -29,7 +29,7 @@ import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.pager.PagerComputer;
+import com.formation.cdb.service.pager.Pager;
 
 
 @RestController
@@ -41,16 +41,13 @@ public class ComputerController {
 
     private CDBService<Company> companyService;
 
-    private PagerComputer pagerComputer;
     
 
 
-    public ComputerController(@Qualifier("computerServiceImpl") CDBService<Computer> computerService,@Qualifier("companyServiceImpl")  CDBService<Company> companyService,
-            PagerComputer pagerComputer) {
+    public ComputerController(@Qualifier("computerServiceImpl") CDBService<Computer> computerService,@Qualifier("companyServiceImpl")  CDBService<Company> companyService) {
         super();
         this.computerService = computerService;
         this.companyService = companyService;
-        this.pagerComputer = pagerComputer;
     }
 
     @GetMapping("/{id}")
@@ -101,17 +98,10 @@ public class ComputerController {
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showComputers()");
 
-        if (page.isPresent()) {
-            pagerComputer.goTo(page.get());
-        }
-        if (filter.isPresent()) {
-            pagerComputer.setFilter(filter.get());
-        }
-        if (size.isPresent()) {
-            pagerComputer.setPageSize(size.get());
-        }
-
-        List<Computer> computers = pagerComputer.getCurrentPage();
+        int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
+        Pager pager = new Pager(filter,size, page, numberOfComputers);
+        
+        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
         List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
 
         return computersDto;
