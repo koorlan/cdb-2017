@@ -26,7 +26,6 @@ import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.mapper.ComputerDtoMapper;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.pager.PagerComputer;
 
 
 @RestController
