@@ -24,7 +24,7 @@
             <strong>Computer Database</strong>
         </a>
 
-        <form id="searchForm" action="" class="form-inline waves-effect waves-light col-lg-6"
+        <form id="searchForm" action="" class="form-inline waves-effect waves-light col-lg-4"
               style="display:inline-block;padding:5px;">
             <input type="hidden" name="size" value="${size}"/>
             <input class="form-control"
@@ -38,7 +38,7 @@
             </button>
         </form>
 
-        <div class="navbar-toggler navbar-toggler-right col-md-3">
+        <div class="navbar-toggler navbar-toggler-right col-md-4">
             <ul class="navbar-nav mr-auto">
                 <c:choose>
                     <c:when test="${pageContext.request.userPrincipal.authenticated}">

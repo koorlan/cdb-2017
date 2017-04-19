@@ -31,12 +31,12 @@
                 <c:choose>
                     <c:when test="${computerForm['new']}">
                         <h1>
-                            <spring:message code="cdb.add.title"/>
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <spring:message code="cdb.add.title"/>
                         </h1>
                     </c:when>
                     <c:otherwise>
                         <h1>
-                            <spring:message code="cdb.edit.title"/>
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <spring:message code="cdb.edit.title"/>
                         </h1>
                     </c:otherwise>
                 </c:choose>
@@ -76,6 +76,7 @@
                                     <label class="col-sm-2 control-label"><spring:message
                                             code="cdb.form.discontinued"/></label>
                                     <div class="col-sm-10">
+
                                         <form:input path="discontinued" class="form-control"
                                                     id="discontinued" placeholder="${dateFormat}"/>
                                         <form:errors path="discontinued" class="control-label"/>
@@ -103,17 +104,19 @@
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <a href="/"><button type="button" class="btn btn-blue-grey pull-right">
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                        <spring:message code="cdb.form.cancel"/></button></a>
+                                        <strong><spring:message code="cdb.form.cancel"/></strong></button></a>
                                     <c:choose>
                                         <c:when test="${computerForm['new']}">
                                             <button type="submit" class="btn btn-primary pull-right">
                                                 <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                                <spring:message code="cdb.form.add"/></button>
+                                               <strong> <spring:message code="cdb.form.add"/></strong>
+                                            </button>
                                         </c:when>
                                         <c:otherwise>
                                             <button type="submit" class="btn btn-primary pull-right">
                                                 <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                                <spring:message code="cdb.form.update"/></button>
+                                                <strong><spring:message code="cdb.form.update"/></strong>
+                                            </button>
                                         </c:otherwise>
                                     </c:choose>
                                 </div>
