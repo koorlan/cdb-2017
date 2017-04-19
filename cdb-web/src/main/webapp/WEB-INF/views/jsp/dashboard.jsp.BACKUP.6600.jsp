@@ -19,6 +19,93 @@
 
 </head>
 <body>
+<<<<<<< HEAD
+	<header class="navbar navbar-inverse navbar-fixed-top">
+	<div class="container">
+		<a class="navbar-brand" href="<c:url value="/"/>"> Application -
+			Computer Database </a>
+			      
+     <a class="align-middle" href="?locale=en_US"><i class="us flag"></i></a>
+     <a  class="align-middle" href="?locale=fr_FR"><i class="fr flag"></i></a>
+	</div>
+	
+
+	</header>
+	<section id="main"> 
+	<div id="editMode" style="display: none"><spring:message code="cdb.edit.editMode" /></div>
+	<div id="viewMode" style="display: none"><spring:message code="cdb.edit.viewMode" /></div>
+	<div class="container">
+
+		<c:if test="${not empty msg}">
+			<c:choose>
+			    <c:when test="${msg == 'update'}">
+			       <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.success.update" /></strong>
+					</div>
+			    </c:when>
+			    <c:when test="${msg == 'add'}">
+			        <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.success.add" /></strong>
+					</div>
+			    </c:when>
+			    <c:when test="${msg == 'mapping'}">
+			        <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.error.mapping" /></strong>
+					</div>
+			    </c:when>
+			    <c:when test="${msg == 'delete'}">
+			        <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.success.delete" /></strong>
+					</div>
+			    </c:when>
+			</c:choose>
+			
+		</c:if>
+
+		<h1 id="homeTitle">${totalComputers}
+			<spring:message code="cdb.dashboard.total" />
+		</h1>
+		<div id="actions" class="form-horizontal">
+			<div class="pull-left">
+				<form id="searchForm" action="" method="GET" class="form-inline">
+					<input type="hidden" name="size" value="${size}" />
+					<input type="search" id="searchbox" name="filter"
+						class="form-control"
+						placeholder="<spring:message code="cdb.dashboard.search"/>"
+						value="${filter }" /> <input type="submit" id="searchsubmit"
+						value="<spring:message code="cdb.dashboard.button.search"/>" class="btn btn-primary" />
+				</form>
+			</div>
+			<div class="pull-right">
+				<a class="btn btn-success" id="addComputer" href="/computers/add"><spring:message
+						code="cdb.dashboard.add" /></a> <a class="btn btn-default"
+					id="editComputer" href="#" onclick="$.fn.toggleEditMode();"><spring:message
+						code="cdb.dashboard.edit" /></a>
+			</div>
+		</div>
+	</div>
+
+<form:form id="deleteForm" method = "POST" action = "/computers/delete" modelAttribute="deleteForm">
+	<form:input path="computers" type="hidden"  />
+</form:form>
+=======
+>>>>>>> develop
 
 <nav class="navbar navbar-toggleable-md navbar-dark fixed-top scrolling-navbar bg-primary ">
     <div class="container">
@@ -29,10 +116,9 @@
 <input class="form-control col-md-6" value="${filter }" name="filter" type="search" id="searchbox"
                    placeholder="<spring:message code="cdb.dashboard.search"/>">
             <button type="submit" id="searchsubmit" class="btn btn-primary btn-sm"><span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                 <spring:message code="cdb.dashboard.button.search"/></button>
+                 Filter by name</button>
         </form>
-        <div id="editMode" style="display: none"><spring:message code="cdb.edit.editMode" /></div>
-        <div id="viewMode" style="display: none"><spring:message code="cdb.edit.viewMode" /></div>
+
         <div class="collapse navbar-collapse" id="navbarNav1">
 
             <ul class="navbar-nav mr-auto">
@@ -55,40 +141,13 @@
 
 
 <c:if test="${not empty msg}">
-    <c:choose>
-        <c:when test="${msg == 'update'}">
-            <div class="alert alert-${css} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                <strong><spring:message code="cdb.dashboard.success.update" /></strong>
-            </div>
-        </c:when>
-        <c:when test="${msg == 'add'}">
-            <div class="alert alert-${css} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                <strong><spring:message code="cdb.dashboard.success.add" /></strong>
-            </div>
-        </c:when>
-        <c:when test="${msg == 'mapping'}">
-            <div class="alert alert-${css} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                <strong><spring:message code="cdb.dashboard.error.mapping" /></strong>
-            </div>
-        </c:when>
-        <c:when test="${msg == 'delete'}">
-            <div class="alert alert-${css} alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                </button>
-                <strong><spring:message code="cdb.dashboard.success.delete" /></strong>
-            </div>
-        </c:when>
-    </c:choose>
+    <div class="alert alert-${css} alert-dismissible" role="alert">
+        <button type="button" class="close" data-dismiss="alert"
+                aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        <strong>${msg}</strong>
+    </div>
 </c:if>
 <div class="container">
     <div class="row fadeIn" data-wow-delay="0.2s">
