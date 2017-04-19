@@ -35,6 +35,7 @@ import com.formation.cdb.service.CDBService;
 import com.formation.cdb.service.pager.Pager;
 import com.formation.cdb.validator.ComputerFormValidator;
 
+
 @Controller
 @RequestMapping("/computers")
 public class ComputerController {
@@ -104,9 +105,9 @@ public class ComputerController {
             LOGGER.debug("saveOrUpdateComputer() : Computer after mapping:" + computer);
             redirectAttributes.addFlashAttribute("css", "success");
             if (computer.get().isNew()) {
-                redirectAttributes.addFlashAttribute("msg", "Computer added successfully!");
+                redirectAttributes.addFlashAttribute("msg", "add");
             } else {
-                redirectAttributes.addFlashAttribute("msg", "Computer updated successfully!");
+                redirectAttributes.addFlashAttribute("msg", "update");
             }
 
             computer.ifPresent(c -> computerService.saveOrUpdate(c));
@@ -114,6 +115,7 @@ public class ComputerController {
             return "redirect:/computers";
         }
     }
+
 
     @GetMapping("/{id}/edit")
     public String showUpdateComputerForm(@PathVariable("id") long id, Model model,
@@ -130,7 +132,7 @@ public class ComputerController {
                     return "formComputer";
                 } else {
                     redirectAttributes.addFlashAttribute("css", "danger");
-                    redirectAttributes.addFlashAttribute("msg", "Error while mapping computer.");
+                    redirectAttributes.addFlashAttribute("msg", "mapping");
                     return "redirect:/computers";
                 }
             } else {
@@ -153,7 +155,7 @@ public class ComputerController {
         computerService.deleteMultiple(computerListWrapper.getComputers());
 
         redirectAttributes.addFlashAttribute("css", "success");
-        redirectAttributes.addFlashAttribute("msg", "Computer(s) deleted!");
+        redirectAttributes.addFlashAttribute("msg", "delete");
 
         return "redirect:/computers";
 
