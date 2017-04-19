@@ -34,7 +34,7 @@
                    placeholder="<spring:message code="cdb.dashboard.search"/>"/>
             <button type="submit" id="searchsubmit" class="btn btn-primary btn-sm">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                <strong>Filter by name</strong>
+                <strong>cdb.dashboard.filtername</strong>
             </button>
         </form>
 
@@ -61,24 +61,22 @@
                     </c:otherwise>
                 </c:choose>
 
-
-
                 <div class="btn-group" style="display:inline-block;padding:10px;">
                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
-                        <strong>Langue</strong>
+                        <strong>cdb.dashboard.lang</strong>
                     </button>
 
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="?locale=en_US" style="padding:0rem;">
                             <i class="us flag"> </i>
-                            <strong>English (US)</strong>
+                            <strong>cdb.dashboard.engish</strong>
                         </a>
                         <br/>
                         <a class="dropdown-item" href=" ?locale=fr_FR" style="padding:0rem;">
                             <i class="fr flag"> </i>
-                            <strong>French(FR)</strong>
+                            <strong>cdb.dashboard.french</strong>
                         </a>
                     </div>
                 </div>
@@ -109,7 +107,6 @@
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
                     <strong><spring:message code="cdb.dashboard.add"/></strong>
                 </a>
-
                 <button type="button"
                         id="editComputer"
                         class="btn btn-primary "
