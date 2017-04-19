@@ -13,6 +13,7 @@
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
     <link href="<c:url value="/resources/css/flag.min.css"/>" rel="stylesheet" media="screen"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/css/mdb.min.css" rel="stylesheet">
+
 </head>
 <body>
 
@@ -64,6 +65,7 @@
                     </div>
                 </div>
             </ul>
+
         </div>
     </div>
 </nav>
@@ -194,6 +196,7 @@
                 </td>
             </tr>
         </c:forEach>
+
         </tbody>
     </table>
 </div>
