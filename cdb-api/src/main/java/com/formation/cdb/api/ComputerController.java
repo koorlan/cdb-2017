@@ -134,7 +134,7 @@ public class ComputerController {
             int numberOfComputers = computerService.sizeOfTable(filter.orElse(""));
             Pager pager = new Pager(filter, size, page, numberOfComputers);
 
-            List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
+            List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter(),"name", "ASC");
             List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
 
             ComputersApiDto wrapper = new ComputersApiDto();

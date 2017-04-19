@@ -106,7 +106,7 @@ public class CompanyController {
             int numberOfCompanies = companyService.sizeOfTable(filter.orElse(""));
             Pager pager = new Pager(filter, size, page, numberOfCompanies);
 
-            List<Company> companies = companyService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
+            List<Company> companies = companyService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter(),"name", "ASC");
             List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
 
             CompaniesApiDto wrapper = new CompaniesApiDto();
