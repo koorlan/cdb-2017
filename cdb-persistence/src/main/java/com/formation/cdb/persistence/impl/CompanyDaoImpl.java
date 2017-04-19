@@ -134,7 +134,7 @@ public class CompanyDaoImpl implements Dao<Company> {
         }
 
         try {
-            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilterByNameASC",
+            TypedQuery<Company> query = sessionFactory.getCurrentSession().createNamedQuery("Company.findAllwithFilterByNameDESC",
                     Company.class);
             query.setParameter("filter", filter);
             //query.setParameter(":asc", asc);

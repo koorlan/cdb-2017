@@ -1,8 +1,10 @@
-package com.formation.cdb.validator;
+package com.formation.cdb.api;
 
-import java.time.LocalDate;
-import java.util.Optional;
-
+import com.formation.cdb.dto.CompanyDto;
+import com.formation.cdb.dto.ComputerDto;
+import com.formation.cdb.entity.impl.Company;
+import com.formation.cdb.mapper.CompanyDtoMapper;
+import com.formation.cdb.service.CDBService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,16 +14,14 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-import com.formation.cdb.dto.CompanyDto;
-import com.formation.cdb.dto.ComputerDto;
-import com.formation.cdb.entity.impl.Company;
-import com.formation.cdb.mapper.CompanyDtoMapper;
-import com.formation.cdb.service.CDBService;
+import java.util.Optional;
 
+/**
+ * Created by excilys on 19/04/17.
+ */
 @Component
-public class ComputerFormValidator implements Validator {
-
-    Logger LOGGER = LoggerFactory.getLogger(ComputerFormValidator.class);
+public class ComputerValidator implements Validator {
+    Logger LOGGER = LoggerFactory.getLogger(ComputerValidator.class);
 
     @Autowired
     @Qualifier("companyServiceImpl")
@@ -37,7 +37,7 @@ public class ComputerFormValidator implements Validator {
         ComputerDto computer = (ComputerDto) target;
         LOGGER.debug(computer.toString());
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty.computerForm.name");
-        
+
         if (computer.getIntroduced() != null && computer.getDiscontinued() != null && computer.getDiscontinued().isBefore(computer.getIntroduced())) {
             LOGGER.debug("discontinued is before introduced " + computer);
             errors.rejectValue("discontinued", "NotBeforeIntroduced.computerForm.discontinued");
@@ -56,8 +56,10 @@ public class ComputerFormValidator implements Validator {
                 if (companyDto.isPresent()) {
                     computer.setCompany(companyDto.get());
                 }
+
             }
         }
+
     }
 
 }

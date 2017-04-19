@@ -3,11 +3,17 @@ package com.formation.cdb.api;
 import java.util.List;
 import java.util.Optional;
 
+import com.formation.cdb.dto.ComputersApiDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -39,13 +45,22 @@ public class ComputerController {
 
     private CDBService<Company> companyService;
 
-    
+    private ComputerValidator computerValidator;
 
 
-    public ComputerController(@Qualifier("computerServiceImpl") CDBService<Computer> computerService,@Qualifier("companyServiceImpl")  CDBService<Company> companyService) {
+    //@InitBinder("computer")
+    private void initBinderComputerForm(WebDataBinder binder) {
+        binder.setValidator(computerValidator);
+
+    }
+
+
+    public ComputerController(@Qualifier("computerServiceImpl") CDBService<Computer> computerService,@Qualifier("companyServiceImpl")  CDBService<Company> companyService,
+                              ComputerValidator computerValidator) {
         super();
         this.computerService = computerService;
         this.companyService = companyService;
+        this.computerValidator = computerValidator;
     }
 
     @GetMapping("/{id}")
@@ -60,8 +75,12 @@ public class ComputerController {
     }
 
     @PutMapping("/{id}")
-    public @ResponseBody ResponseEntity<?> update(@PathVariable("id") long id, @RequestBody ComputerDto computerDto) {
+    public @ResponseBody ResponseEntity<?> updateComputer(@PathVariable("id") long id, @RequestBody @Validated ComputerDto computerDto, BindingResult result) {
         try {
+            computerValidator.validate(computerDto, result);
+            if ( result.hasErrors() ) {
+                return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            }
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
             computer.ifPresent(c -> computerService.saveOrUpdate(c));
             return new ResponseEntity<Void>(HttpStatus.OK);
@@ -70,9 +89,15 @@ public class ComputerController {
         }
     }
 
-    @PostMapping("")
-    public @ResponseBody ResponseEntity<?> showComputer(@RequestBody ComputerDto computerDto) {
+    @PostMapping
+    public @ResponseBody ResponseEntity<?> addComputer(@RequestBody @Validated ComputerDto computerDto, BindingResult result) {
+        LOGGER.debug("addComputer()");
         try {
+            computerValidator.validate(computerDto, result);
+            if ( result.hasErrors() ) {
+                return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+            }
+            LOGGER.debug("Dto from request : " + computerDto);
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
             computer.ifPresent(c -> computerService.saveOrUpdate(c));
             return new ResponseEntity<Void>(HttpStatus.OK);
@@ -81,7 +106,7 @@ public class ComputerController {
         }
     }
 
-    @DeleteMapping("")
+    @DeleteMapping
     public @ResponseBody ResponseEntity<?> delete(@RequestBody List<Long> ids) {
         try {
             computerService.deleteMultiple(ids);
@@ -91,17 +116,37 @@ public class ComputerController {
         }
     }
 
+    @DeleteMapping("/{id}")
+    public @ResponseBody ResponseEntity<?> deleteComputer(@PathVariable("id") long id) {
+        try {
+            computerService.delete(id);
+            return new ResponseEntity<Void>(HttpStatus.OK);
+        } catch (DAOException | ServiceException e) {
+            return new ResponseEntity<Void>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping
-    public @ResponseBody List<ComputerDto> viewList(@RequestParam("page") Optional<Integer> page,
+    public @ResponseBody ResponseEntity<?> viewList(@RequestParam("page") Optional<Integer> page,
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showComputers()");
+        try {
+            int numberOfComputers = computerService.sizeOfTable(filter.orElse(""));
+            Pager pager = new Pager(filter, size, page, numberOfComputers);
 
-        int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
-        Pager pager = new Pager(filter,size, page, numberOfComputers);
-        
-        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
-        List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
+            List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
+            List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
 
-        return computersDto;
+            ComputersApiDto wrapper = new ComputersApiDto();
+            wrapper.setComputers(computersDto);
+
+            int totalComputer = computerService.sizeOfTable(pager.getFilter());
+            wrapper.setTotal(totalComputer);
+            return new ResponseEntity<>(wrapper, HttpStatus.OK);
+        } catch (DAOException | ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
+
+
 }
