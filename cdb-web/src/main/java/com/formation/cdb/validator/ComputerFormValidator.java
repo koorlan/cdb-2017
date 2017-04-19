@@ -1,6 +1,5 @@
 package com.formation.cdb.validator;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 import org.slf4j.Logger;
