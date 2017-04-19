@@ -9,11 +9,8 @@
     <title>Computer Database</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- Bootstrap -->
-    <link href="<c:url value="/resources/css/bootstrap.min.css"/>"
-          rel="stylesheet" media="screen"/>
-    <link href="<c:url value="/resources/css/font-awesome.css"/>"
-          rel="stylesheet" media="screen"/>
-
+    <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
+    <link href="<c:url value="/resources/css/font-awesome.css"/>" rel="stylesheet" media="screen"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/css/mdb.min.css" rel="stylesheet">
 
 </head>
@@ -24,7 +21,6 @@
         <a class="navbar-brand" href="<c:url value="/"/>"> <strong>Retour</strong></a>
     </div>
 </nav>
-
 
 <section id="main">
     <div class="container">
@@ -45,8 +41,7 @@
                 <br/>
 
                 <spring:url value="/computers" var="computerActionUrl"/>
-                <form:form class="form-horizontal" method="post"
-                           modelAttribute="computerForm" action="/computers">
+                <form:form class="form-horizontal" method="post" modelAttribute="computerForm" action="/computers">
 
                     <form:hidden path="id"/>
 
