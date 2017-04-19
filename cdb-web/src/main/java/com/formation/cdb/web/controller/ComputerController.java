@@ -100,6 +100,7 @@ public class ComputerController {
         LOGGER.debug("saveOrUpdateComputer() : DTO:" + computerDto);
 
         if (result.hasErrors()) {
+            
             populateDefaultModel(model);
             return "formComputer";
         } else {
