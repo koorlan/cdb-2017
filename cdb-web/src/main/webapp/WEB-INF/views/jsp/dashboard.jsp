@@ -32,16 +32,50 @@
 
 	</header>
 	<section id="main"> 
+	<div id="editMode" style="display: none"><spring:message code="cdb.edit.editMode" /></div>
+	<div id="viewMode" style="display: none"><spring:message code="cdb.edit.viewMode" /></div>
 	<div class="container">
 
 		<c:if test="${not empty msg}">
-			<div class="alert alert-${css} alert-dismissible" role="alert">
-				<button type="button" class="close" data-dismiss="alert"
-					aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-				<strong>${msg}</strong>
-			</div>
+			<c:choose>
+			    <c:when test="${msg == 'update'}">
+			       <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.success.update" /></strong>
+					</div>
+			    </c:when>
+			    <c:when test="${msg == 'add'}">
+			        <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.success.add" /></strong>
+					</div>
+			    </c:when>
+			    <c:when test="${msg == 'mapping'}">
+			        <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.error.mapping" /></strong>
+					</div>
+			    </c:when>
+			    <c:when test="${msg == 'delete'}">
+			        <div class="alert alert-${css} alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						<strong><spring:message code="cdb.dashboard.success.delete" /></strong>
+					</div>
+			    </c:when>
+			</c:choose>
+			
 		</c:if>
 
 		<h1 id="homeTitle">${totalComputers}
@@ -55,7 +89,7 @@
 						class="form-control"
 						placeholder="<spring:message code="cdb.dashboard.search"/>"
 						value="${filter }" /> <input type="submit" id="searchsubmit"
-						value="Filter by name" class="btn btn-primary" />
+						value="<spring:message code="cdb.dashboard.button.search"/>" class="btn btn-primary" />
 				</form>
 			</div>
 			<div class="pull-right">

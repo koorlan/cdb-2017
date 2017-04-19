@@ -50,7 +50,7 @@
 
 						<spring:bind path="name">
 							<div class="form-group ${status.error ? 'has-error' : ''}">
-								<label class="col-sm-2 control-label">Name</label>
+								<label class="col-sm-2 control-label"><spring:message code="cdb.form.name" /></label>
 								<div class="col-sm-10">
 									<form:input path="name" type="text" class="form-control "
 										id="name" placeholder="Name" />
@@ -61,7 +61,7 @@
 
 						<spring:bind path="introduced">
 							<div class="form-group ${status.error ? 'has-error' : ''}">
-								<label class="col-sm-2 control-label">Introduced</label>
+								<label class="col-sm-2 control-label"><spring:message code="cdb.form.introduced" /></label>
 								<div class="col-sm-10">
 									<form:input path="introduced" class="form-control"
 										id="introduced" placeholder="${dateFormat}" />
@@ -72,7 +72,7 @@
 
 						<spring:bind path="discontinued">
 							<div class="form-group ${status.error ? 'has-error' : ''}">
-								<label class="col-sm-2 control-label">Discontinued</label>
+								<label class="col-sm-2 control-label"><spring:message code="cdb.form.discontinued" /></label>
 								<div class="col-sm-10">
 									<form:input path="discontinued" class="form-control"
 										id="discontinued" placeholder="${dateFormat}" />
@@ -83,7 +83,7 @@
 
 						<spring:bind path="company">
 							<div class="form-group ${status.error ? 'has-error' : ''}">
-								<label class="col-sm-2 control-label">Company</label>
+								<label class="col-sm-2 control-label"><spring:message code="cdb.form.company" /></label>
 								<div class="col-sm-5">
 									<form:select path="company.id" class="form-control">
 										<form:option value="0" label="--Please Select" />
@@ -100,10 +100,10 @@
 							<div class="col-sm-offset-2 col-sm-10">
 								<c:choose>
 									<c:when test="${computerForm['new']}">
-										<button type="submit" class="btn-lg btn-primary pull-right">Add</button>
+										<button type="submit" class="btn-lg btn-primary pull-right"><spring:message code="cdb.form.add" /></button>
 									</c:when>
 									<c:otherwise>
-										<button type="submit" class="btn-lg btn-primary pull-right">Update</button>
+										<button type="submit" class="btn-lg btn-primary pull-right"><spring:message code="cdb.form.update" /></button>
 									</c:otherwise>
 								</c:choose>
 							</div>

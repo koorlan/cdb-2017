@@ -9,7 +9,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -19,19 +18,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
-import com.formation.cdb.dto.CompanyDto;
 import com.formation.cdb.dto.CompanyDto;
 import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.entity.impl.Computer;
-import com.formation.cdb.entity.impl.Company;
 import com.formation.cdb.exception.DAOException;
 import com.formation.cdb.exception.ServiceException;
 import com.formation.cdb.mapper.CompanyDtoMapper;
-import com.formation.cdb.mapper.CompanyDtoMapper;
 import com.formation.cdb.service.CDBService;
-import com.formation.cdb.service.impl.CompanyServiceImpl;
 import com.formation.cdb.service.pager.Pager;
 
 
