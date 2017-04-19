@@ -89,7 +89,7 @@
                                             code="cdb.form.company"/></label>
                                     <div class="col-sm-5">
                                         <form:select path="company.id" class="form-control">
-                                            <form:option value="0" label="--Please Select"/>
+                                            <form:option value="0" label=""/>
                                             <form:options items="${companies}" itemValue="id"
                                                           itemLabel="name"/>
                                         </form:select>
