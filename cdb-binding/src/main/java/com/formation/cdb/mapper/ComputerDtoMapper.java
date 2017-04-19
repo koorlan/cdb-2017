@@ -51,7 +51,7 @@ public class ComputerDtoMapper {
             return Optional.empty();
         }
         
-        if ( computer.get().getId() <= 0 || !computer.get().getName().isPresent() || StringUtils.isBlank(computer.get().getName().get()) ) {
+        if ( computer.get().getId() < 0 || !computer.get().getName().isPresent() || StringUtils.isBlank(computer.get().getName().get()) ) {
             return Optional.empty();
         }
         

@@ -2,15 +2,21 @@ package com.formation.cdb.ui;
 
 import java.text.ParseException;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
+import java.util.InputMismatchException;
 
 import com.formation.cdb.mapper.CompanyDtoMapper;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.http.*;
+import org.springframework.util.*;
 
 import com.formation.cdb.dto.*;
 import com.formation.cdb.entity.impl.Company;
@@ -58,7 +64,7 @@ public class ClientConsole {
      * @param args arguments of cdb. No need.
      */
     public static void main(String[] args) {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "trace");
+        //System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "error");
         ClientConsole c = new ClientConsole();
 
         while (!c.isExit()) {
@@ -90,6 +96,7 @@ public class ClientConsole {
         System.out.println("(c) Create a Computer");
         System.out.println("(d) Delete a Computer");
         System.out.println("(u) Update a Computer");
+        System.out.println("(n) Delete a Company");
         System.out.println("(x) Close application, adjö!");
 
         s = scanner.nextLine();
@@ -115,6 +122,9 @@ public class ClientConsole {
             case "u":
                 updateComputer();
                 break;
+            case "n":
+                deleteCompany();
+                break;
             case "x":
                 closeClientConsole();
                 break;
@@ -137,13 +147,18 @@ public class ClientConsole {
         do {
 
             String url = BASE_URL + BASE_COMPUTER + "?page=" + pagerComputer.getCurrentPageIndex() + "&size=" + pagerComputer.getPageSize() + "&filter=" + pagerComputer.getFilter();
-            ComputersApiDto computers = restTemplate.getForObject(url, ComputersApiDto.class);
+            try {
+                ComputersApiDto computers = restTemplate.getForObject(url, ComputersApiDto.class);
+                pagerComputer.setMax(computers.getTotal());
 
-            pagerComputer.setMax(computers.getTotal());
+                for (ComputerDto computerDto : computers.getComputers()) {
+                    Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
+                    computer.ifPresent(System.out::println);
+                }
 
-            for (ComputerDto computerDto : computers.getComputers()) {
-                Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
-                computer.ifPresent(System.out::println);
+            } catch (HttpClientErrorException | ResourceAccessException err) {
+                System.out.println("Error: " + err.getMessage());
+                break;
             }
 
 
@@ -188,15 +203,19 @@ public class ClientConsole {
 
         exit = false;
         do {
+            try {
+                String url = BASE_URL + BASE_COMPANY + "?page=" + pagerCompany.getCurrentPageIndex() + "&size=" + pagerCompany.getPageSize() + "&filter=" + pagerCompany.getFilter();
+                CompaniesApiDto companies = restTemplate.getForObject(url, CompaniesApiDto.class);
 
-            String url = BASE_URL + BASE_COMPANY + "?page=" + pagerCompany.getCurrentPageIndex() + "&size=" + pagerCompany.getPageSize() + "&filter=" + pagerCompany.getFilter();
-            CompaniesApiDto companies = restTemplate.getForObject(url, CompaniesApiDto.class);
+                pagerCompany.setMax(companies.getTotal());
 
-            pagerCompany.setMax(companies.getTotal());
-
-            for (CompanyDto companyDto : companies.getCompanies()) {
-                Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
-                company.ifPresent(System.out::println);
+                for (CompanyDto companyDto : companies.getCompanies()) {
+                    Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
+                    company.ifPresent(System.out::println);
+                }
+            } catch (HttpClientErrorException | ResourceAccessException err) {
+                System.out.println("Error: " + err.getMessage());
+                break;
             }
 
 
@@ -236,19 +255,22 @@ public class ClientConsole {
     public void showComputer() {
         long id;
         System.out.println("Please enter computer id:");
-        id = scanner.nextLong();
-        scanner.nextLine(); // Consume Enter
+        try {
+            id = scanner.nextLong();
+            scanner.nextLine(); // Consume Enter
+        } catch (InputMismatchException e) {
+            System.out.println("Not a valid input, exiting.");
+            return;
+        }
+
         try {
             ComputerDto computerDto = restTemplate.getForObject("http://127.0.0.1:8080/computers/" + id,
                     ComputerDto.class);
             Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
             computer.ifPresent(c -> System.out.println(c));
-        } catch (HttpClientErrorException err) {
+        } catch (HttpClientErrorException | ResourceAccessException err) {
             System.out.println("Error : " + err.getMessage());
         }
-
-        return;
-
     }
 
     ;
@@ -261,17 +283,21 @@ public class ClientConsole {
         long id;
 
         System.out.println("Please enter company id:");
-        id = scanner.nextLong();
+        try {
+            id = scanner.nextLong();
+        } catch (InputMismatchException e) {
+            System.out.println("Not a valid input, exiting.");
+            return;
+        }
         scanner.nextLine(); // Consume Enter
         try {
-            ComputerDto computerDto = restTemplate.getForObject("http://127.0.0.1:8080/companies/" + id,
-                    ComputerDto.class);
-            Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
-            computer.ifPresent(c -> System.out.println(c));
-        } catch (HttpClientErrorException err) {
+            String url = BASE_URL + BASE_COMPANY + "/" + id;
+            CompanyDto companyDto = restTemplate.getForObject(url, CompanyDto.class);
+            Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
+            company.ifPresent(c -> System.out.println(c));
+        } catch (HttpClientErrorException | ResourceAccessException err) {
             System.out.println("Error : " + err.getMessage());
         }
-
     }
 
     ;
@@ -290,32 +316,70 @@ public class ClientConsole {
 
         System.out.println("Please enter computer name [Required]:");
         name = scanner.nextLine();
+        if (StringUtils.isBlank(name)) {
+            System.out.println("Error: name is required");
+            return;
+        }
 
         System.out.println("Please enter the date it was introduced (DD-MM-YYYY) [Optional]:");
         dateIntroducedString = scanner.nextLine();
         if (Control.isValidStringDate(Optional.ofNullable(dateIntroducedString))) {
             introduced = DateUtil.stringToDate(dateIntroducedString);
+        } else if (!dateIntroducedString.isEmpty()) {
+            System.out.println("Invalid date format, computer not created");
+            return;
         }
         System.out.println("Please enter the date it was discontinued (DD-MM-YYYY) [Optional]:");
         dateDiscontinuedString = scanner.nextLine();
         if (Control.isValidStringDate(Optional.ofNullable(dateDiscontinuedString))) {
             discontinued = DateUtil.stringToDate(dateDiscontinuedString);
+        } else if (!dateIntroducedString.isEmpty()) {
+            System.out.println("Invalid date format, computer not created");
+            return;
         }
         System.out.println("Please enter the company id of the computer manufacturer [Optional]:");
         companyIdString = scanner.nextLine();
         companyIdString = companyIdString.trim();
         if (!companyIdString.isEmpty()) {
-            companyId = Long.parseLong(companyIdString);
+            try {
+                companyId = Long.parseLong(companyIdString);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid company id format, computer not created");
+                return;
+            }
+
         }
 
-        Optional<Company> company = null;// serviceCompany.findById(companyId);
-        Computer computer = new Computer.ComputerBuilder(1, name).withIntroduced(introduced)
-                .withDiscontinued(discontinued).withCompany(company.orElse(null)).build();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // new Computer(1, name, introduced, discontinued,
-        // company.orElse(null));
+        String url = BASE_URL + BASE_COMPUTER;
+
+
+        Computer computer = new Computer.ComputerBuilder(0, name).withIntroduced(introduced)
+                .withDiscontinued(discontinued).build();
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
+            Optional<ComputerDto> computerDto = ComputerDtoMapper.mapComputerDtoFromComputer(Optional.of(computer));
+            if (computerDto.isPresent() && companyId != 0) {
+                CompanyDto companyDto = new CompanyDto();
+                companyDto.setId(companyId);
+                computerDto.get().setCompany(companyDto);
+            }
+            //System.out.println(computerDto.get());
+            HttpEntity<ComputerDto> request = new HttpEntity<ComputerDto>(computerDto.get(), headers);
+            try {
+                ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+            } catch (HttpClientErrorException | ResourceAccessException err) {
+                System.out.println("Error : " + err.getMessage());
+            }
+
+            // new Computer(1, name, introduced, discontinued,
+            // company.orElse(null));
+
             // service.saveOrUpdate(computer);
+        } else {
+            System.out.println("Invalid computer:" + computer);
+            System.out.println("Computer not created...");
         }
     }
 
@@ -329,15 +393,36 @@ public class ClientConsole {
         String answer;
 
         System.out.println("Please enter the computer id you want to deleted");
-        id = scanner.nextLong();
-        scanner.nextLine(); // consume newline;
-
+        try {
+            id = scanner.nextLong();
+            scanner.nextLine(); // consume newline;
+        } catch (InputMismatchException e) {
+            System.out.println("Not a valid input, exiting computer deletion.");
+            return;
+        }
         System.out.println("Are you sure you want delete (y/n)");
-        // service.findById(id).ifPresent(x -> System.out.println(x));
+
+        try {
+            String url = BASE_URL + BASE_COMPUTER + "/" + id;
+            ComputerDto computerDto = restTemplate.getForObject(url, ComputerDto.class);
+            Optional<Computer> computer = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
+            computer.ifPresent(c -> System.out.println(c));
+        } catch (HttpClientErrorException | ResourceAccessException err) {
+            System.out.println("Error : " + err.getMessage());
+            return;
+        }
 
         answer = scanner.nextLine();
         switch (answer) {
             case "y":
+                try {
+                    String url = BASE_URL + BASE_COMPUTER + "/" + id;
+                    restTemplate.delete(url);
+                    System.out.println("Success !");
+                } catch (HttpClientErrorException | ResourceAccessException err) {
+                    System.out.println("Error : " + err.getMessage());
+                }
+
                 // service.delete(service.findById(id).get().getId());
                 break;
             case "n":
@@ -347,8 +432,6 @@ public class ClientConsole {
 
     }
 
-    ;
-
     /**
      * Update a computer.
      */
@@ -356,7 +439,7 @@ public class ClientConsole {
         String idString;
         long id;
         String answer;
-        Computer computer;
+        Computer computer = null;
         // New Computer var
         String newName = null;
         String newDateIntroducedString;
@@ -371,17 +454,34 @@ public class ClientConsole {
         idString = scanner.nextLine();
         idString = idString.trim();
         if (!idString.isEmpty()) {
-            id = Long.parseLong(idString);
+            try {
+                id = Long.parseLong(idString);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid id format provided. Exiting...");
+                return;
+            }
         } else {
+            System.out.println("Error" +
+                    ", empty id.");
             return;
         }
-        Optional<Computer> optionalComputer = null;// service.findById(id);
-        if (!optionalComputer.isPresent()) {
+        try {
+            String url = BASE_URL + BASE_COMPUTER + "/" + id;
+            ComputerDto computerDto = restTemplate.getForObject(url, ComputerDto.class);
+            Optional<Computer> computerO = ComputerDtoMapper.mapComputerFromComputerDto(Optional.of(computerDto));
+            if (computerO.isPresent()) {
+                computer = computerO.get();
+            } else {
+                System.out.println("Empty computer");
+                return;
+            }
+        } catch (HttpClientErrorException | ResourceAccessException err) {
+            System.out.println("Error : " + err.getMessage());
             return;
         }
-        computer = optionalComputer.get();
 
-        System.out.println("Name: [" + computer.getName() + "] (e)");
+
+        System.out.println("Name: [" + computer.getName().get() + "] (e)");
         answer = null;
         answer = scanner.nextLine();
         switch (answer) {
@@ -390,14 +490,21 @@ public class ClientConsole {
                 newName = scanner.nextLine();
                 newName = newName.trim();
                 if (StringUtils.isBlank(newName)) {
+                    System.out.println("Error: Empty name (required).");
                     return;
                 }
                 break;
             default:
+                newName = computer.getName().get();
                 break;
         }
 
-        System.out.println("Date Introduced: [" + computer.getIntroduced() + "] (e/d)");
+        if (computer.getIntroduced().isPresent()) {
+            System.out.println("Date Introduced: [" + computer.getIntroduced().get() + "] (e/d)");
+        } else {
+            System.out.println("Date Introduced: [no date] (e)");
+        }
+
         answer = null;
         answer = scanner.nextLine();
         switch (answer) {
@@ -406,14 +513,21 @@ public class ClientConsole {
                 newDateIntroducedString = scanner.nextLine();
                 newDateIntroducedString = newDateIntroducedString.trim();
                 if (!newDateIntroducedString.isEmpty()) {
-                    newDateIntroduced = DateUtil.stringToDate(newDateIntroducedString);
+                    try {
+                        newDateIntroduced = DateUtil.stringToDate(newDateIntroducedString);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Error invalid date");
+                        return;
+                    }
                 }
-
                 break;
             case "d": // delete
                 newDateIntroduced = null;
                 break;
             default:
+                if (computer.getIntroduced().isPresent()) {
+                    newDateIntroduced = computer.getIntroduced().get();
+                }
                 break;
         }
 
@@ -426,14 +540,21 @@ public class ClientConsole {
                 newDateDiscontinuedString = scanner.nextLine();
                 newDateDiscontinuedString = newDateDiscontinuedString.trim();
                 if (!newDateDiscontinuedString.isEmpty()) {
-                    newDateDiscontinued = DateUtil.stringToDate(newDateDiscontinuedString);
+                    try {
+                        newDateDiscontinued = DateUtil.stringToDate(newDateDiscontinuedString);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("Error invalid date");
+                        return;
+                    }
                 }
-
                 break;
             case "d": // delete
                 newDateDiscontinued = null;
                 break;
             default:
+                if (computer.getDiscontinued().isPresent()) {
+                    newDateIntroduced = computer.getDiscontinued().get();
+                }
                 break;
         }
 
@@ -446,21 +567,41 @@ public class ClientConsole {
                 newIdCompanyString = scanner.nextLine();
                 newIdCompanyString = newIdCompanyString.trim();
                 if (!newIdCompanyString.isEmpty()) {
-                    newIdCompany = Long.parseLong(newIdCompanyString);
+                    try {
+                        newIdCompany = Long.parseLong(newIdCompanyString);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Error invalid company id");
+                        return;
+                    }
                 }
-                Optional<Company> optionalCompany = null;// serviceCompany.findById(newIdCompany);
-                newCompany = optionalCompany.get();
 
-                System.out.println("Company :" + newCompany + " (y/n)");
-                answer = null;
-                answer = scanner.nextLine();
-                switch (answer) {
-                    case "n":
-                        newCompany = null;
+
+                try {
+                    String url = BASE_URL + BASE_COMPANY + "/" + newIdCompany;
+                    CompanyDto companyDto = restTemplate.getForObject(url, CompanyDto.class);
+                    Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
+
+                    if (company.isPresent()) {
+                        newCompany = company.get();
+                        System.out.println("Company :" + newCompany + " (y/n)");
+                        answer = null;
+                        answer = scanner.nextLine();
+                        switch (answer) {
+                            case "n":
+                                newCompany = null;
+                                break;
+                            default:
+                                break;
+                        }
+                    } else {
+                        System.out.println("Company not found.");
                         break;
-                    default:
-                        break;
+                    }
+                    company.ifPresent(c -> System.out.println(c));
+                } catch (HttpClientErrorException | ResourceAccessException err) {
+                    System.out.println("Error : " + err.getMessage());
                 }
+
 
                 break;
             case "d": // delete
@@ -470,14 +611,70 @@ public class ClientConsole {
                 break;
         }
 
+
         computer = new Computer.ComputerBuilder(computer.getId(), newName).withIntroduced(newDateIntroduced)
                 .withDiscontinued(newDateDiscontinued).withCompany(newCompany).build();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        String url = BASE_URL + BASE_COMPUTER;
+
+        Optional<ComputerDto> computerDto = ComputerDtoMapper.mapComputerDtoFromComputer(Optional.of(computer));
+
+        System.out.println(computerDto.get());
+        HttpEntity<ComputerDto> request = new HttpEntity<ComputerDto>(computerDto.get(), headers);
+
+        ResponseEntity<String> response = restTemplate.postForEntity(url, request, String.class);
+
+
         if (Control.isValidComputer(Optional.ofNullable(computer))) {
             // service.saveOrUpdate(computer);
         }
     }
 
-    ;
+    public void deleteCompany() {
+        long id;
+        String answer;
+
+        System.out.println("Please enter the company id you want to deleted");
+        try {
+            id = scanner.nextLong();
+        } catch (InputMismatchException e) {
+            System.out.println("Not a valid input, exiting.");
+            return;
+        }
+        scanner.nextLine(); // consume newline;
+
+        System.out.println("Are you sure you want delete (y/n)");
+
+        try {
+            String url = BASE_URL + BASE_COMPANY + "/" + id;
+            CompanyDto companyDto = restTemplate.getForObject(url, CompanyDto.class);
+            Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
+            company.ifPresent(c -> System.out.println(c));
+        } catch (HttpClientErrorException | ResourceAccessException err) {
+            System.out.println("Error : " + err.getMessage());
+        }
+
+        answer = scanner.nextLine();
+        switch (answer) {
+            case "y":
+                try {
+                    String url = BASE_URL + BASE_COMPANY + "/" + id;
+                    restTemplate.delete(url);
+                    System.out.println("Success !");
+                } catch (HttpClientErrorException | ResourceAccessException err) {
+                    System.out.println("Error : " + err.getMessage());
+                }
+
+                // service.delete(service.findById(id).get().getId());
+                break;
+            case "n":
+            default:
+                break;
+        }
+    }
 
     /**
      * Quit the program.

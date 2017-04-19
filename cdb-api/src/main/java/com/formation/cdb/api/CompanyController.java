@@ -3,6 +3,7 @@ package com.formation.cdb.api;
 import java.util.List;
 import java.util.Optional;
 
+import com.formation.cdb.dto.CompaniesApiDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -73,7 +74,7 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("")
+    @PostMapping
     public @ResponseBody ResponseEntity<?> createCompany(@RequestBody CompanyDto companyDto) {
         try {
             Optional<Company> company = CompanyDtoMapper.mapCompanyFromCompanyDto(Optional.of(companyDto));
@@ -84,7 +85,7 @@ public class CompanyController {
         }
     }
 
-    @DeleteMapping("")
+    @DeleteMapping
     public @ResponseBody ResponseEntity<?> deleteMultiple(@RequestBody List<Long> ids) {
         try {
             companyService.deleteMultiple(ids);
@@ -105,16 +106,23 @@ public class CompanyController {
     }
 
     @GetMapping
-    public @ResponseBody List<CompanyDto> viewList(@RequestParam("page") Optional<Integer> page,
+    public @ResponseBody ResponseEntity<?> viewList(@RequestParam("page") Optional<Integer> page,
             @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
         LOGGER.debug("showCompanys()");
+        try {
+            int numberOfCompanies = companyService.sizeOfTable(filter.orElse(""));
+            Pager pager = new Pager(filter, size, page, numberOfCompanies);
 
-        int numberOfCompanies = companyService.sizeOfTable(filter.orElse("")); 
-        Pager pager = new Pager(filter,size, page, numberOfCompanies);
-       
-        List<Company> companies = companyService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
-        List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
+            List<Company> companies = companyService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
+            List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
 
-        return companiesDto;
+            CompaniesApiDto wrapper = new CompaniesApiDto();
+            wrapper.setCompanies(companiesDto);
+            wrapper.setTotal(numberOfCompanies);
+
+            return new ResponseEntity<>(wrapper,HttpStatus.OK);
+        } catch (DAOException | ServiceException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
