@@ -103,7 +103,7 @@
                                 <div class="col-sm-offset-2 col-sm-10">
                                     <a href="/"><button type="button" class="btn btn-blue-grey pull-right">
                                         <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                        cdb.form.cancel</button></a>
+                                        <spring:message code="cdb.form.cancel"/></button></a>
                                     <c:choose>
                                         <c:when test="${computerForm['new']}">
                                             <button type="submit" class="btn btn-primary pull-right">

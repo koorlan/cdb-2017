@@ -47,11 +47,18 @@ $(function() {
     $.fn.toggleEditMode = function() {
         if($(".editMode").is(":visible")) {
             $(".editMode").hide();
-            $("#editComputer").text($("#editMode").text());
+            $("#truc").remove();
+            $("#editComputer").prepend('<span id="truc" class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
+            $("#editComputer").append('<strong id="lblfield"></strong>');
+            $("#lblfield").text($("#editMode").text());
         }
         else {
             $(".editMode").show();
-            $("#editComputer").text($("#viewMode").text());
+            $("#truc").remove();
+            $("#editComputer").prepend('<span id="truc" class="glyphicon glyphicon-th-list" aria-hidden="true"></span>');
+            $("#editComputer").append('<strong id="lblfield"></strong>');
+            $("#lblfield").text($("#viewMode").text());
+
         }
         return this;
     };

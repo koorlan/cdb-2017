@@ -87,7 +87,8 @@
 </nav>
 
 <div class="container">
-
+    <div id="editMode" style="display:none"><strong><spring:message code="cdb.edit.editMode" /></strong></div>
+    <div id="viewMode" style="display:none"><strong><spring:message code="cdb.edit.viewMode" /></strong></div>
     <c:if test="${not empty msg}">
         <div class="alert alert-${css} alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -112,7 +113,7 @@
                         class="btn btn-primary "
                         href="#"
                         onclick="$.fn.toggleEditMode();">
-                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                    <span id="truc" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                     <strong><spring:message code="cdb.dashboard.edit"/></strong>
                 </button>
             </div>
@@ -222,7 +223,6 @@
         <nav>
             <ul id="pagination-demo" class="pagination center-block"></ul>
             <div class="btn-group btn-group-sm  pull-right" role="group">
-                <a class="btn btn-default " href="?size=10&filter=${filter}&orderby=${orderby}&sens=${sens}">10</a>
                 <a class="btn btn-default " href="?size=10&filter=${filter}&orderby=${orderby}&sens=${sens}">10</a>
                 <a class="btn btn-default " href="?size=50&filter=${filter}&orderby=${orderby}&sens=${sens}">50</a>
                 <a class="btn btn-default " href="?size=100&filter=${filter}&orderby=${orderby}&sens=${sens}">100</a>
