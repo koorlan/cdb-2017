@@ -61,8 +61,7 @@ public interface CDBService<T> {
      * @param filter the filter
      * @return list of type T
      */
- // TODO : add orderBy parameter
-    List<T> findAllWithOffsetAndLimit(int offset, int limit, String filter);
+    List<T> findAllWithOffsetAndLimit(int offset, int limit, String filter, String orderBy, String sens);
     
     /**
      * COUNT(*).

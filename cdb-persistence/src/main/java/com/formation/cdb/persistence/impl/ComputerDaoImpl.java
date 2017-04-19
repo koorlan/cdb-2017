@@ -211,9 +211,9 @@ public class ComputerDaoImpl implements Dao<Computer> {
         switch (orderBy) {
         case "name":
             return (asc) ? "Computer.findAllwithFilterOrderByNameASC" : "Computer.findAllwithFilterOrderByNameDESC";
-        case "dateIntro":
+        case "introduced":
             return (asc) ? "Computer.findAllwithFilterOrderByDateIntroASC" : "Computer.findAllwithFilterOrderByDateIntroDESC";
-        case "dateFin":
+        case "discontinued":
             return (asc) ? "Computer.findAllwithFilterOrderByDateDiscontinuedASC" : "Computer.findAllwithFilterOrderByDateDiscontinuedDESC";
         case "company":
             return (asc) ? "Computer.findAllwithFilterOrderByCompanyNameASC" : "Computer.findAllwithFilterOrderByCompanyNameDESC";

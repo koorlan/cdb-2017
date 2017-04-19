@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -70,7 +71,7 @@ public class ComputerController {
 
     @GetMapping
     public String showComputers(ModelMap model, @RequestParam("page") Optional<Integer> page,
-            @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size) {
+            @RequestParam("filter") Optional<String> filter, @RequestParam("size") Optional<Integer> size, @RequestParam("orderby") Optional<String> orderBy, @RequestParam("sens") Optional<String> sens) {
         LOGGER.debug("showComputers()");
         
         int numberOfComputers = computerService.sizeOfTable(filter.orElse("")); 
@@ -79,13 +80,14 @@ public class ComputerController {
         model.put("filter", pager.getFilter());
         model.put("size", pager.getPageSize());
         
-        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter());
+        List<Computer> computers = computerService.findAllWithOffsetAndLimit(pager.getOffset(), pager.getPageSize(), pager.getFilter(),orderBy.orElse("name"),sens.orElse("ASC"));
         List<ComputerDto> computersDto = ComputerDtoMapper.mapComputersDtoFromComputers(computers);
         model.put("computers", computersDto);
         model.put("totalComputers", pager.getMax());
         model.put("currentIndexPage", pager.getCurrentPageIndex());
         model.put("maxIndexPage", pager.getNbPages());
-        
+        model.put("orderby", orderBy.orElse("name"));
+        model.put("sens", sens.orElse("ASC"));
         
         model.put("deleteForm", new ComputerListWrapper());
 
@@ -172,7 +174,7 @@ public class ComputerController {
 
     private void populateDefaultModel(Model model) {
         int numberOfCompanies = companyService.sizeOfTable("");
-        List<Company> companies = companyService.findAllWithOffsetAndLimit(0, numberOfCompanies, "");
+        List<Company> companies = companyService.findAllWithOffsetAndLimit(0, numberOfCompanies, "","name","ASC");
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
         model.addAttribute("companies", companiesDto);
     }

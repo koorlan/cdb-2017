@@ -74,9 +74,9 @@ public class CompanyServiceImpl implements CDBService<Company> {
      */
     @Transactional
     @Override
-    public List<Company> findAllWithOffsetAndLimit(int offset, int limit, String filter) {
-        // TODO : use orderby 
-        return companyDaoImpl.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%', "name", true);
+    public List<Company> findAllWithOffsetAndLimit(int offset, int limit, String filter,String orderBy, String sens ) {
+        boolean asc = sens.equals("ASC");
+        return companyDaoImpl.readAllWithOffsetAndLimit(offset, limit, '%' + filter +'%', orderBy, asc);
     }
 
     /* (non-Javadoc)

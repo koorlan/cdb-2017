@@ -225,9 +225,10 @@
         <nav>
             <ul id="pagination-demo" class="pagination center-block"></ul>
             <div class="btn-group btn-group-sm  pull-right" role="group">
-                <a class="btn btn-default " href="?size=10&filter=${filter}">10</a>
-                <a class="btn btn-default " href="?size=50&filter=${filter}">50</a>
-                <a class="btn btn-default " href="?size=100&filter=${filter}">100</a>
+                <a class="btn btn-default " href="?size=10&filter=${filter}&orderby=${orderby}&sens=${sens}">10</a>
+                <a class="btn btn-default " href="?size=10&filter=${filter}&orderby=${orderby}&sens=${sens}">10</a>
+                <a class="btn btn-default " href="?size=50&filter=${filter}&orderby=${orderby}&sens=${sens}">50</a>
+                <a class="btn btn-default " href="?size=100&filter=${filter}&orderby=${orderby}&sens=${sens}">100</a>
             </div>
         </nav>
     </div>
@@ -254,7 +255,7 @@
         totalPages: ${maxIndexPage},
         visiblePages: 7,
         onPageClick: function (event, page) {
-            window.location.href = "?page=" + page + "&size=${size}&filter=${filter}";
+            window.location.href = "?page=" + page + "&size=${size}&filter=${filter}&orderby=${orderby}&sens=${sens}";
         }
     });
 </script>

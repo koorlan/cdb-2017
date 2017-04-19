@@ -37,7 +37,9 @@ public class ComputerFormValidator implements Validator {
         ComputerDto computer = (ComputerDto) target;
         LOGGER.debug(computer.toString());
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "name", "NotEmpty.computerForm.name");
-        
+
+
+
         if (computer.getIntroduced() != null && computer.getDiscontinued() != null && computer.getDiscontinued().isBefore(computer.getIntroduced())) {
             LOGGER.debug("discontinued is before introduced " + computer);
             errors.rejectValue("discontinued", "NotBeforeIntroduced.computerForm.discontinued");
