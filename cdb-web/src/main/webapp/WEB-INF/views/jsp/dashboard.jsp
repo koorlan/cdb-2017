@@ -34,7 +34,7 @@
                    placeholder="<spring:message code="cdb.dashboard.search"/>"/>
             <button type="submit" id="searchsubmit" class="btn btn-primary btn-sm">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                <strong>cdb.dashboard.filtername</strong>
+                <strong><spring:message code="cdb.dashboard.filtername"/></strong>
             </button>
         </form>
 
@@ -46,7 +46,7 @@
                         <a class="navbar-link" href="/logout">
                             <button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                <strong>Log out </strong>
+                                <strong><spring:message code="cdb.dashboard.logout"/> </strong>
                             </button>
                         </a>
                     </c:when>
@@ -54,7 +54,7 @@
                         <a class="navbar-link" href="/login">
                             <button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                <strong>Sign in </strong>
+                                <strong><spring:message code="cdb.dashboard.login"/> </strong>
                             </button>
                         </a>
 
@@ -65,18 +65,18 @@
                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
-                        <strong>cdb.dashboard.lang</strong>
+                        <strong><spring:message code="cdb.dashboard.lang"/></strong>
                     </button>
 
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="?locale=en_US" style="padding:0rem;">
                             <i class="us flag"> </i>
-                            <strong>cdb.dashboard.engish</strong>
+                            <strong>English</strong>
                         </a>
                         <br/>
                         <a class="dropdown-item" href=" ?locale=fr_FR" style="padding:0rem;">
                             <i class="fr flag"> </i>
-                            <strong>cdb.dashboard.french</strong>
+                            <strong>Français</strong>
                         </a>
                     </div>
                 </div>
