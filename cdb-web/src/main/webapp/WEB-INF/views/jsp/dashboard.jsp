@@ -43,7 +43,7 @@
                 <c:choose>
                     <c:when test="${pageContext.request.userPrincipal.authenticated}">
 
-                        <a class="navbar-link" href="/login?logout">
+                        <a class="navbar-link" href="/logout">
                             <button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
                                 <strong>Log out </strong>

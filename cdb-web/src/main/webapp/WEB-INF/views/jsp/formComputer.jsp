@@ -82,13 +82,13 @@
                                     </div>
                                 </div>
                             </spring:bind>
-
+                            <input type="text" id="filter">
                             <spring:bind path="company">
                                 <div class="form-group ${status.error ? 'has-error' : ''}">
                                     <label class="col-sm-2 control-label"><spring:message
                                             code="cdb.form.company"/></label>
                                     <div class="col-sm-5">
-                                        <form:select path="company.id" class="form-control">
+                                        <form:select path="company.id" class="form-control" >
                                             <form:option value="0" label=""/>
                                             <form:options items="${companies}" itemValue="id"
                                                           itemLabel="name"/>
@@ -118,6 +118,7 @@
                                     </c:choose>
                                 </div>
                             </div>
+
                         </form:form>
                     </div>
                 </div>
@@ -129,6 +130,38 @@
 <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/resources/js/addComputer.js"/>"></script>
 <script src="<c:url value="/resources/js/mdb.min.js"/>"></script>
+
+
+<script>
+    jQuery.fn.filterByText = function(textbox) {
+        return this.each(function() {
+            var select = this;
+            var options = [];
+            $(select).find('option').each(function() {
+                options.push({value: $(this).val(), text: $(this).text()});
+            });
+            $(select).data('options', options);
+
+            $(textbox).bind('change keyup', function() {
+                var options = $(select).empty().data('options');
+                var search = $.trim($(this).val());
+                var regex = new RegExp(search,"gi");
+
+                $.each(options, function(i) {
+                    var option = options[i];
+                    if(option.text.match(regex) !== null) {
+                        $(select).append(
+                            $('<option>').text(option.text).val(option.value)
+                        );
+                    }
+                });
+            });
+        });
+    };
+    $(function() {
+        $('select').filterByText($('#filter'));
+    });
+</script>
 
 </body>
 </html>
