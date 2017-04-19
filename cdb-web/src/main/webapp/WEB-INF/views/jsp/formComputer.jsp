@@ -11,7 +11,7 @@
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
     <link href="<c:url value="/resources/css/font-awesome.css"/>" rel="stylesheet" media="screen"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/css/mdb.min.css" rel="stylesheet">
+    <link href="<c:url value="/resources/css/mdb.min.css"/>" rel="stylesheet" media="screen"/>
 
 </head>
 <body>
@@ -83,7 +83,7 @@
                             <label class="col-sm-2 control-label"><spring:message code="cdb.form.company" /></label>
                             <div class="col-sm-5">
                                 <form:select path="company.id" class="form-control">
-                                    <form:option value="0" label="--Please Select"/>
+                                    <form:option value="0" label=""/>
                                     <form:options items="${companies}" itemValue="id"
                                                   itemLabel="name"/>
                                 </form:select>
@@ -113,9 +113,7 @@
 <script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
 <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/resources/js/addComputer.js"/>"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/js/mdb.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="<c:url value="/resources/js/mdb.min.js"/>"></script>
 
 </body>
 </html>

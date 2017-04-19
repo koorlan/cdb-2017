@@ -12,7 +12,7 @@
     <!-- Bootstrap -->
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
     <link href="<c:url value="/resources/css/flag.min.css"/>" rel="stylesheet" media="screen"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/css/mdb.min.css" rel="stylesheet">
+    <link href="<c:url value="/resources/css/mdb.min.css"/>" rel="stylesheet" media="screen"/>
 
 </head>
 <body>
@@ -24,7 +24,8 @@
             <strong>Computer Database</strong>
         </a>
 
-        <form id="searchForm" action="" class="form-inline waves-effect waves-light col-lg-6" style="display:inline-block;padding:5px;">
+        <form id="searchForm" action="" class="form-inline waves-effect waves-light col-lg-6"
+              style="display:inline-block;padding:5px;">
             <input type="hidden" name="size" value="${size}"/>
             <input class="form-control"
                    value="${filter }"
@@ -39,26 +40,43 @@
 
         <div class="navbar-toggler navbar-toggler-right col-md-3">
             <ul class="navbar-nav mr-auto">
-                    <a class="navbar-link" href="/login">
-                        <button class="btn btn-primary btn-sm" >
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                            <strong>Sign in </strong>
-                        </button>
-                    </a>
+                <c:choose>
+                    <c:when test="${pageContext.request.userPrincipal.authenticated}">
+
+                        <a class="navbar-link" href="/login?logout">
+                            <button class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                <strong>Log out </strong>
+                            </button>
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a class="navbar-link" href="/login">
+                            <button class="btn btn-primary btn-sm">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                                <strong>Sign in </strong>
+                            </button>
+                        </a>
+
+                    </c:otherwise>
+                </c:choose>
+
+
 
                 <div class="btn-group" style="display:inline-block;padding:10px;">
-                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
+                            aria-haspopup="true" aria-expanded="false">
                         <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
                         <strong>Langue</strong>
                     </button>
 
                     <div class="dropdown-menu">
-                        <a class="dropdown-item" href="?locale=en_US">
+                        <a class="dropdown-item" href="?locale=en_US" style="padding:0rem;">
                             <i class="us flag"> </i>
                             <strong>English (US)</strong>
                         </a>
                         <br/>
-                        <a class="dropdown-item" href=" ?locale=fr_FR" style="margin-top:9px;">
+                        <a class="dropdown-item" href=" ?locale=fr_FR" style="padding:0rem;">
                             <i class="fr flag"> </i>
                             <strong>French(FR)</strong>
                         </a>
@@ -71,6 +89,7 @@
 </nav>
 
 <div class="container">
+
     <c:if test="${not empty msg}">
         <div class="alert alert-${css} alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -215,11 +234,12 @@
 </div>
 
 <script src="<c:url value="/resources/js/jquery.min.js"/>"></script>
+
 <script src="<c:url value="/resources/js/bootstrap.min.js"/>"></script>
-<script src="<c:url value="/resources/bootstrap.min.js"/>"></script>
 <script src="<c:url value="/resources/js/dashboard.js"/>"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.3.0/js/mdb.min.js"></script>
+<script src="<c:url value="/resources/js/mdb.min.js"/>"></script>
+
 
 <script
         src="<c:url value="/resources/js/jquery.twbsPagination.min.js"/>"></script>

@@ -164,7 +164,6 @@ public class ComputerController {
     @GetMapping("/add")
     public String showAddComputerForm(Model model) {
         ComputerDto computerDto = new ComputerDto();
-        computerDto.setName("name");
 
         model.addAttribute("computerForm", computerDto);
         populateDefaultModel(model);
