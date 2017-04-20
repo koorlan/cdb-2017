@@ -45,7 +45,7 @@ public class DefaultController {
         }
 
         if (logout != null) {
-            model.addObject("msg", "You've been logged out successfully.");
+            model.addObject("msg", "logout");
         }
         model.setViewName("login");
 
@@ -59,11 +59,11 @@ public class DefaultController {
 
         String error = "";
         if (exception instanceof BadCredentialsException) {
-            error = "Invalid username and password!";
+            error = "invalid";
         } else if (exception instanceof LockedException) {
-            error = exception.getMessage();
+            error = "invalid";
         } else {
-            error = "Invalid username and password!";
+            error = "invalid";
         }
 
         return error;

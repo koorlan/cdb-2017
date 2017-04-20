@@ -91,12 +91,48 @@
     <div id="editMode" style="display:none"><strong><spring:message code="cdb.edit.editMode"/></strong></div>
     <div id="viewMode" style="display:none"><strong><spring:message code="cdb.edit.viewMode"/></strong></div>
     <c:if test="${not empty msg}">
-        <div class="alert alert-${css} alert-dismissible" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            <strong>${msg}</strong>
-        </div>
+        <c:choose>
+            <c:when test="${msg == 'update'}">
+                <div class="alert alert-${css} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong><spring:message code="cdb.dashboard.success.update" /></strong>
+                </div>
+            </c:when>
+            <c:when test="${msg == 'add'}">
+                <div class="alert alert-${css} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong><spring:message code="cdb.dashboard.success.add" /></strong>
+                </div>
+            </c:when>
+            <c:when test="${msg == 'mapping'}">
+                <div class="alert alert-${css} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong><spring:message code="cdb.dashboard.error.mapping" /></strong>
+                </div>
+            </c:when>
+            <c:when test="${msg == 'delete'}">
+                <div class="alert alert-${css} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong><spring:message code="cdb.dashboard.success.delete" /></strong>
+                </div>
+            </c:when>
+            <c:when test="${msg == 'exception'}">
+                <div class="alert alert-${css} alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <strong><spring:message code="cdb.dashboard.error.exception" /></strong>
+                </div>
+            </c:when>
+        </c:choose>
     </c:if>
 
     <div class="row fadeIn" data-wow-delay="0.2s">
@@ -114,7 +150,7 @@
                         href="#"
                         onclick="$.fn.toggleEditMode();">
                     <span id="truc" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    <strong id="machin"style="padding-left: 5px">editer</strong>
+                    <strong id="machin"style="padding-left: 5px"><spring:message code="cdb.dashboard.edit" /></strong>
                 </button>
             </div>
         </div>

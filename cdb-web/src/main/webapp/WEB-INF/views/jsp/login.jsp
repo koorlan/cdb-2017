@@ -30,12 +30,12 @@
             <c:if test="${not empty error}">
                 <div class="alert alert-danger col-md-4 col-md-offset-4" role="alert">
 
-                    <div class="error"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="padding-right: 8px"></span> ${error}</div>
+                    <div class="error"><span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true" style="padding-right: 8px"></span><spring:message code="cdb.login.invalid"/> </div>
                 </div>
             </c:if>
             <c:if test="${not empty msg}">
                 <div class="alert alert-warning" role="alert">
-                    <div class="msg">${msg}</div>
+                    <div class="msg"><spring:message code="cdb.login.logout"/></div>
                 </div>
             </c:if>
                 <div class="card col-md-4 col-md-offset-4">

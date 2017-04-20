@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -112,9 +113,12 @@ public class ComputerController {
             } else {
                 redirectAttributes.addFlashAttribute("msg", "update");
             }
-
-            computer.ifPresent(c -> computerService.saveOrUpdate(c));
-
+            try {
+                computer.ifPresent(c -> computerService.saveOrUpdate(c));
+            } catch (ServiceException | DAOException e) {
+                redirectAttributes.addFlashAttribute("css", "danger");
+                redirectAttributes.addFlashAttribute("msg", "exception");
+            }
             return "redirect:/computers";
         }
     }
@@ -143,7 +147,7 @@ public class ComputerController {
             }
         } catch (DAOException | ServiceException ex) {
             redirectAttributes.addFlashAttribute("css", "danger");
-            redirectAttributes.addFlashAttribute("msg", ex.getMessage());
+            redirectAttributes.addFlashAttribute("msg", "exception");
         }
         return "redirect:/computers";
     }
@@ -154,9 +158,12 @@ public class ComputerController {
 
         LOGGER.debug("deleteComputer() : {}", computerListWrapper.getComputers());
 
-        // TODO Catch error form dao
+        try {
         computerService.deleteMultiple(computerListWrapper.getComputers());
-
+        } catch (DAOException | ServiceException ex) {
+            redirectAttributes.addFlashAttribute("css", "danger");
+            redirectAttributes.addFlashAttribute("msg", "exception");
+        }
         redirectAttributes.addFlashAttribute("css", "success");
         redirectAttributes.addFlashAttribute("msg", "delete");
 
@@ -178,6 +185,8 @@ public class ComputerController {
         List<Company> companies = companyService.findAllWithOffsetAndLimit(0, numberOfCompanies, "","name","ASC");
         List<CompanyDto> companiesDto = CompanyDtoMapper.mapCompaniesDtoFromCompanies(companies);
         model.addAttribute("companies", companiesDto);
+        model.addAttribute("locale", LocaleContextHolder.getLocale().toString());
+        model.addAttribute("date_format", StringUtils.upperCase(localeFormat(LocaleContextHolder.getLocale())));
     }
 
 }

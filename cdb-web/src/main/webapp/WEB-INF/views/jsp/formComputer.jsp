@@ -53,8 +53,7 @@
                             <div class="md-form mt-2 ${status.error ? 'has-error' : ''}">
                                 <i class="fa fa-tags prefix"></i>
                                 <label for="name"><spring:message code="cdb.form.name"/></label>
-                                <form:input path="name" type="text" class="form-control mt-1" id="name"
-                                            style="padding-left:20px;"/>
+                                <form:input path="name" type="text" class="form-control mt-1" id="name"/>
                             </div>
                         </spring:bind>
 
@@ -143,49 +142,21 @@
 <script src="<c:url value="/resources/js/mdb.min.js"/>"></script>
 
 <script type="text/javascript" src="<c:url value="/resources/bower_components/moment/min/moment.min.js"/>"></script>
+<script type="text/javascript" src="<c:url value="/resources/bower_components/moment/locale/fr.js"/>"></script>
 <script type="text/javascript"
         src="<c:url value="/resources/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"/>"></script>
 <script type="text/javascript">
     $(function () {
         $('#date_introduced').datetimepicker({
-            format: 'MM/DD/YYYY'
+            locale: '${locale}',
+            format: '${date_format}'
         });
     });
     $(function () {
         $('#date_discontinued').datetimepicker({
-            format: 'MM/DD/YYYY'
+            locale: '${locale}',
+            format: '${date_format}'
         });
-    });
-</script>
-
-<script>
-    jQuery.fn.filterByText = function (textbox) {
-        return this.each(function () {
-            var select = this;
-            var options = [];
-            $(select).find('option').each(function () {
-                options.push({value: $(this).val(), text: $(this).text()});
-            });
-            $(select).data('options', options);
-
-            $(textbox).bind('change keyup', function () {
-                var options = $(select).empty().data('options');
-                var search = $.trim($(this).val());
-                var regex = new RegExp(search, "gi");
-
-                $.each(options, function (i) {
-                    var option = options[i];
-                    if (option.text.match(regex) !== null) {
-                        $(select).append(
-                            $('<option>').text(option.text).val(option.value)
-                        );
-                    }
-                });
-            });
-        });
-    };
-    $(function () {
-        $('select').filterByText($('#filter'));
     });
 </script>
 
