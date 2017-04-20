@@ -48,6 +48,7 @@ $(function() {
         if($(".editMode").is(":visible")) {
             $(".editMode").hide();
             $("#truc").remove();
+            $("#machin").remove();
             $("#editComputer").prepend('<span id="truc" class="glyphicon glyphicon-edit" aria-hidden="true"></span>');
             $("#editComputer").append('<strong id="lblfield"></strong>');
             $("#lblfield").text($("#editMode").text());
@@ -55,6 +56,7 @@ $(function() {
         else {
             $(".editMode").show();
             $("#truc").remove();
+            $("#machin").remove();
             $("#editComputer").prepend('<span id="truc" class="glyphicon glyphicon-th-list" aria-hidden="true"></span>');
             $("#editComputer").append('<strong id="lblfield"></strong>');
             $("#lblfield").text($("#viewMode").text());

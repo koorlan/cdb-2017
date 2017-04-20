@@ -11,6 +11,8 @@
     <link href="<c:url value="/resources/css/bootstrap.min.css"/>" rel="stylesheet" media="screen"/>
     <link href="<c:url value="/resources/css/font-awesome.css"/>" rel="stylesheet" media="screen"/>
     <link href="<c:url value="/resources/css/mdb.min.css"/>" rel="stylesheet" media="screen"/>
+    <link href="<c:url value="/resources/bower_components/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css"/>"
+          rel="stylesheet"/>
 
 </head>
 <body>
@@ -19,7 +21,7 @@
     <div class="container">
         <a class="navbar-brand" href="<c:url value="/"/>">
             <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-            <strong>Computer Database</strong>
+            <strong style="padding-left: 5px">Computer Database</strong>
         </a>
     </div>
 </nav>
@@ -30,100 +32,106 @@
             <div class="col-xs-8 col-xs-offset-2 box">
                 <c:choose>
                     <c:when test="${computerForm['new']}">
-                        <h1>
-                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <spring:message code="cdb.add.title"/>
+                        <h1 class="text-center">
+                            <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> <spring:message
+                                code="cdb.add.title"/>
                         </h1>
                     </c:when>
                     <c:otherwise>
-                        <h1>
-                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <spring:message code="cdb.edit.title"/>
+                        <h1 class="text-center">
+                            <span class="glyphicon glyphicon-edit" aria-hidden="true"></span> <spring:message
+                                code="cdb.edit.title"/>
                         </h1>
                     </c:otherwise>
                 </c:choose>
                 <br/>
-                <div class="card col-md-12">
-                    <div class="card-block center-block">
-                        <spring:url value="/computers" var="computerActionUrl"/>
-                        <form:form class="form-horizontal" method="post" modelAttribute="computerForm" action="/computers">
-                            <form:hidden path="id"/>
-
-                            <spring:bind path="name">
-                                <div class="form-group ${status.error ? 'has-error' : ''}">
-                                    <label class="col-sm-2 control-label mt-1"><spring:message
-                                            code="cdb.form.name"/></label>
-                                    <div class="col-sm-10 mt-1">
-                                        <form:input path="name" type="text" class="form-control mt-1"
-                                                    id="name" placeholder="Name"/>
-                                        <form:errors path="name" class="control-label"/>
-                                    </div>
-                                </div>
-                            </spring:bind>
-
-                            <spring:bind path="introduced">
-                                <div class="form-group ${status.error ? 'has-error' : ''}">
-                                    <label class="col-sm-2 control-label"><spring:message
-                                            code="cdb.form.introduced"/></label>
-                                    <div class="col-sm-10">
-                                        <form:input path="introduced" class="form-control"
-                                                    id="introduced" placeholder="${dateFormat}"/>
-                                        <form:errors path="introduced" class="control-label"/>
-                                    </div>
-                                </div>
-                            </spring:bind>
-
-                            <spring:bind path="discontinued">
-                                <div class="form-group ${status.error ? 'has-error' : ''}">
-                                    <label class="col-sm-2 control-label"><spring:message
-                                            code="cdb.form.discontinued"/></label>
-                                    <div class="col-sm-10">
-
-                                        <form:input path="discontinued" class="form-control"
-                                                    id="discontinued" placeholder="${dateFormat}"/>
-                                        <form:errors path="discontinued" class="control-label"/>
-                                    </div>
-                                </div>
-                            </spring:bind>
-                            <input type="text" id="filter">
-                            <spring:bind path="company">
-                                <div class="form-group ${status.error ? 'has-error' : ''}">
-                                    <label class="col-sm-2 control-label"><spring:message
-                                            code="cdb.form.company"/></label>
-                                    <div class="col-sm-5">
-                                        <form:select path="company.id" class="form-control" >
-                                            <form:option value="0" label=""/>
-                                            <form:options items="${companies}" itemValue="id"
-                                                          itemLabel="name"/>
-                                        </form:select>
-                                        <form:errors path="company" class="control-label"/>
-                                    </div>
-                                    <div class="col-sm-5"></div>
-                                </div>
-                            </spring:bind>
-
-                            <div class="form-group">
-                                <div class="col-sm-offset-2 col-sm-10">
-                                    <a href="/"><button type="button" class="btn btn-blue-grey pull-right">
-                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                                        <strong><spring:message code="cdb.form.cancel"/></strong></button></a>
-                                    <c:choose>
-                                        <c:when test="${computerForm['new']}">
-                                            <button type="submit" class="btn btn-primary pull-right">
-                                                <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
-                                               <strong> <spring:message code="cdb.form.add"/></strong>
-                                            </button>
-                                        </c:when>
-                                        <c:otherwise>
-                                            <button type="submit" class="btn btn-primary pull-right">
-                                                <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                                                <strong><spring:message code="cdb.form.update"/></strong>
-                                            </button>
-                                        </c:otherwise>
-                                    </c:choose>
-                                </div>
+                <div class="card col-md-10 col-md-offset-1">
+                    <spring:url value="/computers" var="computerActionUrl"/>
+                    <form:form class="form-horizontal" method="post" modelAttribute="computerForm" action="/computers">
+                        <form:hidden path="id"/>
+                        <spring:bind path="name">
+                            <div class="md-form mt-2 ${status.error ? 'has-error' : ''}">
+                                <i class="fa fa-tags prefix"></i>
+                                <label for="name"><spring:message code="cdb.form.name"/></label>
+                                <form:input path="name" type="text" class="form-control mt-1" id="name"
+                                            style="padding-left:20px;"/>
                             </div>
+                        </spring:bind>
 
-                        </form:form>
-                    </div>
+                        <spring:bind path="introduced">
+                            <div class="md-form mt-2 input-group date ${status.error ? 'has-error' : ''}"
+                                 id='date_introduced'>
+                                <i class="fa fa-sign-in prefix"></i>
+                                <label for="introduced"><spring:message code="cdb.form.introduced"/></label>
+                                <form:input path="introduced" type="text" class="form-control mt-1" id="introduced"
+                                            style="margin-left:50px;"/>
+                                <span class="input-group-addon">
+                                             <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                            </div>
+                        </spring:bind>
+
+                        <spring:bind path="discontinued">
+                            <div class="md-form mt-2 input-group date ${status.error ? 'has-error' : ''}"
+                                 id='date_discontinued'>
+                                <i class="fa fa-sign-out prefix"></i>
+                                <label for="discontinued"><spring:message code="cdb.form.discontinued"/></label>
+                                <form:input path="discontinued" type="text" class="form-control mt-1" id="discontinued"
+                                            style="margin-left:50px;"/>
+                                <span class="input-group-addon">
+                                             <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
+                            </div>
+                        </spring:bind>
+
+                        <spring:bind path="company">
+                            <div class="md-form ${status.error ? 'has-error' : ''}">
+                                <form:select path="company.id" class="form-control" id="scompany">
+                                    <form:option value="0" label=""/>
+                                    <form:options items="${companies}" itemValue="id" itemLabel="name"/>
+                                    <c:forEach items="${companies}" var="item" varStatus="count">
+                                        <option value="${count.index}" style="margin-left: 20px;">${item.name}</option>
+                                    </c:forEach>
+                                </form:select>
+                                <form:errors path="company" class="control-label"/>
+                            </div>
+                        </spring:bind>
+
+                        <spring:hasBindErrors name="computerForm">
+                            <div class="alert alert-danger alert-dismissible">
+                                <c:forEach var="error" items="${errors.allErrors}">
+                                    <div id="errors" class="errors">
+                                        <p class="col-md-offset-1">* <spring:message message="${error}"/></p>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                        </spring:hasBindErrors>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <a href="/">
+                                    <button type="button" class="btn btn-blue-grey pull-right">
+                                        <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                        <strong><spring:message code="cdb.form.cancel"/></strong></button>
+                                </a>
+                                <c:choose>
+                                    <c:when test="${computerForm['new']}">
+                                        <button type="submit" class="btn btn-primary pull-right">
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                            <strong> <spring:message code="cdb.form.add"/></strong>
+                                        </button>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <button type="submit" class="btn btn-primary pull-right">
+                                            <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                                            <strong><spring:message code="cdb.form.update"/></strong>
+                                        </button>
+                                    </c:otherwise>
+                                </c:choose>
+                            </div>
+                        </div>
+
+                    </form:form>
                 </div>
             </div>
         </div>
@@ -134,25 +142,40 @@
 <script src="<c:url value="/resources/js/addComputer.js"/>"></script>
 <script src="<c:url value="/resources/js/mdb.min.js"/>"></script>
 
+<script type="text/javascript" src="<c:url value="/resources/bower_components/moment/min/moment.min.js"/>"></script>
+<script type="text/javascript"
+        src="<c:url value="/resources/bower_components/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js"/>"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#date_introduced').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+    });
+    $(function () {
+        $('#date_discontinued').datetimepicker({
+            format: 'MM/DD/YYYY'
+        });
+    });
+</script>
 
 <script>
-    jQuery.fn.filterByText = function(textbox) {
-        return this.each(function() {
+    jQuery.fn.filterByText = function (textbox) {
+        return this.each(function () {
             var select = this;
             var options = [];
-            $(select).find('option').each(function() {
+            $(select).find('option').each(function () {
                 options.push({value: $(this).val(), text: $(this).text()});
             });
             $(select).data('options', options);
 
-            $(textbox).bind('change keyup', function() {
+            $(textbox).bind('change keyup', function () {
                 var options = $(select).empty().data('options');
                 var search = $.trim($(this).val());
-                var regex = new RegExp(search,"gi");
+                var regex = new RegExp(search, "gi");
 
-                $.each(options, function(i) {
+                $.each(options, function (i) {
                     var option = options[i];
-                    if(option.text.match(regex) !== null) {
+                    if (option.text.match(regex) !== null) {
                         $(select).append(
                             $('<option>').text(option.text).val(option.value)
                         );
@@ -161,7 +184,7 @@
             });
         });
     };
-    $(function() {
+    $(function () {
         $('select').filterByText($('#filter'));
     });
 </script>

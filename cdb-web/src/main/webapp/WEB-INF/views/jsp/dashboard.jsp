@@ -21,7 +21,7 @@
     <div class="container">
         <a class="navbar-brand" href="<c:url value="/"/>">
             <span class="glyphicon glyphicon-home" aria-hidden="true"></span>
-            <strong>Computer Database</strong>
+            <strong style="padding-left: 5px">Computer Database</strong>
         </a>
 
         <form id="searchForm" action="" class="form-inline waves-effect waves-light col-lg-4"
@@ -34,7 +34,7 @@
                    placeholder="<spring:message code="cdb.dashboard.search"/>"/>
             <button type="submit" id="searchsubmit" class="btn btn-primary btn-sm">
                 <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-                <strong><spring:message code="cdb.dashboard.filtername"/></strong>
+                <strong style="padding-left: 5px"><spring:message code="cdb.dashboard.filtername"/></strong>
             </button>
         </form>
 
@@ -46,7 +46,8 @@
                         <a class="navbar-link" href="/logout">
                             <button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                <strong><spring:message code="cdb.dashboard.logout"/> </strong>
+                                <strong style="padding-left: 5px"><spring:message
+                                        code="cdb.dashboard.logout"/> </strong>
                             </button>
                         </a>
                     </c:when>
@@ -54,7 +55,7 @@
                         <a class="navbar-link" href="/login">
                             <button class="btn btn-primary btn-sm">
                                 <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                                <strong><spring:message code="cdb.dashboard.login"/> </strong>
+                                <strong style="padding-left: 5px"><spring:message code="cdb.dashboard.login"/> </strong>
                             </button>
                         </a>
 
@@ -65,7 +66,7 @@
                     <button class="btn btn-primary btn-sm dropdown-toggle" type="button" data-toggle="dropdown"
                             aria-haspopup="true" aria-expanded="false">
                         <span class="glyphicon glyphicon-flag" aria-hidden="true"></span>
-                        <strong><spring:message code="cdb.dashboard.lang"/></strong>
+                        <strong style="padding-left: 5px"><spring:message code="cdb.dashboard.lang"/></strong>
                     </button>
 
                     <div class="dropdown-menu">
@@ -87,8 +88,8 @@
 </nav>
 
 <div class="container">
-    <div id="editMode" style="display:none"><strong><spring:message code="cdb.edit.editMode" /></strong></div>
-    <div id="viewMode" style="display:none"><strong><spring:message code="cdb.edit.viewMode" /></strong></div>
+    <div id="editMode" style="display:none"><strong><spring:message code="cdb.edit.editMode"/></strong></div>
+    <div id="viewMode" style="display:none"><strong><spring:message code="cdb.edit.viewMode"/></strong></div>
     <c:if test="${not empty msg}">
         <div class="alert alert-${css} alert-dismissible" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -102,19 +103,18 @@
         <h1 id="homeTitle" class="col-md-6">${totalComputers}
             <spring:message code="cdb.dashboard.total"/>
         </h1>
-        <div id="actions" class="form-horizontal">
+        <div id="actions" class="form-horizontal col-md-6">
             <div class="pull-right">
-                <a class="btn btn btn-primary" id="addComputer" href="/computers/add">
+                <a class="btn btn-primary" id="addComputer" href="/computers/add">
                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                    <strong><spring:message code="cdb.dashboard.add"/></strong>
+                    <strong style="padding-left: 5px"><spring:message code="cdb.dashboard.add"/></strong>
                 </a>
-                <button type="button"
+                <button class="btn btn-primary" style="size: 1px;" type="button"
                         id="editComputer"
-                        class="btn btn-primary "
                         href="#"
                         onclick="$.fn.toggleEditMode();">
                     <span id="truc" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-                    <strong><spring:message code="cdb.dashboard.edit"/></strong>
+                    <strong id="machin"style="padding-left: 5px">editer</strong>
                 </button>
             </div>
         </div>
@@ -138,55 +138,60 @@
                     </a>
                 </span>
             </th>
-            <th>
-                <small>
-                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=name&sens=ASC">
-                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
-                    </a>
-                </small>
+            <th style="text-align: center">
                 <spring:message code="cdb.computer.name"/>
                 <small>
                     <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=name&sens=DESC">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"/>
                     </a>
                 </small>
-            </th>
-            <th>
+
                 <small>
-                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=introduced&sens=ASC">
+                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=name&sens=ASC">
                         <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
                     </a>
                 </small>
+            </th>
+            <th style="text-align: center">
                 <spring:message code="cdb.computer.introduced"/>
                 <small>
                     <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=introduced&sens=DESC">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"/>
                     </a>
                 </small>
-            </th>
-            <th>
                 <small>
-                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=discontinued&sens=ASC">
+                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=introduced&sens=ASC">
                         <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
                     </a>
                 </small>
+
+            </th>
+            <th style="text-align: center">
+
                 <spring:message code="cdb.computer.discontinued"/>
                 <small>
                     <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=discontinued&sens=DESC">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"/>
                     </a>
                 </small>
-            </th>
-            <th>
+
                 <small>
-                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=company&sens=ASC">
+                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=discontinued&sens=ASC">
                         <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
                     </a>
                 </small>
+            </th>
+            <th style="text-align: center">
                 <spring:message code="cdb.computer.company"/>
                 <small>
                     <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=company&sens=DESC">
                         <span class="glyphicon glyphicon-chevron-down" aria-hidden="true"/>
+                    </a>
+                </small>
+
+                <small>
+                    <a href="?size=${size}&filter=${filter}&page=${currentIndexPage}&orderby=company&sens=ASC">
+                        <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"/>
                     </a>
                 </small>
             </th>
