@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -101,7 +102,11 @@ public class ComputerController {
         LOGGER.debug("saveOrUpdateComputer() : DTO:" + computerDto);
 
         if (result.hasErrors()) {
-            
+            LOGGER.error("There were an error on the form, computerDTO is not validated");
+            for(ObjectError err: result.getAllErrors()) {
+                LOGGER.error(err.getDefaultMessage());
+            }
+
             populateDefaultModel(model);
             return "formComputer";
         } else {

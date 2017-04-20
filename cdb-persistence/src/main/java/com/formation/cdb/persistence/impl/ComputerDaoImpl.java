@@ -47,7 +47,7 @@ public class ComputerDaoImpl implements Dao<Computer> {
         try {
             sessionFactory.getCurrentSession().saveOrUpdate(e);
             return e;
-        } catch (IllegalStateException | IllegalArgumentException | DAOException | PersistenceException ex) {
+        } catch (IllegalStateException | IllegalArgumentException | PersistenceException ex) {
             throw new DAOException(ERROR_DAO, ex);
         }
 

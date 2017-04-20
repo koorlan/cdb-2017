@@ -18,7 +18,6 @@ object Add {
 
   val add = exec(http("Add: Add page")
     .get(config.getString("application.urls.addPage"))
-    .queryParam("action","add")
     .check(status.is(200))
     .resources(http("Add: Add js")
       .get(config.getString("application.urls.static.js.add"))))

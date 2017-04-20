@@ -20,9 +20,7 @@ object AddSecurity {
     .get(config.getString("application.urls.addPage")).check(status.is(200))
     .check(
       css(config.getString("application.urls.idElement.add.csrf").get, "value").saveAs("csrf_token")
-    )
-    .resources(http("AddSecurity: Add js")
-      .get(config.getString("application.urls.static.js.add"))))
+    ))
     .pause(3, 10)
     .feed(feederName)
     .feed(feederAdd)

@@ -19,24 +19,7 @@ class Authenticate(csvFile: String) {
     .check(
       css(config.getString("application.urls.idElement.authenticate.csrf").get, "value").saveAs("csrf_token")
     )
-    .resources(http("Authenticate: Login home")
-      .get(config.getString("application.urls.static.css.bootstrap")),
-      http("Authenticate: Login home")
-        .get(config.getString("application.urls.static.css.fontAwesome")),
-      http("Authenticate: Get css")
-        .get(config.getString("application.urls.static.css.main")),
-      http("Authenticate: Get jquery js")
-        .get(config.getString("application.urls.static.js.jquery")),
-      http("Authenticate: Get bootstrap js")
-        .get(config.getString("application.urls.static.js.bootstrap")),
-      http("Authenticate: Get jquery validate")
-        .get(config.getString("application.urls.static.js.jqueryValidate")),
-      http("Authenticate: Get login js")
-        .get(config.getString("application.urls.static.js.login")),
-      http("Authenticate: Get uk png")
-        .get(config.getString("application.urls.static.font.ukFlag")),
-      http("Authenticate: Get fr png")
-        .get(config.getString("application.urls.static.font.frFlag")))
+
   )
     .pause(3, 10)
     .feed(feeder)

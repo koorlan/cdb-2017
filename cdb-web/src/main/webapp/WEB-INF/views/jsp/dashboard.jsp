@@ -159,6 +159,7 @@
 
 <form:form id="deleteForm" method="POST" action="/computers/delete" modelAttribute="deleteForm">
     <form:input path="computers" type="hidden"/>
+    <input type="hidden" id="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>
 </form:form>
 
 <div class="container" style="margin-top: 10px;">

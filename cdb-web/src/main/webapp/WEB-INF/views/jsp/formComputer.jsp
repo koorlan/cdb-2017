@@ -129,7 +129,7 @@
                                 </c:choose>
                             </div>
                         </div>
-
+                        <input type="hidden" id="_csrf" name="${_csrf.parameterName}" value="${_csrf.token}"/>
                     </form:form>
                 </div>
             </div>
